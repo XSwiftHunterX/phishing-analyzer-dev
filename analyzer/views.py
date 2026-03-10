@@ -1,8 +1,20 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .models import Message
 from .forms import MessageForm
+from .forms import RegisterForm
 
 # Create your views here.
+def register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("/accounts/login/")
+    else:
+        form = RegisterForm()
+
+    return render(request, "analyzer/register.html", {"form": form})
 
 def message_list(request):
     messages = Message.objects.all().order_by('-submission_date')
@@ -34,11 +46,14 @@ def message_list(request):
 
     return render(request, 'analyzer/message_list.html', context)
 
+@login_required
 def submit_message(request):
     if request.method == 'POST':
         form = MessageForm(request.POST)
         if form.is_valid():
-            form.save()
+            message = form.save(commit=False)
+            message.user = request.user
+            message.save()
             return redirect('message_list')
     else:
         form = MessageForm()

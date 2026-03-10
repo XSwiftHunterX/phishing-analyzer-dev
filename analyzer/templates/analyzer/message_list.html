@@ -7,7 +7,26 @@
 
 <h1>Submitted Messages</h1>
 
-<p><a href="/submit/">Submit a New Message</a></p>
+{% if user.is_authenticated %}
+    <p>Logged in as <strong>{{ user.username }}</strong></p>
+    <p>
+        <a href="/submit/">Submit a New Message</a>
+    </p>
+    <form action="/accounts/logout/" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+{% else %}
+    <p>
+        <strong>Login to contribute.</strong><br>
+        Users must be logged in to submit phishing messages.
+    </p>
+
+    <p>
+        <a href="/accounts/login/">Login</a> |
+        <a href="/register/">Create Account</a>
+    </p>
+{% endif %}
 
 <form method="get">
     <p>
@@ -56,6 +75,15 @@
         {{ message.risk_level }}
         <br>
         {{ message.message_content }}
+        <br>
+        <em>
+            Submitted by:
+            {% if message.user %}
+                {{ message.user.username }}
+            {% else %}
+                Unknown
+            {% endif %}
+        </em>
     </li>
 {% empty %}
     <li>No messages found.</li>
