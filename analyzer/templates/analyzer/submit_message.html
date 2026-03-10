@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit Message</title>
+</head>
+<body>
+
+<h1>Submit a Phishing Message</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+<p><a href="/">Back to Message List</a></p>
+
+</body>
+</html>
