@@ -1,0 +1,28 @@
+from django.db import models
+
+# Create your models here.
+class Message(models.Model):
+    MESSAGE_TYPES = [
+        ('Email', 'Email'),
+        ('SMS', 'SMS'),
+    ]
+
+    CLASSIFICATIONS = [
+        ('Phishing', 'Phishing'),
+        ('Legitimate', 'Legitimate'),
+    ]
+
+    RISK_LEVELS = [
+        ('Low', 'Low'),
+        ('Medium', 'Medium'),
+        ('High', 'High'),
+    ]
+
+    message_content = models.TextField()
+    message_type = models.CharField(max_length=10, choices=MESSAGE_TYPES)
+    classification = models.CharField(max_length=20, choices=CLASSIFICATIONS)
+    risk_level = models.CharField(max_length=10, choices=RISK_LEVELS)
+    submission_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.message_type} - {self.classification} - {self.risk_level}"
