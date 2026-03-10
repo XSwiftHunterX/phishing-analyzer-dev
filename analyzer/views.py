@@ -1,8 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Message
-from .forms import MessageForm
-from .forms import RegisterForm
+from .forms import MessageForm, RegisterForm
 
 # Create your views here.
 def register(request):
@@ -59,3 +58,36 @@ def submit_message(request):
         form = MessageForm()
 
     return render(request, 'analyzer/submit_message.html', {'form': form})
+
+@login_required
+def edit_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+
+    if message.user != request.user:
+        return redirect('message_list')
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST, instance=message)
+        if form.is_valid():
+            updated_message = form.save(commit=False)
+            updated_message.user = request.user
+            updated_message.save()
+            return redirect('message_list')
+    else:
+        form = MessageForm(instance=message)
+
+    return render(request, 'analyzer/edit_message.html', {'form': form, 'message': message})
+
+
+@login_required
+def delete_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+
+    if message.user != request.user:
+        return redirect('message_list')
+
+    if request.method == 'POST':
+        message.delete()
+        return redirect('message_list')
+
+    return render(request, 'analyzer/delete_message.html', {'message': message})

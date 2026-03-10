@@ -84,6 +84,12 @@
                 Unknown
             {% endif %}
         </em>
+
+        {% if user.is_authenticated and message.user == user %}
+            <br>
+            <a href="/edit/{{ message.id }}/">Edit</a> |
+            <a href="/delete/{{ message.id }}/">Delete</a>
+        {% endif %}
     </li>
 {% empty %}
     <li>No messages found.</li>

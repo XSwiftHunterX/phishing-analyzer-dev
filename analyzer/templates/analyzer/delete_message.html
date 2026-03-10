@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Message</title>
+</head>
+<body>
+
+<h1>Delete Message</h1>
+
+<p>Are you sure you want to delete this message?</p>
+
+<p>
+    <strong>{{ message.message_type }}</strong> -
+    {{ message.classification }} -
+    {{ message.risk_level }}
+    <br>
+    {{ message.message_content }}
+</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, Delete</button>
+</form>
+
+<p><a href="/">Cancel</a></p>
+
+</body>
+</html>
