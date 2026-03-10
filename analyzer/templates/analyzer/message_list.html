@@ -9,6 +9,45 @@
 
 <p><a href="/submit/">Submit a New Message</a></p>
 
+<form method="get">
+    <p>
+        <label for="q">Search Message Content:</label>
+        <input type="text" id="q" name="q" value="{{ query }}">
+    </p>
+
+    <p>
+        <label for="classification">Classification:</label>
+        <select id="classification" name="classification">
+            <option value="">All</option>
+            <option value="Phishing" {% if selected_classification == "Phishing" %}selected{% endif %}>Phishing</option>
+            <option value="Legitimate" {% if selected_classification == "Legitimate" %}selected{% endif %}>Legitimate</option>
+        </select>
+    </p>
+
+    <p>
+        <label for="risk_level">Risk Level:</label>
+        <select id="risk_level" name="risk_level">
+            <option value="">All</option>
+            <option value="Low" {% if selected_risk_level == "Low" %}selected{% endif %}>Low</option>
+            <option value="Medium" {% if selected_risk_level == "Medium" %}selected{% endif %}>Medium</option>
+            <option value="High" {% if selected_risk_level == "High" %}selected{% endif %}>High</option>
+        </select>
+    </p>
+
+    <p>
+        <label for="message_type">Message Type:</label>
+        <select id="message_type" name="message_type">
+            <option value="">All</option>
+            <option value="Email" {% if selected_message_type == "Email" %}selected{% endif %}>Email</option>
+            <option value="SMS" {% if selected_message_type == "SMS" %}selected{% endif %}>SMS</option>
+        </select>
+    </p>
+
+    <button type="submit">Search / Filter</button>
+</form>
+
+<hr>
+
 <ul>
 {% for message in messages %}
     <li>
@@ -19,7 +58,7 @@
         {{ message.message_content }}
     </li>
 {% empty %}
-    <li>No messages submitted yet.</li>
+    <li>No messages found.</li>
 {% endfor %}
 </ul>
 
