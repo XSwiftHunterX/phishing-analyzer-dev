@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Phishing Message Analyzer</title>
+</head>
+<body>
+
+<h1>Submitted Messages</h1>
+
+<ul>
+{% for message in messages %}
+    <li>
+        <strong>{{ message.message_type }}</strong> -
+        {{ message.classification }} -
+        {{ message.risk_level }}
+        <br>
+        {{ message.message_content }}
+    </li>
+{% empty %}
+    <li>No messages submitted yet.</li>
+{% endfor %}
+</ul>
+
+</body>
+</html>
