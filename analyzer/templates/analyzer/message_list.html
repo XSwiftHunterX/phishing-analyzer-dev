@@ -40,16 +40,17 @@
             <option value="">All</option>
             <option value="Phishing" {% if selected_classification == "Phishing" %}selected{% endif %}>Phishing</option>
             <option value="Legitimate" {% if selected_classification == "Legitimate" %}selected{% endif %}>Legitimate</option>
+            <option value="Unsure" {% if selected_classification == "Unsure" %}selected{% endif %}>Unsure</option>
         </select>
     </p>
 
     <p>
-        <label for="risk_level">Risk Level:</label>
-        <select id="risk_level" name="risk_level">
+        <label for="suspected_risk">Suspected Risk:</label>
+        <select id="suspected_risk" name="suspected_risk">
             <option value="">All</option>
-            <option value="Low" {% if selected_risk_level == "Low" %}selected{% endif %}>Low</option>
-            <option value="Medium" {% if selected_risk_level == "Medium" %}selected{% endif %}>Medium</option>
-            <option value="High" {% if selected_risk_level == "High" %}selected{% endif %}>High</option>
+            <option value="Low" {% if selected_suspected_risk == "Low" %}selected{% endif %}>Low</option>
+            <option value="Medium" {% if selected_suspected_risk == "Medium" %}selected{% endif %}>Medium</option>
+            <option value="High" {% if selected_suspected_risk == "High" %}selected{% endif %}>High</option>
         </select>
     </p>
 
@@ -72,7 +73,7 @@
     <li>
         <strong>{{ message.message_type }}</strong> -
         {{ message.classification }} -
-        {{ message.risk_level }}
+        {{ message.suspected_risk }}
         <br>
         {{ message.message_content }}
         <br>

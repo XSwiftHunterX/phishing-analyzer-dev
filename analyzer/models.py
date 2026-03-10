@@ -11,9 +11,10 @@ class Message(models.Model):
     CLASSIFICATIONS = [
         ('Phishing', 'Phishing'),
         ('Legitimate', 'Legitimate'),
+        ('Unsure', 'Unsure'),
     ]
 
-    RISK_LEVELS = [
+    SUSPECTED_RISK_LEVELS = [
         ('Low', 'Low'),
         ('Medium', 'Medium'),
         ('High', 'High'),
@@ -23,7 +24,7 @@ class Message(models.Model):
     message_content = models.TextField()
     message_type = models.CharField(max_length=10, choices=MESSAGE_TYPES)
     classification = models.CharField(max_length=20, choices=CLASSIFICATIONS)
-    risk_level = models.CharField(max_length=10, choices=RISK_LEVELS)
+    suspected_risk = models.CharField(max_length=10, choices=SUSPECTED_RISK_LEVELS)
     submission_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
