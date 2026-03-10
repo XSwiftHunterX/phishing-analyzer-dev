@@ -28,4 +28,4 @@ class Message(models.Model):
     submission_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.message_type} - {self.classification} - {self.risk_level}"
+        return f"{self.message_type} - {self.classification} - {self.suspected_risk}"
