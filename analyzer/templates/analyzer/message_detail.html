@@ -74,6 +74,13 @@
             <em>on {{ comment.created_at|date:"F j, Y \a\t g:i A" }}</em>
         </p>
         <p>{{ comment.content }}</p>
+
+        {% if user.is_authenticated and comment.user == user %}
+            <p>
+                <a href="/comment/edit/{{ comment.id }}/">Edit</a> |
+                <a href="/comment/delete/{{ comment.id }}/">Delete</a>
+            </p>
+        {% endif %}
     </div>
     <hr>
 {% empty %}

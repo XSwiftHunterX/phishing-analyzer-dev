@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Message
+from .models import Message, Comment
 from .forms import MessageForm, RegisterForm, CommentForm
 
 # Create your views here.
@@ -103,7 +103,6 @@ def edit_message(request, message_id):
 
     return render(request, 'analyzer/edit_message.html', {'form': form, 'message': message})
 
-
 @login_required
 def delete_message(request, message_id):
     message = get_object_or_404(Message, id=message_id)
@@ -116,3 +115,37 @@ def delete_message(request, message_id):
         return redirect('message_list')
 
     return render(request, 'analyzer/delete_message.html', {'message': message})
+
+@login_required
+def edit_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if comment.user != request.user:
+        return redirect('message_detail', message_id=comment.message.id)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            updated_comment = form.save(commit=False)
+            updated_comment.user = request.user
+            updated_comment.message = comment.message
+            updated_comment.save()
+            return redirect('message_detail', message_id=comment.message.id)
+    else:
+        form = CommentForm(instance=comment)
+
+    return render(request, 'analyzer/edit_comment.html', {'form': form, 'comment': comment})
+
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if comment.user != request.user:
+        return redirect('message_detail', message_id=comment.message.id)
+
+    if request.method == 'POST':
+        message_id = comment.message.id
+        comment.delete()
+        return redirect('message_detail', message_id=message_id)
+
+    return render(request, 'analyzer/delete_comment.html', {'comment': comment})
