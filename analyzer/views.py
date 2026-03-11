@@ -45,6 +45,10 @@ def message_list(request):
 
     return render(request, 'analyzer/message_list.html', context)
 
+def message_detail(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+    return render(request, 'analyzer/message_detail.html', {'message': message})
+
 @login_required
 def submit_message(request):
     if request.method == 'POST':

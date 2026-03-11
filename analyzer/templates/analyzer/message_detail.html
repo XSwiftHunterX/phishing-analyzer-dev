@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Message Detail</title>
+</head>
+<body>
+
+<h1>Message Detail</h1>
+
+<p><a href="/">Back to Message List</a></p>
+
+<hr>
+
+<p>
+    <strong>Message Type:</strong> {{ message.message_type }}
+</p>
+
+<p>
+    <strong>Classification:</strong> {{ message.classification }}
+</p>
+
+<p>
+    <strong>Suspected Risk:</strong> {{ message.suspected_risk }}
+</p>
+
+<p>
+    <strong>Submitted By:</strong>
+    {% if message.user %}
+        {{ message.user.username }}
+    {% else %}
+        Unknown
+    {% endif %}
+</p>
+
+<p>
+    <strong>Submitted On:</strong> {{ message.submission_date|date:"M d, Y • g:i A" }}
+</p>
+
+<p>
+    <strong>Message Content:</strong><br>
+    {{ message.message_content }}
+</p>
+
+{% if user.is_authenticated and message.user == user %}
+    <p>
+        <a href="/edit/{{ message.id }}/">Edit</a> |
+        <a href="/delete/{{ message.id }}/">Delete</a>
+    </p>
+{% endif %}
+
+</body>
+</html>

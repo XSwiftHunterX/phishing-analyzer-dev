@@ -71,9 +71,11 @@
 <ul>
 {% for message in messages %}
     <li>
-        <strong>{{ message.message_type }}</strong> -
+        <a href="/message/{{ message.id }}/">
+            <strong>{{ message.message_type }}</strong>
+        </a> -
         {{ message.classification }} -
-        {{ message.suspected_risk }}
+        Suspected Risk: {{ message.suspected_risk }}
         <br>
         {{ message.message_content }}
         <br>
@@ -84,6 +86,10 @@
             {% else %}
                 Unknown
             {% endif %}
+        </em>
+        <br>
+        <em>
+            Submitted on: {{ message.submission_date|date:"F j, Y \a\t g:i A" }}
         </em>
 
         {% if user.is_authenticated and message.user == user %}
