@@ -14,6 +14,15 @@
 <p><strong>Last Name:</strong> {{ profile_user.last_name|default:"Not provided" }}</p>
 <p><strong>Email:</strong> {{ profile_user.email|default:"Not provided" }}</p>
 
+<hr>
+
+<h2>Profile Stats</h2>
+
+<p><strong>Messages Submitted:</strong> {{ message_count }}</p>
+<p><strong>Comments Posted:</strong> {{ comment_count }}</p>
+<p><strong>Message Likes Received:</strong> {{ message_likes_received }}</p>
+<p><strong>Comment Likes Received:</strong> {{ comment_likes_received }}</p>
+
 <p>
     <a href="/profile/edit/">Edit Profile</a>
 </p>

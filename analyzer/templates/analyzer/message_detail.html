@@ -7,7 +7,12 @@
 
 <h1>Message Detail</h1>
 
-<p><a href="/">Back to Message List</a></p>
+<p>
+    <a href="/">Back to Message List</a>
+    {% if user.is_authenticated %}
+        | <a href="/profile/">My Profile</a>
+    {% endif %}
+</p>
 
 <hr>
 

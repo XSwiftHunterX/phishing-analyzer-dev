@@ -188,8 +188,30 @@ def toggle_comment_like(request, comment_id):
 
 @login_required
 def profile_view(request):
-    return render(request, 'analyzer/profile.html', {'profile_user': request.user})
+    profile_user = request.user
 
+    message_count = Message.objects.filter(user=profile_user).count()
+    comment_count = Comment.objects.filter(user=profile_user).count()
+
+    message_likes_received = 0
+    user_messages = Message.objects.filter(user=profile_user)
+    for message in user_messages:
+        message_likes_received += message.seconds.count()
+
+    comment_likes_received = 0
+    user_comments = Comment.objects.filter(user=profile_user)
+    for comment in user_comments:
+        comment_likes_received += comment.likes.count()
+
+    context = {
+        'profile_user': profile_user,
+        'message_count': message_count,
+        'comment_count': comment_count,
+        'message_likes_received': message_likes_received,
+        'comment_likes_received': comment_likes_received,
+    }
+
+    return render(request, 'analyzer/profile.html', context)
 
 @login_required
 def edit_profile(request):
