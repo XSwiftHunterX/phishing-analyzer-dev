@@ -10,7 +10,8 @@
 {% if user.is_authenticated %}
     <p>Logged in as <strong>{{ user.username }}</strong></p>
     <p>
-        <a href="/submit/">Submit a New Message</a>
+        <a href="/submit/">Submit a New Message</a> |
+        <a href="/profile/">My Profile</a>
     </p>
     <form action="/accounts/logout/" method="post">
         {% csrf_token %}

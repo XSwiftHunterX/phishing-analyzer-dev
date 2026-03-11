@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Profile</title>
+</head>
+<body>
+
+<h1>My Profile</h1>
+
+<p><a href="/">Back to Message List</a></p>
+
+<p><strong>Username:</strong> {{ profile_user.username }}</p>
+<p><strong>First Name:</strong> {{ profile_user.first_name|default:"Not provided" }}</p>
+<p><strong>Last Name:</strong> {{ profile_user.last_name|default:"Not provided" }}</p>
+<p><strong>Email:</strong> {{ profile_user.email|default:"Not provided" }}</p>
+
+<p>
+    <a href="/profile/edit/">Edit Profile</a>
+</p>
+
+</body>
+</html>

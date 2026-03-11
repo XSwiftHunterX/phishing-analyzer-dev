@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Message, Comment
-from .forms import MessageForm, RegisterForm, CommentForm
+from .forms import MessageForm, RegisterForm, CommentForm, ProfileForm
 
 # Create your views here.
 def register(request):
@@ -185,3 +185,20 @@ def toggle_comment_like(request, comment_id):
         comment.likes.add(request.user)
 
     return redirect('message_detail', message_id=comment.message.id)
+
+@login_required
+def profile_view(request):
+    return render(request, 'analyzer/profile.html', {'profile_user': request.user})
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=request.user)
+
+    return render(request, 'analyzer/edit_profile.html', {'form': form})
