@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Message
-from .forms import MessageForm, RegisterForm
+from .forms import MessageForm, RegisterForm, CommentForm
 
 # Create your views here.
 def register(request):
@@ -47,7 +47,28 @@ def message_list(request):
 
 def message_detail(request, message_id):
     message = get_object_or_404(Message, id=message_id)
-    return render(request, 'analyzer/message_detail.html', {'message': message})
+    comments = message.comments.all().order_by('-created_at')
+
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('/accounts/login/')
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.message = message
+            comment.user = request.user
+            comment.save()
+            return redirect('message_detail', message_id=message.id)
+    else:
+        form = CommentForm()
+
+    context = {
+        'message': message,
+        'comments': comments,
+        'form': form,
+    }
+
+    return render(request, 'analyzer/message_detail.html', context)
 
 @login_required
 def submit_message(request):

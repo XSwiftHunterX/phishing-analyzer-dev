@@ -33,7 +33,7 @@
 </p>
 
 <p>
-    <strong>Submitted On:</strong> {{ message.submission_date|date:"M d, Y • g:i A" }}
+    <strong>Submitted On:</strong> {{ message.submission_date|date:"F j, Y \a\t g:i A" }}
 </p>
 
 <p>
@@ -47,6 +47,38 @@
         <a href="/delete/{{ message.id }}/">Delete</a>
     </p>
 {% endif %}
+
+<hr>
+
+<h2>Comments</h2>
+
+{% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Post Comment</button>
+    </form>
+{% else %}
+    <p>
+        <a href="/accounts/login/">Login</a> or
+        <a href="/register/">create an account</a> to comment.
+    </p>
+{% endif %}
+
+<hr>
+
+{% for comment in comments %}
+    <div>
+        <p>
+            <strong>{{ comment.user.username }}</strong>
+            <em>on {{ comment.created_at|date:"F j, Y \a\t g:i A" }}</em>
+        </p>
+        <p>{{ comment.content }}</p>
+    </div>
+    <hr>
+{% empty %}
+    <p>No comments yet.</p>
+{% endfor %}
 
 </body>
 </html>
