@@ -42,21 +42,21 @@
 </p>
 
 <p>
-    <strong>Seconds:</strong> {{ message.seconds.count }}
+    <strong>Likes:</strong> {{ message.seconds.count }}
 </p>
 
 {% if user.is_authenticated %}
     <form method="post" action="/message/{{ message.id }}/second/">
         {% csrf_token %}
         {% if has_seconded %}
-            <button type="submit">Remove Second</button>
+            <button type="submit">Unlike</button>
         {% else %}
-            <button type="submit">Second This Message</button>
+            <button type="submit">Like This Message</button>
         {% endif %}
     </form>
 {% else %}
     <p>
-        <a href="/accounts/login/">Login</a> to second this message.
+        <a href="/accounts/login/">Login</a> to like this message.
     </p>
 {% endif %}
 
@@ -93,6 +93,25 @@
             <em>on {{ comment.created_at|date:"F j, Y \a\t g:i A" }}</em>
         </p>
         <p>{{ comment.content }}</p>
+
+        <p>
+            <em>Likes: {{ comment.likes.count }}</em>
+        </p>
+
+        {% if user.is_authenticated %}
+            <form method="post" action="/comment/{{ comment.id }}/like/">
+                {% csrf_token %}
+                {% if comment.has_liked %}
+                    <button type="submit">Unlike</button>
+                {% else %}
+                    <button type="submit">Like</button>
+                {% endif %}
+            </form>
+        {% else %}
+            <p>
+                <a href="/accounts/login/">Login</a> to like this comment.
+            </p>
+        {% endif %}
 
         {% if user.is_authenticated and comment.user == user %}
             <p>

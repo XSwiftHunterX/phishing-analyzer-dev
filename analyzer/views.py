@@ -53,6 +53,9 @@ def message_detail(request, message_id):
     if request.user.is_authenticated:
         has_seconded = request.user in message.seconds.all()
 
+    for comment in comments:
+        comment.has_liked = request.user.is_authenticated and request.user in comment.likes.all()
+
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect('/accounts/login/')
@@ -168,3 +171,17 @@ def toggle_second(request, message_id):
         message.seconds.add(request.user)
 
     return redirect('message_detail', message_id=message.id)
+
+@login_required
+def toggle_comment_like(request, comment_id):
+    if request.method != 'POST':
+        return redirect('message_list')
+
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+
+    return redirect('message_detail', message_id=comment.message.id)
