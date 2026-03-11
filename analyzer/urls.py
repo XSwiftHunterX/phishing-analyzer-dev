@@ -10,4 +10,5 @@ urlpatterns = [
     path('message/<int:message_id>/', views.message_detail, name='message_detail'),
     path('comment/edit/<int:comment_id>/', views.edit_comment, name='edit_comment'),
     path('comment/delete/<int:comment_id>/', views.delete_comment, name='delete_comment'),
+    path('message/<int:message_id>/second/', views.toggle_second, name='toggle_second'),
 ]

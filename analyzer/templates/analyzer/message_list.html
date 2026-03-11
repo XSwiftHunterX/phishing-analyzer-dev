@@ -92,6 +92,11 @@
             Submitted on: {{ message.submission_date|date:"F j, Y \a\t g:i A" }}
         </em>
 
+        <br>
+        <em>
+            Seconds: {{ message.seconds.count }}
+        </em>
+
         {% if user.is_authenticated and message.user == user %}
             <br>
             <a href="/edit/{{ message.id }}/">Edit</a> |

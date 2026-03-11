@@ -49,6 +49,10 @@ def message_detail(request, message_id):
     message = get_object_or_404(Message, id=message_id)
     comments = message.comments.all().order_by('-created_at')
 
+    has_seconded = False
+    if request.user.is_authenticated:
+        has_seconded = request.user in message.seconds.all()
+
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect('/accounts/login/')
@@ -66,6 +70,7 @@ def message_detail(request, message_id):
         'message': message,
         'comments': comments,
         'form': form,
+        'has_seconded': has_seconded,
     }
 
     return render(request, 'analyzer/message_detail.html', context)
@@ -149,3 +154,17 @@ def delete_comment(request, comment_id):
         return redirect('message_detail', message_id=message_id)
 
     return render(request, 'analyzer/delete_comment.html', {'comment': comment})
+
+@login_required
+def toggle_second(request, message_id):
+    if request.method != 'POST':
+        return redirect('message_detail', message_id=message_id)
+
+    message = get_object_or_404(Message, id=message_id)
+
+    if request.user in message.seconds.all():
+        message.seconds.remove(request.user)
+    else:
+        message.seconds.add(request.user)
+
+    return redirect('message_detail', message_id=message.id)

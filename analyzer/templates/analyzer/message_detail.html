@@ -41,6 +41,25 @@
     {{ message.message_content }}
 </p>
 
+<p>
+    <strong>Seconds:</strong> {{ message.seconds.count }}
+</p>
+
+{% if user.is_authenticated %}
+    <form method="post" action="/message/{{ message.id }}/second/">
+        {% csrf_token %}
+        {% if has_seconded %}
+            <button type="submit">Remove Second</button>
+        {% else %}
+            <button type="submit">Second This Message</button>
+        {% endif %}
+    </form>
+{% else %}
+    <p>
+        <a href="/accounts/login/">Login</a> to second this message.
+    </p>
+{% endif %}
+
 {% if user.is_authenticated and message.user == user %}
     <p>
         <a href="/edit/{{ message.id }}/">Edit</a> |
