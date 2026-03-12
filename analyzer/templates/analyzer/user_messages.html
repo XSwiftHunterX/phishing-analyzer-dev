@@ -1,0 +1,60 @@
+{% extends "analyzer/base.html" %}
+
+{% block title %}{{ profile_user.username }}'s Messages{% endblock %}
+
+{% block content %}
+
+<div class="mb-3">
+    <a href="/" class="btn btn-outline-secondary btn-sm">Back to Message List</a>
+</div>
+
+<h1 class="mb-4">Messages submitted by {{ profile_user.username }}</h1>
+
+{% for message in messages %}
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+
+            <h5 class="card-title">
+                <a href="/message/{{ message.id }}/">
+                    {{ message.message_type }} Message
+                </a>
+            </h5>
+
+            <p class="mb-2">
+                {% if message.classification == "Phishing" %}
+                    <span class="badge bg-danger">Phishing</span>
+                {% elif message.classification == "Legitimate" %}
+                    <span class="badge bg-success">Legitimate</span>
+                {% else %}
+                    <span class="badge bg-warning text-dark">Unsure</span>
+                {% endif %}
+
+                <span class="badge bg-secondary">
+                    Risk: {{ message.suspected_risk }}
+                </span>
+            </p>
+
+            <p>
+                {{ message.message_content|truncatechars:180 }}
+            </p>
+
+            <p class="text-muted">
+                Submitted on {{ message.submission_date|date:"F j, Y" }}
+            </p>
+
+            <p class="text-muted">
+                Likes: {{ message.likes.count }} | Comments: {{ message.comments.count }}
+            </p>
+
+        </div>
+    </div>
+
+{% empty %}
+
+    <div class="alert alert-secondary">
+        This user has not submitted any messages yet.
+    </div>
+
+{% endfor %}
+
+{% endblock %}

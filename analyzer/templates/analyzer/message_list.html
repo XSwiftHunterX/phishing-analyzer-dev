@@ -103,7 +103,9 @@
             <p class="text-muted mb-1">
                 Submitted by:
                 {% if message.user %}
-                    {{ message.user.username }}
+                    <a href="/user/{{ message.user.username }}/">
+                        {{ message.user.username }}
+                    </a>
                 {% else %}
                     Unknown
                 {% endif %}
@@ -114,7 +116,7 @@
             </p>
 
             <p class="text-muted mb-3">
-                Likes: {{ message.likes.count }}
+                Likes: {{ message.likes.count }} | Comments: {{ message.comments.count }}
             </p>
 
             <div class="d-flex gap-2 flex-wrap">

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Message, Comment
 from .forms import MessageForm, RegisterForm, CommentForm, ProfileForm
 from django.db.models import Q
+from django.contrib.auth.models import User
 
 # Create your views here.
 def register(request):
@@ -229,3 +230,15 @@ def edit_profile(request):
         form = ProfileForm(instance=request.user)
 
     return render(request, 'analyzer/edit_profile.html', {'form': form})
+
+def user_messages(request, username):
+    user = get_object_or_404(User, username=username)
+
+    messages = Message.objects.filter(user=user).order_by('-submission_date')
+
+    context = {
+        'profile_user': user,
+        'messages': messages
+    }
+
+    return render(request, 'analyzer/user_messages.html', context)
