@@ -5,7 +5,7 @@ from .forms import MessageForm, RegisterForm, CommentForm, ProfileForm
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout
 from django.contrib import messages
 
 # Create your views here.
@@ -13,8 +13,10 @@ def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect("/accounts/login/")
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Your account was created successfully. You are now logged in.")
+            return redirect("message_list")
     else:
         form = RegisterForm()
 
