@@ -5,6 +5,8 @@ from .forms import MessageForm, RegisterForm, CommentForm, ProfileForm
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.contrib.auth import logout
+from django.contrib import messages
 
 # Create your views here.
 def register(request):
@@ -44,10 +46,10 @@ def message_list(request):
 
     paginator = Paginator(messages, 10)
     page_number = request.GET.get('page')
-    messages = paginator.get_page(page_number)
+    message_page = paginator.get_page(page_number)
 
     context = {
-        'messages': messages,
+        'message_page': message_page,
         'query': query or '',
         'selected_classification': classification or '',
         'selected_suspected_risk': suspected_risk or '',
@@ -76,6 +78,7 @@ def message_detail(request, message_id):
             comment.message = message
             comment.user = request.user
             comment.save()
+            messages.success(request, "Your comment was posted successfully.")
             return redirect('message_detail', message_id=message.id)
     else:
         form = CommentForm()
@@ -97,6 +100,7 @@ def submit_message(request):
             message = form.save(commit=False)
             message.user = request.user
             message.save()
+            messages.success(request, "Your message was posted successfully.")
             return redirect('message_list')
     else:
         form = MessageForm()
@@ -116,6 +120,7 @@ def edit_message(request, message_id):
             updated_message = form.save(commit=False)
             updated_message.user = request.user
             updated_message.save()
+            messages.success(request, "Your message was updated successfully.")
             return redirect('message_list')
     else:
         form = MessageForm(instance=message)
@@ -131,6 +136,7 @@ def delete_message(request, message_id):
 
     if request.method == 'POST':
         message.delete()
+        messages.success(request, "Your message was deleted successfully.")
         return redirect('message_list')
 
     return render(request, 'analyzer/delete_message.html', {'message': message})
@@ -149,6 +155,7 @@ def edit_comment(request, comment_id):
             updated_comment.user = request.user
             updated_comment.message = comment.message
             updated_comment.save()
+            messages.success(request, "Your comment was updated successfully.")
             return redirect('message_detail', message_id=comment.message.id)
     else:
         form = CommentForm(instance=comment)
@@ -165,6 +172,7 @@ def delete_comment(request, comment_id):
     if request.method == 'POST':
         message_id = comment.message.id
         comment.delete()
+        messages.success(request, "Your comment was deleted successfully.")
         return redirect('message_detail', message_id=message_id)
 
     return render(request, 'analyzer/delete_comment.html', {'comment': comment})
@@ -230,6 +238,7 @@ def edit_profile(request):
         form = ProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
+            messages.success(request, "Your profile was updated successfully.")
             return redirect('profile')
     else:
         form = ProfileForm(instance=request.user)
@@ -239,11 +248,22 @@ def edit_profile(request):
 def user_messages(request, username):
     user = get_object_or_404(User, username=username)
 
-    messages = Message.objects.filter(user=user).order_by('-submission_date')
+    user_posts = Message.objects.filter(user=user).order_by('-submission_date')
 
     context = {
         'profile_user': user,
-        'messages': messages
+        'user_posts': user_posts
     }
 
     return render(request, 'analyzer/user_messages.html', context)
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()
+        messages.success(request, "Your account was deleted successfully.")
+        return redirect('message_list')
+
+    return render(request, 'analyzer/delete_account.html')

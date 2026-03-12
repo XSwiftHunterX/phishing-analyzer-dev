@@ -64,7 +64,7 @@
     </div>
 </div>
 
-{% for message in messages %}
+{% for message in message_page %}
     <div class="card shadow-sm mb-3 message-card
     {% if message.classification == 'Phishing' %}border-danger
     {% elif message.classification == 'Legitimate' %}border-success
@@ -139,11 +139,11 @@
     </div>
 {% endfor %}
 
-{% if messages.has_other_pages %}
+{% if message_page.has_other_pages %}
 <nav aria-label="Message pagination" class="mt-4">
 <ul class="pagination justify-content-center">
 
-    {% if messages.has_previous %}
+    {% if message_page.has_previous %}
         <li class="page-item">
             <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_suspected_risk %}&suspected_risk={{ selected_suspected_risk }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}">
                 <i class="bi bi-chevron-bar-left"></i> First
@@ -151,16 +151,16 @@
         </li>
 
         <li class="page-item">
-            <a class="page-link" href="?page={{ messages.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_suspected_risk %}&suspected_risk={{ selected_suspected_risk }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}">
+            <a class="page-link" href="?page={{ message_page.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_suspected_risk %}&suspected_risk={{ selected_suspected_risk }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}">
                 <i class="bi bi-chevron-left"></i> Previous
             </a>
         </li>
     {% endif %}
 
-    {% for num in messages.paginator.page_range %}
-        {% if num >= messages.number|add:'-2' and num <= messages.number|add:'2' %}
+    {% for num in message_page.paginator.page_range %}
+        {% if num >= message_page.number|add:'-2' and num <= message_page.number|add:'2' %}
 
-            {% if messages.number == num %}
+            {% if message_page.number == num %}
                 <li class="page-item active">
                     <span class="page-link">{{ num }}</span>
                 </li>
@@ -175,15 +175,15 @@
         {% endif %}
     {% endfor %}
 
-    {% if messages.has_next %}
+    {% if message_page.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ messages.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_suspected_risk %}&suspected_risk={{ selected_suspected_risk }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}">
+            <a class="page-link" href="?page={{ message_page.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_suspected_risk %}&suspected_risk={{ selected_suspected_risk }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}">
                 Next <i class="bi bi-chevron-right"></i>
             </a>
         </li>
 
         <li class="page-item">
-            <a class="page-link" href="?page={{ messages.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_suspected_risk %}&suspected_risk={{ selected_suspected_risk }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}">
+            <a class="page-link" href="?page={{ message_page.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_suspected_risk %}&suspected_risk={{ selected_suspected_risk }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}">
                 Last <i class="bi bi-chevron-bar-right"></i>
             </a>
         </li>
