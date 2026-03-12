@@ -65,7 +65,11 @@
 </div>
 
 {% for message in messages %}
-    <div class="card shadow-sm mb-3">
+    <div class="card shadow-sm mb-3 message-card
+    {% if message.classification == 'Phishing' %}border-danger
+    {% elif message.classification == 'Legitimate' %}border-success
+    {% else %}border-warning
+    {% endif %}">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                 <div>
