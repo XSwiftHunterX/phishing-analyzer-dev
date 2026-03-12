@@ -1,19 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Profile</title>
-</head>
-<body>
+{% extends "analyzer/base.html" %}
 
-<h1>Edit Profile</h1>
+{% block title %}Edit Profile{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Profile</button>
-</form>
+{% block content %}
 
-<p><a href="/profile/">Back to Profile</a></p>
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h3 mb-3">Edit Profile</h1>
 
-</body>
-</html>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
+                    <a href="/profile/" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

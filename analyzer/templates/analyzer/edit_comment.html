@@ -1,19 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Comment</title>
-</head>
-<body>
+{% extends "analyzer/base.html" %}
 
-<h1>Edit Comment</h1>
+{% block title %}Edit Comment{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Changes</button>
-</form>
+{% block content %}
 
-<p><a href="/message/{{ comment.message.id }}/">Back to Message</a></p>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h3 mb-3">Edit Comment</h1>
 
-</body>
-</html>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="/message/{{ comment.message.id }}/" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

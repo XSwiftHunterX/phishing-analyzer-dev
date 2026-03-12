@@ -1,117 +1,136 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Phishing Message Analyzer</title>
-</head>
-<body>
+{% extends "analyzer/base.html" %}
 
-<h1>Submitted Messages</h1>
+{% block title %}Home - Phishing Message Analyzer{% endblock %}
 
-{% if user.is_authenticated %}
-    <p>Logged in as <strong>{{ user.username }}</strong></p>
-    <p>
-        <a href="/submit/">Submit a New Message</a> |
-        <a href="/profile/">My Profile</a>
-    </p>
-    <form action="/accounts/logout/" method="post">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
-{% else %}
-    <p>
-        <strong>Login to contribute.</strong><br>
-        Users must be logged in to submit phishing messages.
-    </p>
+{% block content %}
 
-    <p>
-        <a href="/accounts/login/">Login</a> |
-        <a href="/register/">Create Account</a>
+<div class="mb-4">
+    <h1 class="fw-bold mb-2">Phishing Message Analyzer</h1>
+    <p class="text-muted mb-0">
+        Browse suspicious email and SMS messages, review community feedback, and help identify possible phishing attempts.
     </p>
+</div>
+
+{% if not user.is_authenticated %}
+    <div class="alert alert-info shadow-sm">
+        <strong>Want to contribute?</strong>
+        Log in or create an account to submit messages, comment, and like posts.
+    </div>
 {% endif %}
 
-<form method="get">
-    <p>
-        <label for="q">Search Message Content:</label>
-        <input type="text" id="q" name="q" value="{{ query }}">
-    </p>
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Search and Filter Messages</h5>
 
-    <p>
-        <label for="classification">Classification:</label>
-        <select id="classification" name="classification">
-            <option value="">All</option>
-            <option value="Phishing" {% if selected_classification == "Phishing" %}selected{% endif %}>Phishing</option>
-            <option value="Legitimate" {% if selected_classification == "Legitimate" %}selected{% endif %}>Legitimate</option>
-            <option value="Unsure" {% if selected_classification == "Unsure" %}selected{% endif %}>Unsure</option>
-        </select>
-    </p>
+        <form method="get" class="row g-3">
+            <div class="col-12">
+                <label for="q" class="form-label">Search Message Content</label>
+                <input type="text" id="q" name="q" value="{{ query }}" class="form-control">
+            </div>
 
-    <p>
-        <label for="suspected_risk">Suspected Risk:</label>
-        <select id="suspected_risk" name="suspected_risk">
-            <option value="">All</option>
-            <option value="Low" {% if selected_suspected_risk == "Low" %}selected{% endif %}>Low</option>
-            <option value="Medium" {% if selected_suspected_risk == "Medium" %}selected{% endif %}>Medium</option>
-            <option value="High" {% if selected_suspected_risk == "High" %}selected{% endif %}>High</option>
-        </select>
-    </p>
+            <div class="col-md-4">
+                <label for="classification" class="form-label">Classification</label>
+                <select id="classification" name="classification" class="form-select">
+                    <option value="">All</option>
+                    <option value="Phishing" {% if selected_classification == "Phishing" %}selected{% endif %}>Phishing</option>
+                    <option value="Legitimate" {% if selected_classification == "Legitimate" %}selected{% endif %}>Legitimate</option>
+                    <option value="Unsure" {% if selected_classification == "Unsure" %}selected{% endif %}>Unsure</option>
+                </select>
+            </div>
 
-    <p>
-        <label for="message_type">Message Type:</label>
-        <select id="message_type" name="message_type">
-            <option value="">All</option>
-            <option value="Email" {% if selected_message_type == "Email" %}selected{% endif %}>Email</option>
-            <option value="SMS" {% if selected_message_type == "SMS" %}selected{% endif %}>SMS</option>
-        </select>
-    </p>
+            <div class="col-md-4">
+                <label for="suspected_risk" class="form-label">Suspected Risk</label>
+                <select id="suspected_risk" name="suspected_risk" class="form-select">
+                    <option value="">All</option>
+                    <option value="Low" {% if selected_suspected_risk == "Low" %}selected{% endif %}>Low</option>
+                    <option value="Medium" {% if selected_suspected_risk == "Medium" %}selected{% endif %}>Medium</option>
+                    <option value="High" {% if selected_suspected_risk == "High" %}selected{% endif %}>High</option>
+                </select>
+            </div>
 
-    <button type="submit">Search / Filter</button>
-</form>
+            <div class="col-md-4">
+                <label for="message_type" class="form-label">Message Type</label>
+                <select id="message_type" name="message_type" class="form-select">
+                    <option value="">All</option>
+                    <option value="Email" {% if selected_message_type == "Email" %}selected{% endif %}>Email</option>
+                    <option value="SMS" {% if selected_message_type == "SMS" %}selected{% endif %}>SMS</option>
+                </select>
+            </div>
 
-<hr>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-<ul>
 {% for message in messages %}
-    <li>
-        <a href="/message/{{ message.id }}/">
-            <strong>{{ message.message_type }}</strong>
-        </a> -
-        {{ message.classification }} -
-        Suspected Risk: {{ message.suspected_risk }}
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                    <h5 class="card-title mb-1">
+                        <a href="/message/{{ message.id }}/" class="text-decoration-none">
+                            {{ message.message_type }} Message
+                        </a>
+                    </h5>
+
+                    <div class="mb-2">
+                        {% if message.classification == "Phishing" %}
+                            <span class="badge bg-danger">Phishing</span>
+                        {% elif message.classification == "Legitimate" %}
+                            <span class="badge bg-success">Legitimate</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Unsure</span>
+                        {% endif %}
+
+                        <span class="badge bg-secondary">Suspected Risk: {{ message.suspected_risk }}</span>
+                        <span class="badge bg-dark">{{ message.message_type }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="card-text mb-2">
+                {{ message.message_content|truncatechars:180 }}
+            </p>
+
             {% if message.sender %}
-                <p class="text-muted mb-1">
-                    Sender: {{ message.sender }}
+                <p class="text-muted mb-2">
+                    <strong>Sender:</strong> {{ message.sender }}
+                </p>
             {% endif %}
-        <br>
-        {{ message.message_content }}
-        <br>
-        <em>
-            Submitted by:
-            {% if message.user %}
-                {{ message.user.username }}
-            {% else %}
-                Unknown
-            {% endif %}
-        </em>
-        <br>
-        <em>
-            Submitted on: {{ message.submission_date|date:"F j, Y \a\t g:i A" }}
-        </em>
 
-        <br>
-        <em>
-            Likes: {{ message.seconds.count }}
-        </em>
+            <p class="text-muted mb-1">
+                Submitted by:
+                {% if message.user %}
+                    {{ message.user.username }}
+                {% else %}
+                    Unknown
+                {% endif %}
+            </p>
 
-        {% if user.is_authenticated and message.user == user %}
-            <br>
-            <a href="/edit/{{ message.id }}/">Edit</a> |
-            <a href="/delete/{{ message.id }}/">Delete</a>
-        {% endif %}
-    </li>
+            <p class="text-muted mb-1">
+                Submitted on: {{ message.submission_date|date:"F j, Y \a\t g:i A" }}
+            </p>
+
+            <p class="text-muted mb-3">
+                Likes: {{ message.seconds.count }}
+            </p>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/message/{{ message.id }}/" class="btn btn-primary btn-sm">View Details</a>
+
+                {% if user.is_authenticated and message.user == user %}
+                    <a href="/edit/{{ message.id }}/" class="btn btn-outline-primary btn-sm">Edit</a>
+                    <a href="/delete/{{ message.id }}/" class="btn btn-outline-danger btn-sm">Delete</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% empty %}
-    <li>No messages found.</li>
+    <div class="alert alert-secondary shadow-sm">
+        No messages found.
+    </div>
 {% endfor %}
-</ul>
 
-</body>
-</html>
+{% endblock %}

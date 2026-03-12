@@ -1,152 +1,148 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Message Detail</title>
-</head>
-<body>
+{% extends "analyzer/base.html" %}
 
-<h1>Message Detail</h1>
+{% block title %}Message Detail{% endblock %}
 
-<p>
-    <a href="/">Back to Message List</a>
+{% block content %}
+
+<div class="mb-3">
+    <a href="/" class="btn btn-outline-secondary btn-sm">Back to Message List</a>
     {% if user.is_authenticated %}
-        | <a href="/profile/">My Profile</a>
+        <a href="/profile/" class="btn btn-outline-secondary btn-sm">My Profile</a>
     {% endif %}
-</p>
+</div>
 
-<hr>
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h1 class="card-title h3 mb-3">Message Detail</h1>
 
-<p>
-    <strong>Message Type:</strong> {{ message.message_type }}
-</p>
+        <div class="mb-3">
+            {% if message.classification == "Phishing" %}
+                <span class="badge bg-danger">Phishing</span>
+            {% elif message.classification == "Legitimate" %}
+                <span class="badge bg-success">Legitimate</span>
+            {% else %}
+                <span class="badge bg-warning text-dark">Unsure</span>
+            {% endif %}
+            <span class="badge bg-secondary">Suspected Risk: {{ message.suspected_risk }}</span>
+            <span class="badge bg-dark">{{ message.message_type }}</span>
+        </div>
 
-<p>
-    <strong>Sender:</strong>
-    {% if message.sender %}
-        {{ message.sender }}
-    {% else %}
-        Not provided
-    {% endif %}
-</p>
-
-<p>
-    <strong>Classification:</strong> {{ message.classification }}
-</p>
-
-<p>
-    <strong>Suspected Risk:</strong> {{ message.suspected_risk }}
-</p>
-
-<p>
-    <strong>Submitted By:</strong>
-    {% if message.user %}
-        {{ message.user.username }}
-    {% else %}
-        Unknown
-    {% endif %}
-</p>
-
-<p>
-    <strong>Submitted On:</strong> {{ message.submission_date|date:"F j, Y \a\t g:i A" }}
-</p>
-
-<p>
-    <strong>Message Content:</strong><br>
-    {{ message.message_content }}
-</p>
-
-<p>
-    <strong>Additional Details:</strong><br>
-    {% if message.additional_details %}
-        {{ message.additional_details }}
-    {% else %}
-        No additional details provided.
-    {% endif %}
-</p>
-
-<p>
-    <strong>Likes:</strong> {{ message.seconds.count }}
-</p>
-
-{% if user.is_authenticated %}
-    <form method="post" action="/message/{{ message.id }}/second/">
-        {% csrf_token %}
-        {% if has_seconded %}
-            <button type="submit">Unlike</button>
-        {% else %}
-            <button type="submit">Like This Message</button>
-        {% endif %}
-    </form>
-{% else %}
-    <p>
-        <a href="/accounts/login/">Login</a> to like this message.
-    </p>
-{% endif %}
-
-{% if user.is_authenticated and message.user == user %}
-    <p>
-        <a href="/edit/{{ message.id }}/">Edit</a> |
-        <a href="/delete/{{ message.id }}/">Delete</a>
-    </p>
-{% endif %}
-
-<hr>
-
-<h2>Comments</h2>
-
-{% if user.is_authenticated %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Post Comment</button>
-    </form>
-{% else %}
-    <p>
-        <a href="/accounts/login/">Login</a> or
-        <a href="/register/">create an account</a> to comment.
-    </p>
-{% endif %}
-
-<hr>
-
-{% for comment in comments %}
-    <div>
-        <p>
-            <strong>{{ comment.user.username }}</strong>
-            <em>on {{ comment.created_at|date:"F j, Y \a\t g:i A" }}</em>
+        <p><strong>Sender:</strong>
+            {% if message.sender %}
+                {{ message.sender }}
+            {% else %}
+                Not provided
+            {% endif %}
         </p>
-        <p>{{ comment.content }}</p>
 
-        <p>
-            <em>Likes: {{ comment.likes.count }}</em>
+        <p><strong>Submitted By:</strong>
+            {% if message.user %}
+                {{ message.user.username }}
+            {% else %}
+                Unknown
+            {% endif %}
         </p>
+
+        <p><strong>Submitted On:</strong> {{ message.submission_date|date:"F j, Y \a\t g:i A" }}</p>
+
+        <hr>
+
+        <p><strong>Message Content:</strong></p>
+        <p>{{ message.message_content }}</p>
+
+        <p><strong>Additional Details:</strong></p>
+        <p>
+            {% if message.additional_details %}
+                {{ message.additional_details }}
+            {% else %}
+                No additional details provided.
+            {% endif %}
+        </p>
+
+        <hr>
+
+        <p class="mb-2"><strong>Likes:</strong> {{ message.seconds.count }}</p>
 
         {% if user.is_authenticated %}
-            <form method="post" action="/comment/{{ comment.id }}/like/">
+            <form method="post" action="/message/{{ message.id }}/second/" class="mb-3">
                 {% csrf_token %}
-                {% if comment.has_liked %}
-                    <button type="submit">Unlike</button>
+                {% if has_seconded %}
+                    <button type="submit" class="btn btn-outline-warning btn-sm">Unlike</button>
                 {% else %}
-                    <button type="submit">Like</button>
+                    <button type="submit" class="btn btn-warning btn-sm">Like This Message</button>
                 {% endif %}
             </form>
         {% else %}
-            <p>
-                <a href="/accounts/login/">Login</a> to like this comment.
-            </p>
+            <div class="alert alert-info">
+                <a href="/accounts/login/">Login</a> to like this message.
+            </div>
         {% endif %}
 
-        {% if user.is_authenticated and comment.user == user %}
-            <p>
-                <a href="/comment/edit/{{ comment.id }}/">Edit</a> |
-                <a href="/comment/delete/{{ comment.id }}/">Delete</a>
-            </p>
+        {% if user.is_authenticated and message.user == user %}
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/edit/{{ message.id }}/" class="btn btn-outline-primary btn-sm">Edit</a>
+                <a href="/delete/{{ message.id }}/" class="btn btn-outline-danger btn-sm">Delete</a>
+            </div>
         {% endif %}
     </div>
-    <hr>
-{% empty %}
-    <p>No comments yet.</p>
-{% endfor %}
+</div>
 
-</body>
-</html>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h4 mb-3">Comments</h2>
+
+        {% if user.is_authenticated %}
+            <form method="post" class="mb-4">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Post Comment</button>
+            </form>
+        {% else %}
+            <div class="alert alert-info">
+                <a href="/accounts/login/">Login</a> or
+                <a href="/register/">create an account</a> to comment.
+            </div>
+        {% endif %}
+
+        {% for comment in comments %}
+            <div class="border rounded p-3 mb-3 bg-light">
+                <p class="mb-1">
+                    <strong>{{ comment.user.username }}</strong>
+                    <span class="text-muted">on {{ comment.created_at|date:"F j, Y \a\t g:i A" }}</span>
+                </p>
+
+                <p class="mb-2">{{ comment.content }}</p>
+
+                <p class="text-muted mb-2">Likes: {{ comment.likes.count }}</p>
+
+                {% if user.is_authenticated %}
+                    <form method="post" action="/comment/{{ comment.id }}/like/" class="mb-2">
+                        {% csrf_token %}
+                        {% if comment.has_liked %}
+                            <button type="submit" class="btn btn-outline-warning btn-sm">Unlike</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-warning btn-sm">Like</button>
+                        {% endif %}
+                    </form>
+                {% else %}
+                    <p class="small mb-2">
+                        <a href="/accounts/login/">Login</a> to like this comment.
+                    </p>
+                {% endif %}
+
+                {% if user.is_authenticated and comment.user == user %}
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="/comment/edit/{{ comment.id }}/" class="btn btn-outline-primary btn-sm">Edit</a>
+                        <a href="/comment/delete/{{ comment.id }}/" class="btn btn-outline-danger btn-sm">Delete</a>
+                    </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <div class="alert alert-secondary mb-0">
+                No comments yet.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,31 +1,61 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Profile</title>
-</head>
-<body>
+{% extends "analyzer/base.html" %}
 
-<h1>My Profile</h1>
+{% block title %}My Profile{% endblock %}
 
-<p><a href="/">Back to Message List</a></p>
+{% block content %}
 
-<p><strong>Username:</strong> {{ profile_user.username }}</p>
-<p><strong>First Name:</strong> {{ profile_user.first_name|default:"Not provided" }}</p>
-<p><strong>Last Name:</strong> {{ profile_user.last_name|default:"Not provided" }}</p>
-<p><strong>Email:</strong> {{ profile_user.email|default:"Not provided" }}</p>
+<div class="mb-3">
+    <a href="/" class="btn btn-outline-secondary btn-sm">Back to Message List</a>
+</div>
 
-<hr>
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h1 class="h3 mb-3">My Profile</h1>
 
-<h2>Profile Stats</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Username:</strong> {{ profile_user.username }}</p>
+                <p><strong>First Name:</strong> {{ profile_user.first_name|default:"Not provided" }}</p>
+                <p><strong>Last Name:</strong> {{ profile_user.last_name|default:"Not provided" }}</p>
+                <p><strong>Email:</strong> {{ profile_user.email|default:"Not provided" }}</p>
+            </div>
+        </div>
 
-<p><strong>Messages Submitted:</strong> {{ message_count }}</p>
-<p><strong>Comments Posted:</strong> {{ comment_count }}</p>
-<p><strong>Message Likes Received:</strong> {{ message_likes_received }}</p>
-<p><strong>Comment Likes Received:</strong> {{ comment_likes_received }}</p>
+        <a href="/profile/edit/" class="btn btn-primary">Edit Profile</a>
+    </div>
+</div>
 
-<p>
-    <a href="/profile/edit/">Edit Profile</a>
-</p>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h4 mb-3">Profile Stats</h2>
 
-</body>
-</html>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="border rounded p-3 bg-light h-100">
+                    <strong>Messages Submitted</strong>
+                    <div class="fs-4">{{ message_count }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="border rounded p-3 bg-light h-100">
+                    <strong>Comments Posted</strong>
+                    <div class="fs-4">{{ comment_count }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="border rounded p-3 bg-light h-100">
+                    <strong>Message Likes Received</strong>
+                    <div class="fs-4">{{ message_likes_received }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="border rounded p-3 bg-light h-100">
+                    <strong>Comment Likes Received</strong>
+                    <div class="fs-4">{{ comment_likes_received }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

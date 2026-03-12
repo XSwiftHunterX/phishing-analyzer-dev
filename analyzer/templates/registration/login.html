@@ -1,24 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
+{% extends "analyzer/base.html" %}
 
-<h1>Login</h1>
+{% block title %}Login{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-</form>
+{% block content %}
 
-<p>
-    Don't have an account?
-    <a href="/register/">Click here to sign up</a>
-</p>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h3 mb-3">Login</h1>
 
-<p><a href="/">Back to Message List</a></p>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
 
-</body>
-</html>
+                <hr>
+
+                <p class="mb-0">
+                    Don't have an account?
+                    <a href="/register/">Click here to sign up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
