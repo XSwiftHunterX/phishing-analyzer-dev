@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Message, Comment
 from .forms import MessageForm, RegisterForm, CommentForm, ProfileForm
+from django.db.models import Q
 
 # Create your views here.
 def register(request):
@@ -24,7 +25,11 @@ def message_list(request):
     message_type = request.GET.get('message_type')
 
     if query:
-        messages = messages.filter(message_content__icontains=query)
+        messages = messages.filter(
+            Q(message_content__icontains=query) |
+            Q(sender__icontains=query) |
+            Q(user__username__icontains=query)
+        )
 
     if classification:
         messages = messages.filter(classification=classification)
