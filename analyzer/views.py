@@ -123,7 +123,7 @@ def edit_message(request, message_id):
             updated_message.user = request.user
             updated_message.save()
             messages.success(request, "Your message was updated successfully.")
-            return redirect('message_list')
+            return redirect('message_detail', message_id=message.id)
     else:
         form = MessageForm(instance=message)
 
