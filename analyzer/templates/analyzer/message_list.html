@@ -77,6 +77,10 @@
         </a> -
         {{ message.classification }} -
         Suspected Risk: {{ message.suspected_risk }}
+            {% if message.sender %}
+                <p class="text-muted mb-1">
+                    Sender: {{ message.sender }}
+            {% endif %}
         <br>
         {{ message.message_content }}
         <br>

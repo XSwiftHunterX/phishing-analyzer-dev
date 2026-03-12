@@ -21,6 +21,15 @@
 </p>
 
 <p>
+    <strong>Sender:</strong>
+    {% if message.sender %}
+        {{ message.sender }}
+    {% else %}
+        Not provided
+    {% endif %}
+</p>
+
+<p>
     <strong>Classification:</strong> {{ message.classification }}
 </p>
 
@@ -44,6 +53,15 @@
 <p>
     <strong>Message Content:</strong><br>
     {{ message.message_content }}
+</p>
+
+<p>
+    <strong>Additional Details:</strong><br>
+    {% if message.additional_details %}
+        {{ message.additional_details }}
+    {% else %}
+        No additional details provided.
+    {% endif %}
 </p>
 
 <p>

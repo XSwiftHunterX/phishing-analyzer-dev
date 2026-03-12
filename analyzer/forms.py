@@ -7,7 +7,14 @@ from django.contrib.auth.models import User
 class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
-        fields = ['message_content', 'message_type', 'classification', 'suspected_risk']
+        fields = [
+            'message_content',
+            'message_type',
+            'sender',
+            'additional_details',
+            'classification',
+            'suspected_risk',
+        ]
 
 class RegisterForm(UserCreationForm):
     class Meta:
