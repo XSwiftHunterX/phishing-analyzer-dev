@@ -4,6 +4,7 @@ from .models import Message, Comment
 from .forms import MessageForm, RegisterForm, CommentForm, ProfileForm
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 
 # Create your views here.
 def register(request):
@@ -40,6 +41,10 @@ def message_list(request):
 
     if message_type:
         messages = messages.filter(message_type=message_type)
+
+    paginator = Paginator(messages, 10)
+    page_number = request.GET.get('page')
+    messages = paginator.get_page(page_number)
 
     context = {
         'messages': messages,
