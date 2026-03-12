@@ -14,7 +14,7 @@
                     {% csrf_token %}
                     {{ form.as_p }}
                     <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <a href="/" class="btn btn-outline-secondary">Cancel</a>
+                    <a href="/message/{{ message.id }}/" class="btn btn-outline-secondary">Cancel</a>
                 </form>
             </div>
         </div>
