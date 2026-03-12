@@ -54,9 +54,9 @@ def message_detail(request, message_id):
     message = get_object_or_404(Message, id=message_id)
     comments = message.comments.all().order_by('-created_at')
 
-    has_seconded = False
+    has_liked_message = False
     if request.user.is_authenticated:
-        has_seconded = request.user in message.seconds.all()
+        has_liked_message = request.user in message.likes.all()
 
     for comment in comments:
         comment.has_liked = request.user.is_authenticated and request.user in comment.likes.all()
@@ -78,7 +78,7 @@ def message_detail(request, message_id):
         'message': message,
         'comments': comments,
         'form': form,
-        'has_seconded': has_seconded,
+        'has_liked_message': has_liked_message,
     }
 
     return render(request, 'analyzer/message_detail.html', context)
@@ -164,16 +164,16 @@ def delete_comment(request, comment_id):
     return render(request, 'analyzer/delete_comment.html', {'comment': comment})
 
 @login_required
-def toggle_second(request, message_id):
+def toggle_message_like(request, message_id):
     if request.method != 'POST':
         return redirect('message_detail', message_id=message_id)
 
     message = get_object_or_404(Message, id=message_id)
 
-    if request.user in message.seconds.all():
-        message.seconds.remove(request.user)
+    if request.user in message.likes.all():
+        message.likes.remove(request.user)
     else:
-        message.seconds.add(request.user)
+        message.likes.add(request.user)
 
     return redirect('message_detail', message_id=message.id)
 
@@ -201,7 +201,7 @@ def profile_view(request):
     message_likes_received = 0
     user_messages = Message.objects.filter(user=profile_user)
     for message in user_messages:
-        message_likes_received += message.seconds.count()
+        message_likes_received += message.likes.count()
 
     comment_likes_received = 0
     user_comments = Comment.objects.filter(user=profile_user)

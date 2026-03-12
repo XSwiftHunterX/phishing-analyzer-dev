@@ -28,7 +28,7 @@ class Message(models.Model):
     classification = models.CharField(max_length=20, choices=CLASSIFICATIONS)
     suspected_risk = models.CharField(max_length=10, choices=SUSPECTED_RISK_LEVELS)
     submission_date = models.DateTimeField(auto_now_add=True)
-    seconds = models.ManyToManyField(User, related_name='seconded_messages', blank=True)
+    likes = models.ManyToManyField(User, related_name='liked_messages', blank=True)
 
     def __str__(self):
         return f"{self.message_type} - {self.classification} - {self.suspected_risk}"

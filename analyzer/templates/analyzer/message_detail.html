@@ -61,12 +61,12 @@
 
         <hr>
 
-        <p class="mb-2"><strong>Likes:</strong> {{ message.seconds.count }}</p>
+        <p class="mb-2"><strong>Likes:</strong> {{ message.likes.count }}</p>
 
         {% if user.is_authenticated %}
-            <form method="post" action="/message/{{ message.id }}/second/" class="mb-3">
+            <form method="post" action="/message/{{ message.id }}/like/" class="mb-3">
                 {% csrf_token %}
-                {% if has_seconded %}
+                {% if has_liked_message %}
                     <button type="submit" class="btn btn-outline-warning btn-sm">Unlike</button>
                 {% else %}
                     <button type="submit" class="btn btn-warning btn-sm">Like This Message</button>
