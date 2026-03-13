@@ -15,7 +15,7 @@
                     </p>
                 </div>
 
-                <form method="post" novalidate>
+                <form method="post" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
 
                     {% if form.non_field_errors %}
@@ -84,6 +84,28 @@
                         </div>
                         {% if form.additional_details.errors %}
                             <div class="text-danger small mt-1">{{ form.additional_details.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.screenshot.id_for_label }}" class="form-label">Screenshot (Optional)</label>
+                        {{ form.screenshot }}
+
+                        <div class="form-text">
+                            Upload or replace a screenshot of the message if available.
+                        </div>
+
+                        {% if message.screenshot %}
+                            <div class="mt-2">
+                                <strong>Current Screenshot:</strong><br>
+                                <img src="{{ message.screenshot.url }}"
+                                    class="img-fluid rounded border shadow-sm mt-2"
+                                    style="max-width:400px;">
+                            </div>
+                        {% endif %}
+
+                        {% if form.screenshot.errors %}
+                            <div class="text-danger small mt-1">{{ form.screenshot.errors }}</div>
                         {% endif %}
                     </div>
 

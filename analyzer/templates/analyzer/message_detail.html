@@ -103,6 +103,17 @@
             </div>
         </div>
 
+        {% if message.screenshot %}
+            <div class="mb-4">
+                <h2 class="h5 mb-2">Screenshot</h2>
+                <div class="border rounded p-3 bg-light">
+                    <img src="{{ message.screenshot.url }}"
+                        alt="Uploaded message screenshot"
+                        class="img-fluid rounded border shadow-sm">
+                </div>
+            </div>
+        {% endif %}
+
         <div class="mb-4">
             <h2 class="h5 mb-2">Additional Details</h2>
             <div class="border rounded p-3 bg-light">

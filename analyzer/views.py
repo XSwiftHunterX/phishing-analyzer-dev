@@ -111,7 +111,7 @@ def message_detail(request, message_id):
 @login_required
 def submit_message(request):
     if request.method == 'POST':
-        form = MessageForm(request.POST)
+        form = MessageForm(request.POST, request.FILES)
         if form.is_valid():
             message = form.save(commit=False)
             message.user = request.user
@@ -131,7 +131,7 @@ def edit_message(request, message_id):
         return redirect('message_list')
 
     if request.method == 'POST':
-        form = MessageForm(request.POST, instance=message)
+        form = MessageForm(request.POST, request.FILES, instance=message)
         if form.is_valid():
             updated_message = form.save(commit=False)
             updated_message.user = request.user

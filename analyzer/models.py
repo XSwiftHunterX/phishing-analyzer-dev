@@ -25,6 +25,7 @@ class Message(models.Model):
     message_type = models.CharField(max_length=10, choices=MESSAGE_TYPES)
     sender = models.CharField(max_length=255, blank=True)
     additional_details = models.TextField(blank=True)
+    screenshot = models.ImageField(upload_to='message_screenshots/', blank=True, null=True)
     classification = models.CharField(max_length=20, choices=CLASSIFICATIONS)
     suspected_risk = models.CharField(max_length=10, choices=SUSPECTED_RISK_LEVELS)
     submission_date = models.DateTimeField(auto_now_add=True)

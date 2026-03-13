@@ -72,6 +72,15 @@
                 </div>
             </div>
 
+            {% if message.screenshot %}
+                <div class="mb-3">
+                    <img src="{{ message.screenshot.url }}"
+                        alt="Message screenshot thumbnail"
+                        class="img-fluid rounded border shadow-sm"
+                        style="max-height: 220px; object-fit: cover;">
+                </div>
+            {% endif %}
+
             <p class="card-text mb-2">
                 {{ message.message_content|truncatechars:180 }}
             </p>

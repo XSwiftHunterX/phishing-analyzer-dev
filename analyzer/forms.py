@@ -12,6 +12,7 @@ class MessageForm(forms.ModelForm):
             'message_type',
             'sender',
             'additional_details',
+            'screenshot',
             'classification',
             'suspected_risk',
         ]
@@ -23,6 +24,9 @@ class MessageForm(forms.ModelForm):
             }),
             'classification': forms.Select(attrs={'class': 'form-select'}),
             'suspected_risk': forms.Select(attrs={'class': 'form-select'}),
+            'screenshot': forms.ClearableFileInput(attrs={
+                'class': 'form-control'
+            }),
             'message_content': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 6,
