@@ -12,7 +12,7 @@
 
 <div class="card shadow-sm mb-4">
     <div class="card-body">
-        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
             <div>
                 <h1 class="h3 mb-1">My Profile</h1>
                 <p class="text-muted mb-0">
@@ -29,41 +29,66 @@
             </div>
         </div>
 
-        <div class="row g-3">
-            <div class="col-md-6">
-                <div class="border rounded p-3 bg-light h-100">
-                    <div class="text-muted small mb-1">Username</div>
-                    <div class="fw-semibold">{{ profile_user.username }}</div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="border rounded p-3 bg-light h-100">
-                    <div class="text-muted small mb-1">Email</div>
-                    <div class="fw-semibold">
-                        {{ profile_user.email|default:"Not provided" }}
+        <div class="row g-4 align-items-start">
+            <div class="col-md-4 text-center">
+                {% if profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="Profile image"
+                         class="img-fluid rounded-circle border shadow-sm mb-3"
+                         style="width: 180px; height: 180px; object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle border bg-light d-inline-flex align-items-center justify-content-center shadow-sm mb-3"
+                         style="width: 180px; height: 180px;">
+                        <i class="bi bi-person fs-1 text-muted"></i>
                     </div>
-                </div>
+                {% endif %}
             </div>
 
-            <div class="col-md-6">
-                <div class="border rounded p-3 bg-light h-100">
-                    <div class="text-muted small mb-1">First Name</div>
-                    <div class="fw-semibold">
-                        {{ profile_user.first_name|default:"Not provided" }}
+            <div class="col-md-8">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light h-100">
+                            <div class="text-muted small mb-1">Username</div>
+                            <div class="fw-semibold">{{ profile_user.username }}</div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="col-md-6">
-                <div class="border rounded p-3 bg-light h-100">
-                    <div class="text-muted small mb-1">Last Name</div>
-                    <div class="fw-semibold">
-                        {{ profile_user.last_name|default:"Not provided" }}
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light h-100">
+                            <div class="text-muted small mb-1">Email</div>
+                            <div class="fw-semibold">{{ profile_user.email|default:"Not provided" }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light h-100">
+                            <div class="text-muted small mb-1">First Name</div>
+                            <div class="fw-semibold">{{ profile_user.first_name|default:"Not provided" }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 bg-light h-100">
+                            <div class="text-muted small mb-1">Last Name</div>
+                            <div class="fw-semibold">{{ profile_user.last_name|default:"Not provided" }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="border rounded p-3 bg-light">
+                            <div class="text-muted small mb-1">Bio</div>
+                            <div class="fw-semibold">
+                                {% if profile.bio %}
+                                    {{ profile.bio }}
+                                {% else %}
+                                    <span class="text-muted">No bio provided yet.</span>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -74,6 +99,9 @@
                 <h2 class="h4 mb-1">Profile Stats</h2>
                 <p class="text-muted mb-0">A snapshot of your activity on the platform.</p>
             </div>
+            <a href="{% url 'user_messages' profile_user.username %}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-collection"></i> View My Messages
+            </a>
         </div>
 
         <div class="row g-3">

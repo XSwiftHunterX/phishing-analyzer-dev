@@ -1,5 +1,5 @@
 from django import forms
-from .models import Message, Comment
+from .models import Message, Comment, UserProfile
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
@@ -96,6 +96,21 @@ class ProfileForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your email address'
+            }),
+        }
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['bio', 'profile_image']
+        widgets = {
+            'bio': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Tell the community a little about yourself'
+            }),
+            'profile_image': forms.ClearableFileInput(attrs={
+                'class': 'form-control'
             }),
         }
 

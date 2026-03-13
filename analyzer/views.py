@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Message, Comment
-from .forms import MessageForm, RegisterForm, CommentForm, ProfileForm
+from .models import Message, Comment, UserProfile
+from .forms import MessageForm, RegisterForm, CommentForm, ProfileForm, UserProfileForm
 from django.db.models import Q, Count
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
@@ -224,13 +224,14 @@ def toggle_comment_like(request, comment_id):
 @login_required
 def profile_view(request):
     profile_user = request.user
+    profile, created = UserProfile.objects.get_or_create(user=profile_user)
 
     message_count = Message.objects.filter(user=profile_user).count()
     comment_count = Comment.objects.filter(user=profile_user).count()
 
     message_likes_received = 0
-    user_messages = Message.objects.filter(user=profile_user)
-    for message in user_messages:
+    submitted_messages = Message.objects.filter(user=profile_user)
+    for message in submitted_messages:
         message_likes_received += message.likes.count()
 
     comment_likes_received = 0
@@ -240,6 +241,7 @@ def profile_view(request):
 
     context = {
         'profile_user': profile_user,
+        'profile': profile,
         'message_count': message_count,
         'comment_count': comment_count,
         'message_likes_received': message_likes_received,
@@ -250,24 +252,35 @@ def profile_view(request):
 
 @login_required
 def edit_profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
+        user_form = ProfileForm(request.POST, instance=request.user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
             messages.success(request, "Your profile was updated successfully.")
             return redirect('profile')
     else:
-        form = ProfileForm(instance=request.user)
+        user_form = ProfileForm(instance=request.user)
+        profile_form = UserProfileForm(instance=profile)
 
-    return render(request, 'analyzer/edit_profile.html', {'form': form})
+    return render(request, 'analyzer/edit_profile.html', {
+        'form': user_form,
+        'profile_form': profile_form,
+    })
 
 def user_messages(request, username):
     user = get_object_or_404(User, username=username)
+    profile, created = UserProfile.objects.get_or_create(user=user)
 
     user_posts = Message.objects.filter(user=user).order_by('-submission_date')
 
     context = {
         'profile_user': user,
+        'profile': profile,
         'user_posts': user_posts
     }
 

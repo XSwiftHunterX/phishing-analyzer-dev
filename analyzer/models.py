@@ -42,3 +42,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user.username} on message {self.message.id}"
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    bio = models.TextField(blank=True, max_length=500)
+    profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s profile"
