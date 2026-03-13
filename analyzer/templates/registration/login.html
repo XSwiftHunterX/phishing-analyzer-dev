@@ -5,22 +5,62 @@
 {% block content %}
 
 <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
+    <div class="col-md-8 col-lg-6 col-xl-5">
         <div class="card shadow-sm">
-            <div class="card-body">
-                <h1 class="h3 mb-3">Login</h1>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <h1 class="h3 mb-2">Login</h1>
+                    <p class="text-muted mb-0">
+                        Sign in to submit reports, join discussions, and interact with the community.
+                    </p>
+                </div>
 
-                <form method="post">
+                <div class="alert alert-info">
+                    <strong>Welcome back.</strong><br>
+                    Log in to continue contributing to the Phishing Message Analyzer platform.
+                </div>
+
+                <form method="post" novalidate>
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Login</button>
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-danger small mt-1">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                            <div class="text-danger small mt-1">{{ form.password.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+                    </div>
+
+                    {% if next %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                    {% endif %}
                 </form>
 
                 <hr>
 
-                <p class="mb-0">
-                    Don't have an account?
-                    <a href="/register/">Click here to sign up</a>
+                <p class="mb-0 text-center">
+                    Don’t have an account?
+                    <a href="{% url 'register' %}">Create one here</a>
                 </p>
             </div>
         </div>

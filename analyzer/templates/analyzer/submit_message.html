@@ -4,21 +4,108 @@
 
 {% block content %}
 
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'message_list' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Back to Message List
+        </a>
+        <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-person"></i> My Profile
+        </a>
+    </div>
+</div>
+
 <div class="card shadow-sm">
     <div class="card-body">
-        <h1 class="h3 mb-3">Submit a Possible Phishing Message</h1>
+        <h1 class="h3 mb-2">Submit a Message Report</h1>
+        <p class="text-muted mb-4">
+            Share a suspicious or legitimate message with the community. Your submission can help others recognize scams,
+            compare similar messages, and discuss whether a message may be phishing.
+        </p>
 
-        <p class="text-muted">Logged in as <strong>{{ user.username }}</strong></p>
-
-        <div class="mb-3">
-            <a href="/" class="btn btn-outline-secondary btn-sm">Back to Message List</a>
-            <a href="/profile/" class="btn btn-outline-secondary btn-sm">My Profile</a>
+        <div class="alert alert-info">
+            <strong>Submitting as:</strong> {{ user.username }}<br>
+            Please avoid posting highly sensitive personal information unless it is necessary for discussion.
         </div>
 
-        <form method="post">
+        <form method="post" novalidate>
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Submit Message</button>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="{{ form.message_type.id_for_label }}" class="form-label">Message Type</label>
+                {{ form.message_type }}
+                {% if form.message_type.errors %}
+                    <div class="text-danger small mt-1">{{ form.message_type.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.sender.id_for_label }}" class="form-label">Sender</label>
+                {{ form.sender }}
+                <div class="form-text">
+                    Example: email address, phone number, company name, or sender ID if shown.
+                </div>
+                {% if form.sender.errors %}
+                    <div class="text-danger small mt-1">{{ form.sender.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.classification.id_for_label }}" class="form-label">Your Classification</label>
+                {{ form.classification }}
+                <div class="form-text">
+                    Select what you currently believe this message is.
+                </div>
+                {% if form.classification.errors %}
+                    <div class="text-danger small mt-1">{{ form.classification.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.suspected_risk.id_for_label }}" class="form-label">Suspected Risk Level</label>
+                {{ form.suspected_risk }}
+                <div class="form-text">
+                    Choose the level of risk you think this message presents.
+                </div>
+                {% if form.suspected_risk.errors %}
+                    <div class="text-danger small mt-1">{{ form.suspected_risk.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.message_content.id_for_label }}" class="form-label">Message Content</label>
+                {{ form.message_content }}
+                <div class="form-text">
+                    Paste the message exactly as received whenever possible.
+                </div>
+                {% if form.message_content.errors %}
+                    <div class="text-danger small mt-1">{{ form.message_content.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label for="{{ form.additional_details.id_for_label }}" class="form-label">Additional Details</label>
+                {{ form.additional_details }}
+                <div class="form-text">
+                    Add any helpful context, such as whether you clicked a link, recognized the sender, or received similar messages before.
+                </div>
+                {% if form.additional_details.errors %}
+                    <div class="text-danger small mt-1">{{ form.additional_details.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send"></i> Submit Message
+                </button>
+                <a href="{% url 'message_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

@@ -7,25 +7,59 @@
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card shadow-sm border-danger">
-            <div class="card-body">
-                <h1 class="h3 text-danger mb-3">Delete Message</h1>
+            <div class="card-body p-4">
 
-                <p>Are you sure you want to delete this message?</p>
-
-                <div class="border rounded p-3 bg-light mb-3">
-                    <p class="mb-1">
-                        <strong>{{ message.message_type }}</strong> -
-                        {{ message.classification }} -
-                        Suspected Risk: {{ message.suspected_risk }}
+                <div class="mb-4">
+                    <h1 class="h3 text-danger mb-2">
+                        <i class="bi bi-exclamation-triangle"></i> Delete Message
+                    </h1>
+                    <p class="text-muted mb-0">
+                        This action cannot be undone. Please confirm that you want to permanently remove this message.
                     </p>
-                    <p class="mb-0">{{ message.message_content }}</p>
+                </div>
+
+                <div class="border rounded p-3 bg-light mb-4">
+                    <div class="mb-2">
+                        <strong>{{ message.message_type }}</strong>
+
+                        {% if message.classification == "Phishing" %}
+                            <span class="badge bg-danger">Phishing</span>
+                        {% elif message.classification == "Legitimate" %}
+                            <span class="badge bg-success">Legitimate</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Unsure</span>
+                        {% endif %}
+
+                        <span class="badge bg-secondary">
+                            Risk: {{ message.suspected_risk }}
+                        </span>
+                    </div>
+
+                    <p class="mb-2">
+                        {{ message.message_content|truncatechars:200 }}
+                    </p>
+
+                    {% if message.sender %}
+                        <p class="text-muted mb-0">
+                            <strong>Sender:</strong> {{ message.sender }}
+                        </p>
+                    {% endif %}
                 </div>
 
                 <form method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
-                    <a href="/message/{{ message.id }}/" class="btn btn-outline-secondary">Cancel</a>
+
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Yes, Delete Message
+                        </button>
+
+                        <a href="{% url 'message_detail' message.id %}" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                    </div>
                 </form>
+
             </div>
         </div>
     </div>

@@ -4,57 +4,88 @@
 
 {% block content %}
 
-<div class="mb-3">
-    <a href="/" class="btn btn-outline-secondary btn-sm">Back to Message List</a>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <a href="{% url 'message_list' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back to Message List
+    </a>
 </div>
 
-<h1 class="mb-4">Messages submitted by {{ profile_user.username }}</h1>
+<div class="mb-4">
+    <h1 class="fw-bold mb-2">{{ profile_user.username }}'s Messages</h1>
+    <p class="text-muted mb-0">
+        Browse messages submitted by this community member.
+    </p>
+</div>
 
 {% for message in user_posts %}
-    <div class="card shadow-sm mb-3">
+    <div class="card shadow-sm mb-3 message-card
+    {% if message.classification == 'Phishing' %}border-danger
+    {% elif message.classification == 'Legitimate' %}border-success
+    {% else %}border-warning
+    {% endif %}">
         <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                    <h5 class="card-title mb-1">
+                        <a href="{% url 'message_detail' message.id %}" class="text-decoration-none">
+                            {{ message.message_type }} Message
+                        </a>
+                    </h5>
 
-            <h5 class="card-title">
-                <a href="/message/{{ message.id }}/">
-                    {{ message.message_type }} Message
-                </a>
-            </h5>
+                    <div class="mb-2 d-flex flex-wrap gap-2">
+                        {% if message.classification == "Phishing" %}
+                            <span class="badge bg-danger">Phishing</span>
+                        {% elif message.classification == "Legitimate" %}
+                            <span class="badge bg-success">Legitimate</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Unsure</span>
+                        {% endif %}
 
-            <p class="mb-2">
-                {% if message.classification == "Phishing" %}
-                    <span class="badge bg-danger">Phishing</span>
-                {% elif message.classification == "Legitimate" %}
-                    <span class="badge bg-success">Legitimate</span>
-                {% else %}
-                    <span class="badge bg-warning text-dark">Unsure</span>
-                {% endif %}
+                        <span class="badge bg-secondary">Risk: {{ message.suspected_risk }}</span>
+                        <span class="badge bg-dark">{{ message.message_type }}</span>
+                    </div>
+                </div>
+            </div>
 
-                <span class="badge bg-secondary">
-                    Risk: {{ message.suspected_risk }}
-                </span>
-            </p>
-
-            <p>
+            <p class="card-text mb-2">
                 {{ message.message_content|truncatechars:180 }}
             </p>
 
-            <p class="text-muted">
+            {% if message.sender %}
+                <p class="text-muted mb-2">
+                    <strong>Sender:</strong> {{ message.sender }}
+                </p>
+            {% endif %}
+
+            <p class="text-muted mb-1">
                 Submitted on {{ message.submission_date|date:"F j, Y" }}
             </p>
 
-            <p class="text-muted">
+            <p class="text-muted mb-3">
                 Likes: {{ message.likes.count }} | Comments: {{ message.comments.count }}
             </p>
 
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'message_detail' message.id %}" class="btn btn-primary btn-sm">
+                    View Details
+                </a>
+
+                {% if user.is_authenticated and message.user == user %}
+                    <a href="{% url 'edit_message' message.id %}" class="btn btn-outline-primary btn-sm">
+                        Edit
+                    </a>
+                    <a href="{% url 'delete_message' message.id %}" class="btn btn-outline-danger btn-sm">
+                        Delete
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </div>
 
 {% empty %}
-
-    <div class="alert alert-secondary">
+    <div class="alert alert-secondary shadow-sm">
         This user has not submitted any messages yet.
     </div>
-
 {% endfor %}
 
 {% endblock %}
