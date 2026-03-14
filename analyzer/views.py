@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Message, Comment, UserProfile
-from .forms import MessageForm, RegisterForm, CommentForm, ProfileForm, UserProfileForm
+from .models import Message, Comment, UserProfile, MessageReport, CommentReport
+from .forms import (
+    MessageForm, RegisterForm, CommentForm, ProfileForm, UserProfileForm,
+    MessageReportForm, CommentReportForm
+)
 from django.db.models import Q, Count
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
@@ -23,7 +26,7 @@ def register(request):
     return render(request, "analyzer/register.html", {"form": form})
 
 def message_list(request):
-    messages = Message.objects.all().annotate(
+    messages = Message.objects.filter(is_removed=False).annotate(
         like_count=Count('likes', distinct=True),
         comment_count=Count('comments', distinct=True)
     )
@@ -75,8 +78,8 @@ def message_list(request):
     return render(request, 'analyzer/message_list.html', context)
 
 def message_detail(request, message_id):
-    message = get_object_or_404(Message, id=message_id)
-    comments = message.comments.all().order_by('-created_at')
+    message = get_object_or_404(Message, id=message_id, is_removed=False)
+    comments = message.comments.filter(is_removed=False).order_by('-created_at')
 
     has_liked_message = False
     if request.user.is_authenticated:
@@ -276,7 +279,7 @@ def user_messages(request, username):
     user = get_object_or_404(User, username=username)
     profile, created = UserProfile.objects.get_or_create(user=user)
 
-    user_posts = Message.objects.filter(user=user).order_by('-submission_date')
+    user_posts = Message.objects.filter(user=user, is_removed=False).order_by('-submission_date')
 
     context = {
         'profile_user': user,
@@ -296,3 +299,64 @@ def delete_account(request):
         return redirect('message_list')
 
     return render(request, 'analyzer/delete_account.html')
+
+@login_required
+def report_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id, is_removed=False)
+
+    existing_report = MessageReport.objects.filter(message=message, reporter=request.user).first()
+    if existing_report:
+        messages.info(request, "You have already reported this message.")
+        return redirect('message_detail', message_id=message.id)
+
+    if request.method == 'POST':
+        form = MessageReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.message = message
+            report.reporter = request.user
+            report.save()
+
+            message.is_flagged = True
+            message.save()
+
+            messages.success(request, "This message has been reported for moderator review.")
+            return redirect('message_detail', message_id=message.id)
+    else:
+        form = MessageReportForm()
+
+    return render(request, 'analyzer/report_message.html', {
+        'form': form,
+        'message': message,
+    })
+
+
+@login_required
+def report_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id, is_removed=False)
+
+    existing_report = CommentReport.objects.filter(comment=comment, reporter=request.user).first()
+    if existing_report:
+        messages.info(request, "You have already reported this comment.")
+        return redirect('message_detail', message_id=comment.message.id)
+
+    if request.method == 'POST':
+        form = CommentReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.comment = comment
+            report.reporter = request.user
+            report.save()
+
+            comment.is_flagged = True
+            comment.save()
+
+            messages.success(request, "This comment has been reported for moderator review.")
+            return redirect('message_detail', message_id=comment.message.id)
+    else:
+        form = CommentReportForm()
+
+    return render(request, 'analyzer/report_comment.html', {
+        'form': form,
+        'comment': comment,
+    })

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Message, Comment, UserProfile
+from .models import Message, Comment, UserProfile, MessageReport, CommentReport
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
@@ -130,3 +130,30 @@ class CustomAuthenticationForm(AuthenticationForm):
             "class": "form-control",
             "placeholder": "Enter your password"
         })
+
+class MessageReportForm(forms.ModelForm):
+    class Meta:
+        model = MessageReport
+        fields = ['reason', 'details']
+        widgets = {
+            'reason': forms.Select(attrs={'class': 'form-select'}),
+            'details': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Add any additional details for the moderators (optional)'
+            }),
+        }
+
+
+class CommentReportForm(forms.ModelForm):
+    class Meta:
+        model = CommentReport
+        fields = ['reason', 'details']
+        widgets = {
+            'reason': forms.Select(attrs={'class': 'form-select'}),
+            'details': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Add any additional details for the moderators (optional)'
+            }),
+        }

@@ -16,4 +16,6 @@ urlpatterns = [
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('user/<str:username>/', views.user_messages, name='user_messages'),
     path('profile/delete/', views.delete_account, name='delete_account'),
+    path('message/<int:message_id>/report/', views.report_message, name='report_message'),
+    path('comment/<int:comment_id>/report/', views.report_comment, name='report_comment'),
 ]

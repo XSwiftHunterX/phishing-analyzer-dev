@@ -31,6 +31,10 @@ class Message(models.Model):
     submission_date = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='liked_messages', blank=True)
 
+    is_approved = models.BooleanField(default=True)
+    is_flagged = models.BooleanField(default=False)
+    is_removed = models.BooleanField(default=False)
+
     def __str__(self):
         return f"{self.message_type} - {self.classification} - {self.suspected_risk}"
 
@@ -40,6 +44,9 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='liked_comments', blank=True)
+
+    is_flagged = models.BooleanField(default=False)
+    is_removed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Comment by {self.user.username} on message {self.message.id}"
@@ -51,3 +58,48 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s profile"
+
+class MessageReport(models.Model):
+    REPORT_REASONS = [
+        ('spam', 'Spam'),
+        ('abuse', 'Abusive or harmful content'),
+        ('misinformation', 'Misleading classification'),
+        ('privacy', 'Contains sensitive personal information'),
+        ('other', 'Other'),
+    ]
+
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='reports')
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=30, choices=REPORT_REASONS)
+    details = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_reviewed = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('message', 'reporter')
+
+    def __str__(self):
+        return f"Report on message {self.message.id} by {self.reporter.username}"
+
+
+class CommentReport(models.Model):
+    REPORT_REASONS = [
+        ('spam', 'Spam'),
+        ('abuse', 'Abusive or harmful content'),
+        ('misinformation', 'Misleading or unhelpful content'),
+        ('privacy', 'Contains sensitive personal information'),
+        ('other', 'Other'),
+    ]
+
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='reports')
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=30, choices=REPORT_REASONS)
+    details = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_reviewed = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('comment', 'reporter')
+
+    def __str__(self):
+        return f"Report on comment {self.comment.id} by {self.reporter.username}"
