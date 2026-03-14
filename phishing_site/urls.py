@@ -16,23 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth import views as auth_views
-from analyzer.forms import CustomAuthenticationForm
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('analyzer.urls')),
-    path(
-        'accounts/login/',
-        auth_views.LoginView.as_view(
-            template_name='registration/login.html',
-            authentication_form=CustomAuthenticationForm
-        ),
-        name='login'
-    ),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:
