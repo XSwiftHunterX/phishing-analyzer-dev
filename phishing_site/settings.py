@@ -146,3 +146,8 @@ ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@phishinganalyzer.local'
+
+ACCOUNT_FORMS = {
+    'login': 'analyzer.forms.StyledLoginForm',
+    'signup': 'analyzer.forms.StyledSignupForm',
+}

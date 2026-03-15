@@ -1,8 +1,7 @@
 from django import forms
 from .models import Message, Comment, UserProfile, MessageReport, CommentReport
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-
+from allauth.account.forms import LoginForm, SignupForm
 
 class MessageForm(forms.ModelForm):
     class Meta:
@@ -38,35 +37,6 @@ class MessageForm(forms.ModelForm):
                 'placeholder': 'Add any extra context that may help others evaluate this message'
             }),
         }
-
-class RegisterForm(UserCreationForm):
-    class Meta:
-        model = User
-        fields = ["username", "password1", "password2"]
-        widgets = {
-            "username": forms.TextInput(attrs={
-                "class": "form-control",
-                "placeholder": "Choose a username"
-            }),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields["username"].widget.attrs.update({
-            "class": "form-control",
-            "placeholder": "Choose a username"
-        })
-        self.fields["password1"].widget.attrs.update({
-            "class": "form-control",
-            "placeholder": "Create a password"
-        })
-        self.fields["password2"].widget.attrs.update({
-            "class": "form-control",
-            "placeholder": "Confirm your password"
-        })
-
-        self.fields["username"].help_text = "Use letters, numbers, and @/./+/-/_ only."
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -118,19 +88,6 @@ class UserProfileForm(forms.ModelForm):
             }),
         }
 
-class CustomAuthenticationForm(AuthenticationForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields["username"].widget.attrs.update({
-            "class": "form-control",
-            "placeholder": "Enter your username"
-        })
-        self.fields["password"].widget.attrs.update({
-            "class": "form-control",
-            "placeholder": "Enter your password"
-        })
-
 class MessageReportForm(forms.ModelForm):
     class Meta:
         model = MessageReport
@@ -144,7 +101,6 @@ class MessageReportForm(forms.ModelForm):
             }),
         }
 
-
 class CommentReportForm(forms.ModelForm):
     class Meta:
         model = CommentReport
@@ -157,3 +113,42 @@ class CommentReportForm(forms.ModelForm):
                 'placeholder': 'Add any additional details for the moderators (optional)'
             }),
         }
+
+class StyledLoginForm(LoginForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["login"].widget.attrs.update({
+            "class": "form-control",
+            "placeholder": "Enter your email address"
+        })
+        self.fields["password"].widget.attrs.update({
+            "class": "form-control",
+            "placeholder": "Enter your password"
+        })
+
+class StyledSignupForm(SignupForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if "email" in self.fields:
+            self.fields["email"].widget.attrs.update({
+                "class": "form-control",
+                "placeholder": "Enter your email address"
+            })
+
+        if "password1" in self.fields:
+            self.fields["password1"].widget.attrs.update({
+                "class": "form-control",
+                "placeholder": "Create a password"
+            })
+
+        if "password2" in self.fields:
+            self.fields["password2"].widget.attrs.update({
+                "class": "form-control",
+                "placeholder": "Confirm your password"
+            })
+
+    def save(self, request):
+        user = super().save(request)
+        return user

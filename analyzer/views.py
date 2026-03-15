@@ -2,29 +2,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Message, Comment, UserProfile, MessageReport, CommentReport
 from .forms import (
-    MessageForm, RegisterForm, CommentForm, ProfileForm, UserProfileForm,
+    MessageForm, CommentForm, ProfileForm, UserProfileForm,
     MessageReportForm, CommentReportForm
 )
 from django.db.models import Q, Count
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
-from django.contrib.auth import login, logout
+from django.contrib.auth import logout
 from django.contrib import messages
 
 # Create your views here.
-def register(request):
-    if request.method == "POST":
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Your account was created successfully. You are now logged in.")
-            return redirect("message_list")
-    else:
-        form = RegisterForm()
-
-    return render(request, "analyzer/register.html", {"form": form})
-
 def message_list(request):
     messages = Message.objects.filter(is_removed=False).annotate(
         like_count=Count('likes', distinct=True),
@@ -90,7 +77,7 @@ def message_detail(request, message_id):
 
     if request.method == 'POST':
         if not request.user.is_authenticated:
-            return redirect('/accounts/login/')
+            return redirect('account_login')
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)

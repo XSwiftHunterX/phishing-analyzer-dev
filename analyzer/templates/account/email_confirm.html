@@ -1,0 +1,40 @@
+{% extends "analyzer/base.html" %}
+
+{% block title %}Confirm Email{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4 text-center">
+                <h1 class="h3 mb-3">
+                    <i class="bi bi-shield-check"></i> Confirm Your Email
+                </h1>
+
+                {% if confirmation %}
+                    <p class="text-muted mb-4">
+                        Please confirm that you want to use this email address for your account.
+                    </p>
+
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">
+                            Confirm Email
+                        </button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-warning">
+                        This email confirmation link is invalid or has expired.
+                    </div>
+
+                    <a href="{% url 'account_login' %}" class="btn btn-outline-secondary">
+                        Return to Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
