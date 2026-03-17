@@ -39,6 +39,42 @@ class MessageForm(forms.ModelForm):
             }),
         }
 
+    def clean_message_content(self):
+        content = self.cleaned_data.get('message_content', '')
+        result = moderate_text(content, context="message_content")
+
+        if result.status == "rejected":
+            raise forms.ValidationError(
+                "This message content contains text that is not allowed."
+            )
+
+        self._message_content_moderation = result
+        return content
+
+    def clean_sender(self):
+        sender = self.cleaned_data.get('sender', '')
+        result = moderate_text(sender, context="sender")
+
+        if result.status == "rejected":
+            raise forms.ValidationError(
+                "The sender field contains text that is not allowed."
+            )
+
+        self._sender_moderation = result
+        return sender
+
+    def clean_additional_details(self):
+        details = self.cleaned_data.get('additional_details', '')
+        result = moderate_text(details, context="additional_details")
+
+        if result.status == "rejected":
+            raise forms.ValidationError(
+                "The additional details field contains text that is not allowed."
+            )
+
+        self._additional_details_moderation = result
+        return details
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -86,6 +122,17 @@ class ProfileForm(forms.ModelForm):
             }),
         }
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username', '')
+        result = moderate_text(username, context="username")
+
+        if result.status != "approved":
+            raise forms.ValidationError(
+                "This username is not allowed."
+            )
+
+        return username
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
@@ -100,6 +147,18 @@ class UserProfileForm(forms.ModelForm):
                 'class': 'form-control'
             }),
         }
+
+    def clean_bio(self):
+        bio = self.cleaned_data.get('bio', '')
+        result = moderate_text(bio, context="profile_bio")
+
+        if result.status == "rejected":
+            raise forms.ValidationError(
+                "Your bio contains language that is not allowed."
+            )
+
+        self._bio_moderation_result = result
+        return bio
 
 class MessageReportForm(forms.ModelForm):
     class Meta:

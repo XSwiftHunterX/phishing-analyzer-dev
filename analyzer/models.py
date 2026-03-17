@@ -91,9 +91,18 @@ class Comment(models.Model):
         return f"Comment by {self.user.username} on message {self.message.id}"
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    bio = models.TextField(blank=True, max_length=500)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True)
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+
+    moderation_status = models.CharField(
+        max_length=20,
+        choices=ModerationStatus.choices,
+        default=ModerationStatus.APPROVED,
+    )
+    moderation_reason = models.TextField(blank=True)
+    moderation_score = models.FloatField(default=0.0)
+    requires_human_review = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user.username}'s profile"

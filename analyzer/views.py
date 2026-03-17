@@ -13,7 +13,10 @@ from django.contrib import messages
 
 # Create your views here.
 def message_list(request):
-    messages = Message.objects.filter(is_removed=False).annotate(
+    messages = Message.objects.filter(
+        is_removed=False,
+        moderation_status=ModerationStatus.APPROVED
+    ).annotate(
         like_count=Count('likes', distinct=True),
         comment_count=Count('comments', distinct=True)
     )
@@ -65,7 +68,12 @@ def message_list(request):
     return render(request, 'analyzer/message_list.html', context)
 
 def message_detail(request, message_id):
-    message = get_object_or_404(Message, id=message_id, is_removed=False)
+    message = get_object_or_404(
+        Message,
+        id=message_id,
+        is_removed=False,
+        moderation_status=ModerationStatus.APPROVED
+    )
     comments = message.comments.filter(
         is_removed=False,
         moderation_status=ModerationStatus.APPROVED
@@ -121,8 +129,43 @@ def submit_message(request):
         if form.is_valid():
             message = form.save(commit=False)
             message.user = request.user
+
+            field_results = [
+                getattr(form, '_message_content_moderation', None),
+                getattr(form, '_sender_moderation', None),
+                getattr(form, '_additional_details_moderation', None),
+            ]
+            field_results = [result for result in field_results if result is not None]
+
+            overall_status = ModerationStatus.APPROVED
+            overall_reason_parts = []
+            overall_score = 0.0
+            requires_human_review = False
+
+            for result in field_results:
+                if result.reason:
+                    overall_reason_parts.append(result.reason)
+
+                overall_score = max(overall_score, result.score)
+
+                if result.requires_human_review:
+                    requires_human_review = True
+
+                if result.status == "pending":
+                    overall_status = ModerationStatus.PENDING
+
+            message.moderation_status = overall_status
+            message.moderation_reason = " | ".join(overall_reason_parts)
+            message.moderation_score = overall_score
+            message.requires_human_review = requires_human_review
+
             message.save()
-            messages.success(request, "Your message was posted successfully.")
+
+            if message.moderation_status == ModerationStatus.PENDING:
+                messages.success(request, "Your message was submitted and is pending moderator review.")
+            else:
+                messages.success(request, "Your message was posted successfully.")
+
             return redirect('message_list')
     else:
         form = MessageForm()
@@ -141,8 +184,44 @@ def edit_message(request, message_id):
         if form.is_valid():
             updated_message = form.save(commit=False)
             updated_message.user = request.user
+
+            field_results = [
+                getattr(form, '_message_content_moderation', None),
+                getattr(form, '_sender_moderation', None),
+                getattr(form, '_additional_details_moderation', None),
+            ]
+            field_results = [result for result in field_results if result is not None]
+
+            overall_status = ModerationStatus.APPROVED
+            overall_reason_parts = []
+            overall_score = 0.0
+            requires_human_review = False
+
+            for result in field_results:
+                if result.reason:
+                    overall_reason_parts.append(result.reason)
+
+                overall_score = max(overall_score, result.score)
+
+                if result.requires_human_review:
+                    requires_human_review = True
+
+                if result.status == "pending":
+                    overall_status = ModerationStatus.PENDING
+
+            updated_message.moderation_status = overall_status
+            updated_message.moderation_reason = " | ".join(overall_reason_parts)
+            updated_message.moderation_score = overall_score
+            updated_message.requires_human_review = requires_human_review
+
             updated_message.save()
-            messages.success(request, "Your message was updated successfully.")
+
+            if updated_message.moderation_status == ModerationStatus.PENDING:
+                messages.success(request, "Your updated message was submitted and is pending moderator review.")
+                return redirect('message_list')
+            else:
+                messages.success(request, "Your message was updated successfully.")
+
             return redirect('message_detail', message_id=message.id)
     else:
         form = MessageForm(instance=message)
@@ -279,8 +358,23 @@ def edit_profile(request):
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
-            profile_form.save()
-            messages.success(request, "Your profile was updated successfully.")
+
+            profile = profile_form.save(commit=False)
+
+            bio_result = getattr(profile_form, '_bio_moderation_result', None)
+            if bio_result:
+                profile.moderation_status = bio_result.status
+                profile.moderation_reason = bio_result.reason
+                profile.moderation_score = bio_result.score
+                profile.requires_human_review = bio_result.requires_human_review
+
+            profile.save()
+
+            if profile.moderation_status == ModerationStatus.PENDING:
+                messages.success(request, "Your profile was updated and your bio is pending moderator review.")
+            else:
+                messages.success(request, "Your profile was updated successfully.")
+
             return redirect('profile')
     else:
         user_form = ProfileForm(instance=request.user)
@@ -295,7 +389,11 @@ def user_messages(request, username):
     user = get_object_or_404(User, username=username)
     profile, created = UserProfile.objects.get_or_create(user=user)
 
-    user_posts = Message.objects.filter(user=user, is_removed=False).order_by('-submission_date')
+    user_posts = Message.objects.filter(
+        user=user,
+        is_removed=False,
+        moderation_status=ModerationStatus.APPROVED
+    ).order_by('-submission_date')
 
     context = {
         'profile_user': user,
