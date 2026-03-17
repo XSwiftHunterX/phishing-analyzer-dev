@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.contrib.auth import logout
 from django.contrib import messages
+from .services.pii_detection import detect_pii
 
 # Create your views here.
 def message_list(request):
@@ -159,9 +160,43 @@ def submit_message(request):
             message.moderation_score = overall_score
             message.requires_human_review = requires_human_review
 
+            pii_results = [
+                detect_pii(message.message_content, context="message_content"),
+                detect_pii(message.sender, context="sender"),
+                detect_pii(message.additional_details, context="additional_details"),
+            ]
+
+            pii_detected = any(result.detected for result in pii_results)
+            pii_review_required = any(result.review_required for result in pii_results)
+
+            pii_status = ModerationStatus.APPROVED
+            pii_notes_parts = []
+
+            for result in pii_results:
+                if result.notes:
+                    pii_notes_parts.append(result.notes)
+
+                if result.status == "pending":
+                    pii_status = ModerationStatus.PENDING
+
+            message.pii_detected = pii_detected
+            message.pii_review_required = pii_review_required
+            message.pii_scan_status = pii_status
+            message.pii_notes = " | ".join(pii_notes_parts)
+
+            if pii_status == ModerationStatus.PENDING:
+                message.requires_human_review = True
+                if message.moderation_status == ModerationStatus.APPROVED:
+                    message.moderation_status = ModerationStatus.PENDING
+
             message.save()
 
-            if message.moderation_status == ModerationStatus.PENDING:
+            if message.pii_scan_status == ModerationStatus.PENDING:
+                messages.success(
+                    request,
+                    "Your message was submitted and is pending review because possible personal information was detected."
+                )
+            elif message.moderation_status == ModerationStatus.PENDING:
                 messages.success(request, "Your message was submitted and is pending moderator review.")
             else:
                 messages.success(request, "Your message was posted successfully.")
@@ -214,15 +249,49 @@ def edit_message(request, message_id):
             updated_message.moderation_score = overall_score
             updated_message.requires_human_review = requires_human_review
 
+            pii_results = [
+                detect_pii(updated_message.message_content, context="message_content"),
+                detect_pii(updated_message.sender, context="sender"),
+                detect_pii(updated_message.additional_details, context="additional_details"),
+            ]
+
+            pii_detected = any(result.detected for result in pii_results)
+            pii_review_required = any(result.review_required for result in pii_results)
+
+            pii_status = ModerationStatus.APPROVED
+            pii_notes_parts = []
+
+            for result in pii_results:
+                if result.notes:
+                    pii_notes_parts.append(result.notes)
+
+                if result.status == "pending":
+                    pii_status = ModerationStatus.PENDING
+
+            updated_message.pii_detected = pii_detected
+            updated_message.pii_review_required = pii_review_required
+            updated_message.pii_scan_status = pii_status
+            updated_message.pii_notes = " | ".join(pii_notes_parts)
+
+            if pii_status == ModerationStatus.PENDING:
+                updated_message.requires_human_review = True
+                if updated_message.moderation_status == ModerationStatus.APPROVED:
+                    updated_message.moderation_status = ModerationStatus.PENDING
+
             updated_message.save()
 
-            if updated_message.moderation_status == ModerationStatus.PENDING:
+            if updated_message.pii_scan_status == ModerationStatus.PENDING:
+                messages.success(
+                    request,
+                    "Your updated message was submitted and is pending review because possible personal information was detected."
+                )
+                return redirect('message_list')
+            elif updated_message.moderation_status == ModerationStatus.PENDING:
                 messages.success(request, "Your updated message was submitted and is pending moderator review.")
                 return redirect('message_list')
             else:
                 messages.success(request, "Your message was updated successfully.")
-
-            return redirect('message_detail', message_id=message.id)
+                return redirect('message_detail', message_id=message.id)
     else:
         form = MessageForm(instance=message)
 
