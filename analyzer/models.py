@@ -2,6 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
+class ModerationStatus(models.TextChoices):
+    APPROVED = "approved", "Approved"
+    PENDING = "pending", "Pending Review"
+    REJECTED = "rejected", "Rejected"
+
 class Message(models.Model):
     MESSAGE_TYPES = [
         ('Email', 'Email'),
@@ -35,6 +40,31 @@ class Message(models.Model):
     is_flagged = models.BooleanField(default=False)
     is_removed = models.BooleanField(default=False)
 
+    moderation_status = models.CharField(
+        max_length=20,
+        choices=ModerationStatus.choices,
+        default=ModerationStatus.APPROVED,
+    )
+    moderation_reason = models.TextField(blank=True)
+    moderation_score = models.FloatField(default=0.0)
+    requires_human_review = models.BooleanField(default=False)
+
+    image_moderation_status = models.CharField(
+        max_length=20,
+        choices=ModerationStatus.choices,
+        default=ModerationStatus.APPROVED,
+    )
+    image_moderation_reason = models.TextField(blank=True)
+
+    pii_scan_status = models.CharField(
+        max_length=20,
+        choices=ModerationStatus.choices,
+        default=ModerationStatus.APPROVED,
+    )
+    pii_detected = models.BooleanField(default=False)
+    pii_review_required = models.BooleanField(default=False)
+    pii_notes = models.TextField(blank=True)
+
     def __str__(self):
         return f"{self.message_type} - {self.classification} - {self.suspected_risk}"
 
@@ -47,6 +77,15 @@ class Comment(models.Model):
 
     is_flagged = models.BooleanField(default=False)
     is_removed = models.BooleanField(default=False)
+
+    moderation_status = models.CharField(
+        max_length=20,
+        choices=ModerationStatus.choices,
+        default=ModerationStatus.APPROVED,
+    )
+    moderation_reason = models.TextField(blank=True)
+    moderation_score = models.FloatField(default=0.0)
+    requires_human_review = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Comment by {self.user.username} on message {self.message.id}"

@@ -2,6 +2,7 @@ from django import forms
 from .models import Message, Comment, UserProfile, MessageReport, CommentReport
 from django.contrib.auth.models import User
 from allauth.account.forms import LoginForm, SignupForm
+from .services.text_moderation import moderate_text
 
 class MessageForm(forms.ModelForm):
     class Meta:
@@ -49,6 +50,18 @@ class CommentForm(forms.ModelForm):
                 'placeholder': 'Write your comment here'
             }),
         }
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content', '')
+        result = moderate_text(content)
+
+        if result.status == "rejected":
+            raise forms.ValidationError(
+                "Your comment contains language that is not allowed."
+            )
+
+        self._moderation_result = result
+        return content
 
 class ProfileForm(forms.ModelForm):
     class Meta:

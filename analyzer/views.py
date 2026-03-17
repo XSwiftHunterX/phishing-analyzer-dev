@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Message, Comment, UserProfile, MessageReport, CommentReport
+from .models import Message, Comment, UserProfile, MessageReport, CommentReport, ModerationStatus
 from .forms import (
     MessageForm, CommentForm, ProfileForm, UserProfileForm,
     MessageReportForm, CommentReportForm
@@ -66,7 +66,10 @@ def message_list(request):
 
 def message_detail(request, message_id):
     message = get_object_or_404(Message, id=message_id, is_removed=False)
-    comments = message.comments.filter(is_removed=False).order_by('-created_at')
+    comments = message.comments.filter(
+        is_removed=False,
+        moderation_status=ModerationStatus.APPROVED
+    ).order_by('-created_at')
 
     has_liked_message = False
     if request.user.is_authenticated:
@@ -83,8 +86,21 @@ def message_detail(request, message_id):
             comment = form.save(commit=False)
             comment.message = message
             comment.user = request.user
+
+            moderation_result = getattr(form, '_moderation_result', None)
+            if moderation_result:
+                comment.moderation_status = moderation_result.status
+                comment.moderation_reason = moderation_result.reason
+                comment.moderation_score = moderation_result.score
+                comment.requires_human_review = moderation_result.requires_human_review
+
             comment.save()
-            messages.success(request, "Your comment was posted successfully.")
+
+            if comment.moderation_status == ModerationStatus.PENDING:
+                messages.success(request, "Your comment was submitted and is pending moderator review.")
+            else:
+                messages.success(request, "Your comment was posted successfully.")
+
             return redirect('message_detail', message_id=message.id)
     else:
         form = CommentForm()
@@ -160,8 +176,21 @@ def edit_comment(request, comment_id):
             updated_comment = form.save(commit=False)
             updated_comment.user = request.user
             updated_comment.message = comment.message
+
+            moderation_result = getattr(form, '_moderation_result', None)
+            if moderation_result:
+                updated_comment.moderation_status = moderation_result.status
+                updated_comment.moderation_reason = moderation_result.reason
+                updated_comment.moderation_score = moderation_result.score
+                updated_comment.requires_human_review = moderation_result.requires_human_review
+
             updated_comment.save()
-            messages.success(request, "Your comment was updated successfully.")
+
+            if updated_comment.moderation_status == ModerationStatus.PENDING:
+                messages.success(request, "Your updated comment was submitted and is pending moderator review.")
+            else:
+                messages.success(request, "Your comment was updated successfully.")
+
             return redirect('message_detail', message_id=comment.message.id)
     else:
         form = CommentForm(instance=comment)
