@@ -162,9 +162,9 @@ def submit_message(request):
             message.requires_human_review = requires_human_review
 
             pii_results = [
-                detect_pii(message.message_content, context="message_content"),
-                detect_pii(message.sender, context="sender"),
-                detect_pii(message.additional_details, context="additional_details"),
+                detect_pii(message.message_content, context="message_content", sender=message.sender),
+                detect_pii(message.sender, context="sender", sender=message.sender),
+                detect_pii(message.additional_details, context="additional_details", sender=message.sender),
             ]
 
             pii_detected = any(result.detected for result in pii_results)
@@ -185,7 +185,7 @@ def submit_message(request):
             message.pii_scan_status = pii_status
             message.pii_notes = " | ".join(pii_notes_parts)
 
-            screenshot_result = scan_screenshot_for_pii(message.screenshot)
+            screenshot_result = scan_screenshot_for_pii(message.screenshot, sender=message.sender)
 
             if screenshot_result.detected:
                 message.pii_detected = True
@@ -272,9 +272,9 @@ def edit_message(request, message_id):
             updated_message.requires_human_review = requires_human_review
 
             pii_results = [
-                detect_pii(updated_message.message_content, context="message_content"),
-                detect_pii(updated_message.sender, context="sender"),
-                detect_pii(updated_message.additional_details, context="additional_details"),
+                detect_pii(updated_message.message_content, context="message_content", sender=updated_message.sender),
+                detect_pii(updated_message.sender, context="sender", sender=updated_message.sender),
+                detect_pii(updated_message.additional_details, context="additional_details", sender=updated_message.sender),
             ]
 
             pii_detected = any(result.detected for result in pii_results)
@@ -295,7 +295,7 @@ def edit_message(request, message_id):
             updated_message.pii_scan_status = pii_status
             updated_message.pii_notes = " | ".join(pii_notes_parts)
 
-            screenshot_result = scan_screenshot_for_pii(updated_message.screenshot)
+            screenshot_result = scan_screenshot_for_pii(updated_message.screenshot, sender=updated_message.sender)
 
             if screenshot_result.detected:
                 updated_message.pii_detected = True

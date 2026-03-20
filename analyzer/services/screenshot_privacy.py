@@ -13,7 +13,7 @@ class ScreenshotPrivacyResult:
     extracted_text: str = ""
 
 
-def scan_screenshot_for_pii(image_field_file) -> ScreenshotPrivacyResult:
+def scan_screenshot_for_pii(image_field_file, sender: str | None = None) -> ScreenshotPrivacyResult:
     if not image_field_file:
         return ScreenshotPrivacyResult(
             detected=False,
@@ -30,7 +30,7 @@ def scan_screenshot_for_pii(image_field_file) -> ScreenshotPrivacyResult:
         extracted_text = pytesseract.image_to_string(image)
 
         # Run your existing PII detection
-        pii_result = detect_pii(extracted_text, context="screenshot")
+        pii_result = detect_pii(extracted_text, context="screenshot", sender=sender)
 
         return ScreenshotPrivacyResult(
             detected=pii_result.detected,

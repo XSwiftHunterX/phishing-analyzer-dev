@@ -38,6 +38,17 @@ def normalize_whitespace(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
 
 
+def normalize_email(value: str) -> str:
+    return value.strip().lower()
+
+
+def normalize_phone(value: str) -> str:
+    digits = re.sub(r'\D', '', value)
+    if len(digits) == 11 and digits.startswith("1"):
+        digits = digits[1:]
+    return digits
+
+
 def luhn_check(number: str) -> bool:
     digits = re.sub(r'\D', '', number)
 
@@ -98,17 +109,59 @@ def find_card_numbers(text: str) -> list[PIIMatch]:
     return matches
 
 
-def detect_pii(text: str, context: str = "general") -> PIIDetectionResult:
-    """
-    Detects basic PII in text using regex rules.
+def extract_allowed_sender_identifiers(sender: str) -> dict[str, set[str]]:
+    allowed = {
+        "email": set(),
+        "phone": set(),
+    }
 
-    Context ideas:
-    - "message_content"
-    - "sender"
-    - "additional_details"
-    - "profile_bio"
-    """
+    if not sender or not sender.strip():
+        return allowed
 
+    for match in find_emails(sender):
+        allowed["email"].add(normalize_email(match.value))
+
+    for match in find_phone_numbers(sender):
+        normalized = normalize_phone(match.value)
+        if normalized:
+            allowed["phone"].add(normalized)
+
+    return allowed
+
+
+def filter_sender_matches(
+    matches: list[PIIMatch],
+    sender: str | None = None
+) -> tuple[list[PIIMatch], list[PIIMatch]]:
+    if not sender:
+        return matches, []
+
+    allowed = extract_allowed_sender_identifiers(sender)
+
+    kept = []
+    removed = []
+
+    for match in matches:
+        if match.entity_type == "email":
+            if normalize_email(match.value) in allowed["email"]:
+                removed.append(match)
+                continue
+
+        elif match.entity_type == "phone":
+            if normalize_phone(match.value) in allowed["phone"]:
+                removed.append(match)
+                continue
+
+        kept.append(match)
+
+    return kept, removed
+
+
+def detect_pii(
+    text: str,
+    context: str = "general",
+    sender: str | None = None
+) -> PIIDetectionResult:
     if not text or not text.strip():
         return PIIDetectionResult(
             detected=False,
@@ -125,6 +178,8 @@ def detect_pii(text: str, context: str = "general") -> PIIDetectionResult:
     matches.extend(find_phone_numbers(cleaned_text))
     matches.extend(find_ssns(cleaned_text))
     matches.extend(find_card_numbers(cleaned_text))
+
+    matches, sender_matches = filter_sender_matches(matches, sender=sender)
 
     if not matches:
         return PIIDetectionResult(
@@ -149,8 +204,6 @@ def detect_pii(text: str, context: str = "general") -> PIIDetectionResult:
     found_high_risk = any(match.entity_type in high_risk_types for match in matches)
 
     if context == "sender":
-        # Sender often legitimately contains an email or phone number
-        # because that may be useful phishing evidence.
         if found_high_risk:
             return PIIDetectionResult(
                 detected=True,
