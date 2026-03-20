@@ -103,13 +103,19 @@
             </div>
         </div>
 
-        {% if message.screenshot %}
+        {% if message.redacted_screenshot or message.screenshot %}
             <div class="mb-4">
                 <h2 class="h5 mb-2">Screenshot</h2>
                 <div class="border rounded p-3 bg-light">
-                    <img src="{{ message.screenshot.url }}"
-                        alt="Uploaded message screenshot"
-                        class="img-fluid rounded border shadow-sm">
+                    {% if message.redacted_screenshot %}
+                        <img src="{{ message.redacted_screenshot.url }}"
+                            alt="Redacted message screenshot"
+                            class="img-fluid rounded border shadow-sm">
+                    {% else %}
+                        <img src="{{ message.screenshot.url }}"
+                            alt="Uploaded message screenshot"
+                            class="img-fluid rounded border shadow-sm">
+                    {% endif %}
                 </div>
             </div>
         {% endif %}

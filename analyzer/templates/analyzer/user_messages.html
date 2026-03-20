@@ -105,10 +105,10 @@
                     </div>
                 </div>
 
-                {% if message.screenshot %}
+                {% if message.redacted_screenshot or message.screenshot %}
                 <div class="col-md-4 text-center">
                     <a href="{% url 'message_detail' message.id %}">
-                        <img src="{{ message.screenshot.url }}"
+                        <img src="{% if message.redacted_screenshot %}{{ message.redacted_screenshot.url }}{% else %}{{ message.screenshot.url }}{% endif %}"
                             alt="Message screenshot"
                             class="img-fluid rounded border shadow-sm"
                             style="max-height:220px;width:100%;object-fit:cover;">

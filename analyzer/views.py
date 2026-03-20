@@ -186,6 +186,14 @@ def submit_message(request):
             message.pii_notes = " | ".join(pii_notes_parts)
 
             screenshot_result = scan_screenshot_for_pii(message.screenshot, sender=message.sender)
+            if screenshot_result.redacted_image_content:
+                message.redacted_screenshot.save(
+                    screenshot_result.redacted_image_name,
+                    screenshot_result.redacted_image_content,
+                    save=False
+                )
+            else:
+                message.redacted_screenshot = None
 
             if screenshot_result.detected:
                 message.pii_detected = True
@@ -295,22 +303,38 @@ def edit_message(request, message_id):
             updated_message.pii_scan_status = pii_status
             updated_message.pii_notes = " | ".join(pii_notes_parts)
 
-            screenshot_result = scan_screenshot_for_pii(updated_message.screenshot, sender=updated_message.sender)
+            if updated_message.screenshot:
+                screenshot_result = scan_screenshot_for_pii(
+                    updated_message.screenshot,
+                    sender=updated_message.sender
+                )
 
-            if screenshot_result.detected:
+                if screenshot_result.redacted_image_content:
+                    updated_message.redacted_screenshot.save(
+                        screenshot_result.redacted_image_name,
+                        screenshot_result.redacted_image_content,
+                        save=False
+                    )
+                else:
+                    updated_message.redacted_screenshot = None
+            else:
+                screenshot_result = None
+                updated_message.redacted_screenshot = None
+
+            if screenshot_result and screenshot_result.detected:
                 updated_message.pii_detected = True
 
-            if screenshot_result.review_required:
+            if screenshot_result and screenshot_result.review_required:
                 updated_message.pii_review_required = True
                 updated_message.requires_human_review = True
 
-            if screenshot_result.notes:
+            if screenshot_result and screenshot_result.notes:
                 if updated_message.pii_notes:
                     updated_message.pii_notes += " | " + screenshot_result.notes
                 else:
                     updated_message.pii_notes = screenshot_result.notes
 
-            if screenshot_result.status == "pending":
+            if screenshot_result and screenshot_result.status == "pending":
                 updated_message.pii_scan_status = ModerationStatus.PENDING
                 if updated_message.moderation_status == ModerationStatus.APPROVED:
                     updated_message.moderation_status = ModerationStatus.PENDING
