@@ -1,5 +1,4 @@
 import io
-import os
 import re
 import uuid
 import pytesseract
@@ -70,10 +69,83 @@ def line_contains_pii(line_text: str, pii_match) -> bool:
     return False
 
 
+def boxes_overlap(box1, box2, padding=6):
+    l1, t1, r1, b1 = box1
+    l2, t2, r2, b2 = box2
+
+    return not (
+        r1 + padding < l2 or
+        r2 + padding < l1 or
+        b1 + padding < t2 or
+        b2 + padding < t1
+    )
+
+
+def merge_two_boxes(box1, box2):
+    l1, t1, r1, b1 = box1
+    l2, t2, r2, b2 = box2
+    return (
+        min(l1, l2),
+        min(t1, t2),
+        max(r1, r2),
+        max(b1, b2),
+    )
+
+
+def merge_boxes(boxes, padding=6):
+    if not boxes:
+        return []
+
+    merged = boxes[:]
+    changed = True
+
+    while changed:
+        changed = False
+        new_boxes = []
+        used = [False] * len(merged)
+
+        for i in range(len(merged)):
+            if used[i]:
+                continue
+
+            current = merged[i]
+            used[i] = True
+
+            for j in range(i + 1, len(merged)):
+                if used[j]:
+                    continue
+
+                if boxes_overlap(current, merged[j], padding=padding):
+                    current = merge_two_boxes(current, merged[j])
+                    used[j] = True
+                    changed = True
+
+            new_boxes.append(current)
+
+        merged = new_boxes
+
+    return merged
+
+
+def deduplicate_boxes(boxes: list[tuple[int, int, int, int]]) -> list[tuple[int, int, int, int]]:
+    unique = []
+    seen = set()
+
+    for box in boxes:
+        normalized = tuple(int(v) for v in box)
+        if normalized not in seen:
+            seen.add(normalized)
+            unique.append(normalized)
+
+    return unique
+
+
 def get_matching_boxes(ocr_data: dict, pii_matches: list) -> list[tuple[int, int, int, int]]:
-    boxes = []
+    word_boxes = []
+    line_boxes = []
     n = len(ocr_data["text"])
 
+    # First pass: precise word-level matches
     for i in range(n):
         word = (ocr_data["text"][i] or "").strip()
         if not word:
@@ -86,22 +158,24 @@ def get_matching_boxes(ocr_data: dict, pii_matches: list) -> list[tuple[int, int
 
         for pii_match in pii_matches:
             if token_matches_pii(word, pii_match):
-                boxes.append((left, top, left + width, top + height))
+                word_boxes.append((left, top, left + width, top + height))
                 break
 
-    # fallback: line-level matching for multi-token phone/card patterns
+    # Group OCR words into lines
     line_groups = {}
     for i in range(n):
         word = (ocr_data["text"][i] or "").strip()
         if not word:
             continue
 
-        block_num = ocr_data["block_num"][i]
-        par_num = ocr_data["par_num"][i]
-        line_num = ocr_data["line_num"][i]
-        key = (block_num, par_num, line_num)
+        key = (
+            ocr_data["block_num"][i],
+            ocr_data["par_num"][i],
+            ocr_data["line_num"][i],
+        )
         line_groups.setdefault(key, []).append(i)
 
+    # Second pass: line-level fallback for split phones/cards/emails
     for indices in line_groups.values():
         line_words = [(ocr_data["text"][i] or "").strip() for i in indices]
         line_text = " ".join(w for w in line_words if w)
@@ -112,22 +186,14 @@ def get_matching_boxes(ocr_data: dict, pii_matches: list) -> list[tuple[int, int
                 tops = [int(ocr_data["top"][i]) for i in indices]
                 rights = [int(ocr_data["left"][i]) + int(ocr_data["width"][i]) for i in indices]
                 bottoms = [int(ocr_data["top"][i]) + int(ocr_data["height"][i]) for i in indices]
-                boxes.append((min(lefts), min(tops), max(rights), max(bottoms)))
+
+                line_boxes.append((min(lefts), min(tops), max(rights), max(bottoms)))
                 break
 
-    return deduplicate_boxes(boxes)
-
-
-def deduplicate_boxes(boxes: list[tuple[int, int, int, int]]) -> list[tuple[int, int, int, int]]:
-    unique = []
-    seen = set()
-
-    for box in boxes:
-        if box not in seen:
-            seen.add(box)
-            unique.append(box)
-
-    return unique
+    all_boxes = word_boxes + line_boxes
+    all_boxes = deduplicate_boxes(all_boxes)
+    all_boxes = merge_boxes(all_boxes, padding=8)
+    return all_boxes
 
 
 def redact_image(image: Image.Image, boxes: list[tuple[int, int, int, int]]) -> ContentFile | None:
@@ -137,15 +203,21 @@ def redact_image(image: Image.Image, boxes: list[tuple[int, int, int, int]]) -> 
     redacted = image.copy()
     draw = ImageDraw.Draw(redacted)
 
+    img_width, img_height = redacted.size
+
     for left, top, right, bottom in boxes:
-        padding = 3
-        draw.rectangle(
-            (left - padding, top - padding, right + padding, bottom + padding),
-            fill="black"
-        )
+        padding_x = 4
+        padding_y = 3
+
+        left = max(0, left - padding_x)
+        top = max(0, top - padding_y)
+        right = min(img_width, right + padding_x)
+        bottom = min(img_height, bottom + padding_y)
+
+        draw.rectangle((left, top, right, bottom), fill="black")
 
     output = io.BytesIO()
-    save_format = redacted.format if redacted.format in {"PNG", "JPEG"} else "PNG"
+    save_format = image.format if image.format in {"PNG", "JPEG"} else "PNG"
     redacted.save(output, format=save_format)
     output.seek(0)
 
