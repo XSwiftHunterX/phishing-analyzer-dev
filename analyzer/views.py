@@ -11,6 +11,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth import logout
 from django.contrib import messages
 from .services.pii_detection import detect_pii
+from .services.screenshot_privacy import scan_screenshot_for_pii
 
 # Create your views here.
 def message_list(request):
@@ -184,6 +185,27 @@ def submit_message(request):
             message.pii_scan_status = pii_status
             message.pii_notes = " | ".join(pii_notes_parts)
 
+            screenshot_result = scan_screenshot_for_pii(message.screenshot)
+
+            if screenshot_result.detected:
+                message.pii_detected = True
+
+            if screenshot_result.review_required:
+                message.pii_review_required = True
+                message.requires_human_review = True
+
+            if screenshot_result.notes:
+                if message.pii_notes:
+                    message.pii_notes += " | " + screenshot_result.notes
+                else:
+                    message.pii_notes = screenshot_result.notes
+
+            if screenshot_result.status == "pending":
+                message.pii_scan_status = ModerationStatus.PENDING
+                if message.moderation_status == ModerationStatus.APPROVED:
+                    message.moderation_status = ModerationStatus.PENDING
+                message.requires_human_review = True
+
             if pii_status == ModerationStatus.PENDING:
                 message.requires_human_review = True
                 if message.moderation_status == ModerationStatus.APPROVED:
@@ -272,6 +294,27 @@ def edit_message(request, message_id):
             updated_message.pii_review_required = pii_review_required
             updated_message.pii_scan_status = pii_status
             updated_message.pii_notes = " | ".join(pii_notes_parts)
+
+            screenshot_result = scan_screenshot_for_pii(updated_message.screenshot)
+
+            if screenshot_result.detected:
+                updated_message.pii_detected = True
+
+            if screenshot_result.review_required:
+                updated_message.pii_review_required = True
+                updated_message.requires_human_review = True
+
+            if screenshot_result.notes:
+                if updated_message.pii_notes:
+                    updated_message.pii_notes += " | " + screenshot_result.notes
+                else:
+                    updated_message.pii_notes = screenshot_result.notes
+
+            if screenshot_result.status == "pending":
+                updated_message.pii_scan_status = ModerationStatus.PENDING
+                if updated_message.moderation_status == ModerationStatus.APPROVED:
+                    updated_message.moderation_status = ModerationStatus.PENDING
+                updated_message.requires_human_review = True
 
             if pii_status == ModerationStatus.PENDING:
                 updated_message.requires_human_review = True

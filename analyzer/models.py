@@ -30,11 +30,16 @@ class Message(models.Model):
     message_type = models.CharField(max_length=10, choices=MESSAGE_TYPES)
     sender = models.CharField(max_length=255, blank=True)
     additional_details = models.TextField(blank=True)
-    screenshot = models.ImageField(upload_to='message_screenshots/', blank=True, null=True)
     classification = models.CharField(max_length=20, choices=CLASSIFICATIONS)
     suspected_risk = models.CharField(max_length=10, choices=SUSPECTED_RISK_LEVELS)
     submission_date = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='liked_messages', blank=True)
+    screenshot = models.ImageField(upload_to='message_screenshots/', blank=True, null=True)
+    redacted_screenshot = models.ImageField(
+        upload_to='redacted_message_screenshots/',
+        blank=True,
+        null=True
+    )
 
     is_approved = models.BooleanField(default=True)
     is_flagged = models.BooleanField(default=False)
