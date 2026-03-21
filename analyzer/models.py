@@ -80,6 +80,35 @@ class Message(models.Model):
     def __str__(self):
         return f"{self.message_type} - {self.classification} - {self.suspected_risk}"
 
+class AIAnalysis(models.Model):
+    VERDICT_CHOICES = [
+        ('likely_phishing', 'Likely Phishing'),
+        ('suspicious', 'Suspicious'),
+        ('unclear', 'Unclear'),
+        ('likely_legitimate', 'Likely Legitimate'),
+    ]
+
+    message = models.OneToOneField(
+        Message,
+        on_delete=models.CASCADE,
+        related_name='ai_analysis'
+    )
+    verdict = models.CharField(max_length=30, choices=VERDICT_CHOICES)
+    confidence_score = models.PositiveIntegerField()
+    summary = models.TextField(blank=True)
+    red_flags = models.JSONField(default=list, blank=True)
+    recommended_action = models.TextField(blank=True)
+
+    model_name = models.CharField(max_length=100, blank=True)
+    analysis_version = models.CharField(max_length=50, blank=True)
+    raw_response = models.JSONField(blank=True, null=True)
+
+    analyzed_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"AI Analysis for message {self.message.id}"
+
 class Comment(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE)

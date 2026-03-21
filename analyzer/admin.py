@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Message, Comment, UserProfile, MessageReport, CommentReport
+from .models import Message, Comment, UserProfile, MessageReport, CommentReport, AIAnalysis
 
 # Register your models here.
 @admin.register(Message)
@@ -41,3 +41,10 @@ class CommentReportAdmin(admin.ModelAdmin):
     list_filter = ('reason', 'is_reviewed', 'created_at')
     search_fields = ('comment__content', 'reporter__username', 'details')
     ordering = ('-created_at',)
+
+@admin.register(AIAnalysis)
+class AIAnalysisAdmin(admin.ModelAdmin):
+    list_display = ('id', 'message', 'verdict', 'confidence_score', 'model_name', 'analyzed_at')
+    list_filter = ('verdict', 'model_name', 'analyzed_at')
+    search_fields = ('message__message_content', 'message__sender', 'summary')
+    ordering = ('-analyzed_at',)

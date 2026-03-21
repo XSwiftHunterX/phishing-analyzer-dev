@@ -14,6 +14,7 @@ from .services.pii_detection import detect_pii
 from .services.screenshot_privacy import scan_screenshot_for_pii
 from .services.image_moderation import moderate_uploaded_image
 from .services.profile_image_moderation import moderate_profile_image
+from .services.ai_analysis import analyze_message, save_analysis_result
 
 # Create your views here.
 def message_list(request):
@@ -255,6 +256,14 @@ def submit_message(request):
                     message.moderation_status = ModerationStatus.PENDING
 
             message.save()
+
+            # --- AI ANALYSIS ---
+            try:
+                analysis_data = analyze_message(message)
+                save_analysis_result(message, analysis_data)
+            except Exception as e:
+                # Don't break submission if AI fails
+                print(f"AI analysis failed: {e}")
 
             if message.pii_scan_status == ModerationStatus.PENDING:
                 messages.success(

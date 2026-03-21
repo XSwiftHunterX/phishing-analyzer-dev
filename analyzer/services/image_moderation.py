@@ -63,7 +63,7 @@ UNRELATED_HIGH_CONFIDENCE_LABELS = {
 
 
 def _get_rekognition_client():
-    return boto3.client("rekognition")
+    return boto3.client("rekognition", region_name="us-east-2")
 
 
 def _read_image_bytes(image_field_file) -> bytes:

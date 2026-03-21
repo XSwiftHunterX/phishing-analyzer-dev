@@ -131,6 +131,62 @@
             </div>
         </div>
 
+        <div class="mb-4">
+            <h2 class="h5 mb-2">AI Analysis</h2>
+            <div class="border rounded p-3 bg-light">
+                {% if message.ai_analysis %}
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                        <div>
+                            {% if message.ai_analysis.verdict == "likely_phishing" %}
+                                <span class="badge bg-danger">Likely Phishing</span>
+                            {% elif message.ai_analysis.verdict == "suspicious" %}
+                                <span class="badge bg-warning text-dark">Suspicious</span>
+                            {% elif message.ai_analysis.verdict == "likely_legitimate" %}
+                                <span class="badge bg-success">Likely Legitimate</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Unclear</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="text-muted small">
+                            Confidence: {{ message.ai_analysis.confidence_score }}%
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="text-muted small mb-1">Summary</div>
+                        <p class="mb-0">{{ message.ai_analysis.summary }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="text-muted small mb-1">Red Flags</div>
+                        {% if message.ai_analysis.red_flags %}
+                            <ul class="mb-0">
+                                {% for flag in message.ai_analysis.red_flags %}
+                                    <li>{{ flag }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="mb-0 text-muted">No specific red flags were identified.</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <div class="text-muted small mb-1">Recommended Action</div>
+                        <p class="mb-0">{{ message.ai_analysis.recommended_action }}</p>
+                    </div>
+
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            This AI result is an automated estimate and may be incorrect. Review the message carefully and consider community feedback.
+                        </small>
+                    </div>
+                {% else %}
+                    <p class="mb-0 text-muted">AI analysis is not available for this message yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
         <div class="border-top pt-3">
             {% if user.is_authenticated %}
                 <form method="post" action="{% url 'toggle_message_like' message.id %}" class="mb-0">
