@@ -152,9 +152,9 @@ class UserProfileForm(forms.ModelForm):
         bio = self.cleaned_data.get('bio', '')
         result = moderate_text(bio, context="profile_bio")
 
-        if result.status == "rejected":
+        if result.status != "approved":
             raise forms.ValidationError(
-                "Your bio contains language that is not allowed."
+                "Your bio contains language that is not allowed. Please revise it and try again."
             )
 
         self._bio_moderation_result = result

@@ -13,6 +13,7 @@ from django.contrib import messages
 from .services.pii_detection import detect_pii
 from .services.screenshot_privacy import scan_screenshot_for_pii
 from .services.image_moderation import moderate_uploaded_image
+from .services.profile_image_moderation import moderate_profile_image
 
 # Create your views here.
 def message_list(request):
@@ -574,25 +575,29 @@ def edit_profile(request):
         profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
 
         if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
+            uploaded_profile_image = profile_form.cleaned_data.get('profile_image')
 
-            profile = profile_form.save(commit=False)
+            image_result = moderate_profile_image(uploaded_profile_image)
 
-            bio_result = getattr(profile_form, '_bio_moderation_result', None)
-            if bio_result:
-                profile.moderation_status = bio_result.status
-                profile.moderation_reason = bio_result.reason
-                profile.moderation_score = bio_result.score
-                profile.requires_human_review = bio_result.requires_human_review
-
-            profile.save()
-
-            if profile.moderation_status == ModerationStatus.PENDING:
-                messages.success(request, "Your profile was updated and your bio is pending moderator review.")
+            if not image_result.allowed:
+                profile_form.add_error('profile_image', image_result.reason)
             else:
+                user_form.save()
+
+                profile = profile_form.save(commit=False)
+
+                bio_result = getattr(profile_form, '_bio_moderation_result', None)
+                if bio_result:
+                    profile.moderation_status = bio_result.status
+                    profile.moderation_reason = bio_result.reason
+                    profile.moderation_score = bio_result.score
+                    profile.requires_human_review = bio_result.requires_human_review
+
+                profile.save()
+
                 messages.success(request, "Your profile was updated successfully.")
 
-            return redirect('profile')
+                return redirect('profile')
     else:
         user_form = ProfileForm(instance=request.user)
         profile_form = UserProfileForm(instance=profile)
@@ -660,7 +665,6 @@ def report_message(request, message_id):
         'form': form,
         'message': message,
     })
-
 
 @login_required
 def report_comment(request, comment_id):
