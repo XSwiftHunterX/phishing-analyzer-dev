@@ -12,6 +12,7 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from .services.pii_detection import detect_pii
 from .services.screenshot_privacy import scan_screenshot_for_pii
+from .services.image_moderation import moderate_uploaded_image
 
 # Create your views here.
 def message_list(request):
@@ -186,6 +187,25 @@ def submit_message(request):
             message.pii_notes = " | ".join(pii_notes_parts)
 
             if message.screenshot:
+                image_mod_result = moderate_uploaded_image(message.screenshot)
+
+                message.image_moderation_status = image_mod_result.moderation_status
+                message.image_moderation_reason = image_mod_result.moderation_reason
+                message.image_moderation_labels = image_mod_result.moderation_labels
+
+                message.image_relevance_status = image_mod_result.relevance_status
+                message.image_relevance_reason = image_mod_result.relevance_reason
+
+                if image_mod_result.moderation_status == "pending":
+                    message.requires_human_review = True
+                    if message.moderation_status == ModerationStatus.APPROVED:
+                        message.moderation_status = ModerationStatus.PENDING
+
+                if image_mod_result.relevance_status == "pending":
+                    message.requires_human_review = True
+                    if message.moderation_status == ModerationStatus.APPROVED:
+                        message.moderation_status = ModerationStatus.PENDING
+
                 screenshot_result = scan_screenshot_for_pii(
                     message.screenshot,
                     sender=message.sender
@@ -202,6 +222,11 @@ def submit_message(request):
             else:
                 screenshot_result = None
                 message.redacted_screenshot = None
+                message.image_moderation_status = ModerationStatus.APPROVED
+                message.image_moderation_reason = ""
+                message.image_moderation_labels = []
+                message.image_relevance_status = ModerationStatus.APPROVED
+                message.image_relevance_reason = ""
 
             if screenshot_result and screenshot_result.detected:
                 message.pii_detected = True
@@ -234,6 +259,16 @@ def submit_message(request):
                 messages.success(
                     request,
                     "Your message was submitted and is pending review because possible personal information was detected."
+                )
+            elif message.image_moderation_status == ModerationStatus.PENDING:
+                messages.success(
+                    request,
+                    "Your message was submitted and is pending review because the uploaded image may contain inappropriate content."
+                )
+            elif message.image_relevance_status == ModerationStatus.PENDING:
+                messages.success(
+                    request,
+                    "Your message was submitted and is pending review because the uploaded image may not be related to a phishing or scam message."
                 )
             elif message.moderation_status == ModerationStatus.PENDING:
                 messages.success(request, "Your message was submitted and is pending moderator review.")
@@ -313,6 +348,25 @@ def edit_message(request, message_id):
             updated_message.pii_notes = " | ".join(pii_notes_parts)
 
             if updated_message.screenshot:
+                image_mod_result = moderate_uploaded_image(updated_message.screenshot)
+
+                updated_message.image_moderation_status = image_mod_result.moderation_status
+                updated_message.image_moderation_reason = image_mod_result.moderation_reason
+                updated_message.image_moderation_labels = image_mod_result.moderation_labels
+
+                updated_message.image_relevance_status = image_mod_result.relevance_status
+                updated_message.image_relevance_reason = image_mod_result.relevance_reason
+
+                if image_mod_result.moderation_status == "pending":
+                    updated_message.requires_human_review = True
+                    if updated_message.moderation_status == ModerationStatus.APPROVED:
+                        updated_message.moderation_status = ModerationStatus.PENDING
+
+                if image_mod_result.relevance_status == "pending":
+                    updated_message.requires_human_review = True
+                    if updated_message.moderation_status == ModerationStatus.APPROVED:
+                        updated_message.moderation_status = ModerationStatus.PENDING
+
                 screenshot_result = scan_screenshot_for_pii(
                     updated_message.screenshot,
                     sender=updated_message.sender
@@ -329,6 +383,11 @@ def edit_message(request, message_id):
             else:
                 screenshot_result = None
                 updated_message.redacted_screenshot = None
+                updated_message.image_moderation_status = ModerationStatus.APPROVED
+                updated_message.image_moderation_reason = ""
+                updated_message.image_moderation_labels = []
+                updated_message.image_relevance_status = ModerationStatus.APPROVED
+                updated_message.image_relevance_reason = ""
 
             if screenshot_result and screenshot_result.detected:
                 updated_message.pii_detected = True
@@ -361,6 +420,18 @@ def edit_message(request, message_id):
                 messages.success(
                     request,
                     "Your updated message was submitted and is pending review because possible personal information was detected."
+                )
+                return redirect('message_list')
+            elif updated_message.image_moderation_status == ModerationStatus.PENDING:
+                messages.success(
+                    request,
+                    "Your updated message was submitted and is pending review because the uploaded image may contain inappropriate content."
+                )
+                return redirect('message_list')
+            elif updated_message.image_relevance_status == ModerationStatus.PENDING:
+                messages.success(
+                    request,
+                    "Your updated message was submitted and is pending review because the uploaded image may not be related to a phishing or scam message."
                 )
                 return redirect('message_list')
             elif updated_message.moderation_status == ModerationStatus.PENDING:

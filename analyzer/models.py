@@ -40,6 +40,13 @@ class Message(models.Model):
         blank=True,
         null=True
     )
+    image_moderation_labels = models.JSONField(blank=True, null=True)
+    image_relevance_status = models.CharField(
+        max_length=20,
+        choices=ModerationStatus.choices,
+        default=ModerationStatus.APPROVED,
+    )
+    image_relevance_reason = models.TextField(blank=True)
 
     is_approved = models.BooleanField(default=True)
     is_flagged = models.BooleanField(default=False)
