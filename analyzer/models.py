@@ -99,6 +99,15 @@ class AIAnalysis(models.Model):
     red_flags = models.JSONField(default=list, blank=True)
     recommended_action = models.TextField(blank=True)
 
+    detected_urls = models.JSONField(default=list, blank=True)
+    detected_domains = models.JSONField(default=list, blank=True)
+    detected_emails = models.JSONField(default=list, blank=True)
+    detected_phone_numbers = models.JSONField(default=list, blank=True)
+
+    impersonated_brand = models.CharField(max_length=100, blank=True)
+    scam_category = models.CharField(max_length=100, blank=True)
+    requested_action = models.CharField(max_length=255, blank=True)
+
     model_name = models.CharField(max_length=100, blank=True)
     analysis_version = models.CharField(max_length=50, blank=True)
     raw_response = models.JSONField(blank=True, null=True)

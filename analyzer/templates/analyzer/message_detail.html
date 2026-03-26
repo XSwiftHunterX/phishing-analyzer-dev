@@ -194,19 +194,67 @@
                     <div class="list-group">
                         {% for item in similar_messages %}
                             <a href="{% url 'message_detail' item.message.id %}" class="list-group-item list-group-item-action">
-                                <div class="d-flex justify-content-between">
-                                    <strong>{{ item.message.sender|default:"Unknown sender" }}</strong>
-                                    <small class="text-muted">Score: {{ item.score }}</small>
+                                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                    <div>
+                                        <strong>{{ item.message.sender|default:"Unknown sender" }}</strong>
+
+                                        <div class="mt-1">
+                                            {% if item.message.message_type == "Email" %}
+                                                <span class="badge bg-primary">Email</span>
+                                            {% elif item.message.message_type == "SMS" %}
+                                                <span class="badge bg-info text-dark">SMS</span>
+                                            {% endif %}
+
+                                            {% if item.message.classification == "Phishing" %}
+                                                <span class="badge bg-danger">Phishing</span>
+                                            {% elif item.message.classification == "Legitimate" %}
+                                                <span class="badge bg-success">Legitimate</span>
+                                            {% elif item.message.classification == "Unsure" %}
+                                                <span class="badge bg-warning text-dark">Unsure</span>
+                                            {% endif %}
+
+                                            {% if item.message.suspected_risk == "High" %}
+                                                <span class="badge bg-danger">High Risk</span>
+                                            {% elif item.message.suspected_risk == "Medium" %}
+                                                <span class="badge bg-warning text-dark">Medium Risk</span>
+                                            {% elif item.message.suspected_risk == "Low" %}
+                                                <span class="badge bg-success">Low Risk</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="text-end">
+                                        <small class="text-muted d-block">Score: {{ item.score }}</small>
+                                        <small class="text-muted">
+                                            {{ item.message.submission_date|date:"M j, Y" }}
+                                        </small>
+                                    </div>
                                 </div>
 
-                                <div class="small text-muted">
-                                    {{ item.message.message_content|truncatechars:100 }}
+                                <div class="small text-muted mt-2">
+                                    {{ item.message.message_content|striptags|truncatechars:140 }}
                                 </div>
+
+                                {% if item.message.ai_analysis %}
+                                    <div class="small mt-2">
+                                        <strong>AI:</strong>
+                                        {% if item.message.ai_analysis.verdict == "likely_phishing" %}
+                                            <span class="text-danger">Likely Phishing</span>
+                                        {% elif item.message.ai_analysis.verdict == "suspicious" %}
+                                            <span class="text-warning">Suspicious</span>
+                                        {% elif item.message.ai_analysis.verdict == "likely_legitimate" %}
+                                            <span class="text-success">Likely Legitimate</span>
+                                        {% else %}
+                                            <span class="text-secondary">Unclear</span>
+                                        {% endif %}
+                                        <span class="text-muted">({{ item.message.ai_analysis.confidence_score }}%)</span>
+                                    </div>
+                                {% endif %}
 
                                 {% if item.reasons %}
-                                    <div class="mt-1">
+                                    <div class="mt-2">
                                         {% for reason in item.reasons %}
-                                            <span class="badge bg-secondary me-1">{{ reason }}</span>
+                                            <span class="badge bg-secondary me-1 mb-1">{{ reason }}</span>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
