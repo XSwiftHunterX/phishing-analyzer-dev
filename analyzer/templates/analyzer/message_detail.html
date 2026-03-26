@@ -187,6 +187,38 @@
             </div>
         </div>
 
+        <div class="mb-4">
+            <h2 class="h5 mb-2">Similar Reports</h2>
+            <div class="border rounded p-3 bg-light">
+                {% if similar_messages %}
+                    <div class="list-group">
+                        {% for item in similar_messages %}
+                            <a href="{% url 'message_detail' item.message.id %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between">
+                                    <strong>{{ item.message.sender|default:"Unknown sender" }}</strong>
+                                    <small class="text-muted">Score: {{ item.score }}</small>
+                                </div>
+
+                                <div class="small text-muted">
+                                    {{ item.message.message_content|truncatechars:100 }}
+                                </div>
+
+                                {% if item.reasons %}
+                                    <div class="mt-1">
+                                        {% for reason in item.reasons %}
+                                            <span class="badge bg-secondary me-1">{{ reason }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="mb-0 text-muted">No similar reports found.</p>
+                {% endif %}
+            </div>
+        </div>
+
         <div class="border-top pt-3">
             {% if user.is_authenticated %}
                 <form method="post" action="{% url 'toggle_message_like' message.id %}" class="mb-0">

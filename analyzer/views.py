@@ -15,6 +15,7 @@ from .services.screenshot_privacy import scan_screenshot_for_pii
 from .services.image_moderation import moderate_uploaded_image
 from .services.profile_image_moderation import moderate_profile_image
 from .services.ai_analysis import analyze_message, save_analysis_result
+from .services.similarity import find_similar_messages
 
 # Create your views here.
 def message_list(request):
@@ -118,11 +119,14 @@ def message_detail(request, message_id):
     else:
         form = CommentForm()
 
+    similar_messages = find_similar_messages(message)
+
     context = {
         'message': message,
         'comments': comments,
         'form': form,
         'has_liked_message': has_liked_message,
+        'similar_messages': similar_messages,
     }
 
     return render(request, 'analyzer/message_detail.html', context)
