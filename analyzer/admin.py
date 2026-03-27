@@ -14,6 +14,9 @@ class MessageAdmin(admin.ModelAdmin):
         'user',
         'submission_date',
         'moderation_status',
+        'has_image_issue',
+        'has_pii_issue',
+        'is_reported',
     )
     list_filter = (
         'message_type',
@@ -22,6 +25,7 @@ class MessageAdmin(admin.ModelAdmin):
         'image_moderation_status',
         'image_relevance_status',
         'pii_scan_status',
+        'is_flagged',
     )
     search_fields = ('message_content', 'sender', 'user__username')
     ordering = ('-submission_date',)
@@ -137,6 +141,21 @@ class MessageAdmin(admin.ModelAdmin):
             obj.moderation_status.title(),
             reason_block,
         )
+
+    @admin.display(boolean=True, description='Image Issue')
+    def has_image_issue(self, obj):
+        return (
+            obj.image_moderation_status == 'pending'
+            or obj.image_relevance_status == 'pending'
+        )
+
+    @admin.display(boolean=True, description='PII Issue')
+    def has_pii_issue(self, obj):
+        return obj.pii_detected or obj.pii_scan_status == 'pending'
+
+    @admin.display(boolean=True, description='Reported')
+    def is_reported(self, obj):
+        return obj.is_flagged
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):

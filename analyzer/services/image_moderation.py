@@ -4,6 +4,9 @@ from typing import Any
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
 
+from io import BytesIO
+from PIL import Image
+
 
 @dataclass
 class ImageModerationResult:
@@ -68,8 +71,20 @@ def _get_rekognition_client():
 
 def _read_image_bytes(image_field_file) -> bytes:
     image_field_file.file.seek(0)
-    image_bytes = image_field_file.file.read()
+
+    img = Image.open(image_field_file.file)
+
+    # Normalize to RGB (important for Rekognition)
+    if img.mode != "RGB":
+        img = img.convert("RGB")
+
+    buffer = BytesIO()
+    img.save(buffer, format="JPEG")  # Force safe format
+    image_bytes = buffer.getvalue()
+
+    # Reset file pointer for later use (VERY IMPORTANT)
     image_field_file.file.seek(0)
+
     return image_bytes
 
 
