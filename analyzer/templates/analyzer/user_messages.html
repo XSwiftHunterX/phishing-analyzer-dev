@@ -37,6 +37,13 @@
                         <span class="text-muted">This user has not added a bio yet.</span>
                     {% endif %}
                 </p>
+
+                {% if user.is_authenticated and user.username != profile_user.username %}
+                    <a href="{% url 'report_profile' profile_user.username %}" 
+                    class="btn btn-outline-warning btn-sm mt-2">
+                        <i class="bi bi-flag"></i> Report Profile
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>

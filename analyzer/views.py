@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Message, Comment, UserProfile, MessageReport, CommentReport, ModerationStatus
+from .models import Message, Comment, UserProfile, MessageReport, CommentReport, ModerationStatus, UserProfileReport
 from .forms import (
-    MessageForm, CommentForm, ProfileForm, UserProfileForm,
-    MessageReportForm, CommentReportForm
+    MessageForm,
+    CommentForm,
+    ProfileForm,
+    UserProfileForm,
+    MessageReportForm,
+    CommentReportForm,
+    UserProfileReportForm,
 )
 from django.db.models import Q, Count
 from django.contrib.auth.models import User
@@ -32,6 +37,7 @@ def get_ratelimit_message(action: str) -> str:
         "edit_comment": "You're editing comments too quickly. Please wait a moment before trying again.",
         "report_message": "You've submitted several reports recently. Please wait before reporting more messages.",
         "report_comment": "You've submitted several reports recently. Please wait before reporting more comments.",
+        "report_profile": "You've submitted several reports recently. Please wait before reporting more profiles.",
     }
 
     return messages_map.get(
@@ -660,4 +666,42 @@ def report_comment(request, comment_id):
     return render(request, 'analyzer/report_comment.html', {
         'form': form,
         'comment': comment,
+    })
+
+@login_required
+@ratelimit(key='user', rate='10/h', method='POST', block=False)
+def report_profile(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    profile = get_object_or_404(UserProfile, user=profile_user)
+
+    existing_report = UserProfileReport.objects.filter(
+        profile=profile,
+        reporter=request.user
+    ).first()
+
+    if existing_report:
+        messages.info(request, "You have already reported this profile.")
+        return redirect('user_messages', username=profile_user.username)
+
+    if request.method == 'POST':
+        if getattr(request, "limited", False):
+            add_ratelimit_message(request, "report profiles")
+            return redirect('user_messages', username=profile_user.username)
+
+        form = UserProfileReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.profile = profile
+            report.reporter = request.user
+            report.save()
+
+            messages.success(request, "This profile has been reported for moderator review.")
+            return redirect('user_messages', username=profile_user.username)
+    else:
+        form = UserProfileReportForm()
+
+    return render(request, 'analyzer/report_profile.html', {
+        'form': form,
+        'profile_user': profile_user,
+        'profile': profile,
     })

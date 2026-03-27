@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html, conditional_escape
 from django.utils.safestring import mark_safe
-from .models import Message, Comment, UserProfile, MessageReport, CommentReport, AIAnalysis
+from .models import Message, Comment, UserProfile, MessageReport, CommentReport, UserProfileReport, AIAnalysis
 from django.urls import reverse
 
 # Register your models here.
@@ -230,6 +230,13 @@ class CommentReportAdmin(admin.ModelAdmin):
             url,
             obj.comment.message.id
         )
+
+@admin.register(UserProfileReport)
+class UserProfileReportAdmin(admin.ModelAdmin):
+    list_display = ('id', 'profile', 'reporter', 'reason', 'created_at', 'is_reviewed')
+    list_filter = ('reason', 'is_reviewed', 'created_at')
+    search_fields = ('profile__user__username', 'reporter__username', 'details')
+    ordering = ('-created_at',)
 
 @admin.register(AIAnalysis)
 class AIAnalysisAdmin(admin.ModelAdmin):

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Message, Comment, UserProfile, MessageReport, CommentReport
+from .models import Message, Comment, UserProfile, MessageReport, CommentReport, UserProfileReport
 from django.contrib.auth.models import User
 from allauth.account.forms import LoginForm, SignupForm
 from .services.text_moderation import moderate_text
@@ -174,6 +174,19 @@ class MessageReportForm(forms.ModelForm):
 class CommentReportForm(forms.ModelForm):
     class Meta:
         model = CommentReport
+        fields = ['reason', 'details']
+        widgets = {
+            'reason': forms.Select(attrs={'class': 'form-select'}),
+            'details': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Add any additional details for the moderators (optional)'
+            }),
+        }
+
+class UserProfileReportForm(forms.ModelForm):
+    class Meta:
+        model = UserProfileReport
         fields = ['reason', 'details']
         widgets = {
             'reason': forms.Select(attrs={'class': 'form-select'}),

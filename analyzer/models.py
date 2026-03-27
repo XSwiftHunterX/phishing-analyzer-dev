@@ -189,3 +189,25 @@ class CommentReport(models.Model):
 
     def __str__(self):
         return f"Report on comment {self.comment.id} by {self.reporter.username}"
+
+class UserProfileReport(models.Model):
+    REPORT_REASONS = [
+        ('spam', 'Spam or fake account'),
+        ('abuse', 'Abusive or harmful behavior'),
+        ('impersonation', 'Impersonation'),
+        ('inappropriate', 'Inappropriate profile content'),
+        ('other', 'Other'),
+    ]
+
+    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='reports')
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=30, choices=REPORT_REASONS)
+    details = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_reviewed = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('profile', 'reporter')
+
+    def __str__(self):
+        return f"Report on profile {self.profile.user.username} by {self.reporter.username}"
