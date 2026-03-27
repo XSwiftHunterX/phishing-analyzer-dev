@@ -14,7 +14,6 @@ class MessageForm(forms.ModelForm):
             'additional_details',
             'screenshot',
             'classification',
-            'suspected_risk',
         ]
         widgets = {
             'message_type': forms.Select(attrs={'class': 'form-select'}),
@@ -23,7 +22,6 @@ class MessageForm(forms.ModelForm):
                 'placeholder': 'Enter email address, phone number, company name, or sender ID'
             }),
             'classification': forms.Select(attrs={'class': 'form-select'}),
-            'suspected_risk': forms.Select(attrs={'class': 'form-select'}),
             'screenshot': forms.ClearableFileInput(attrs={
                 'class': 'form-control'
             }),

@@ -80,7 +80,6 @@ def _build_prompt(message):
     message_content = (message.message_content or "").strip()
     additional_details = (message.additional_details or "").strip()
     classification = (message.classification or "").strip()
-    suspected_risk = (message.suspected_risk or "").strip()
 
     return f"""
 You are analyzing a user-submitted suspicious message for a cybersecurity awareness website.
@@ -117,7 +116,6 @@ Message type: {message_type}
 Message content: {message_content}
 Additional details: {additional_details}
 User classification: {classification}
-User suspected risk: {suspected_risk}
 """.strip()
 
 

@@ -29,7 +29,6 @@ def message_list(request):
 
     query = request.GET.get('q')
     classification = request.GET.get('classification')
-    suspected_risk = request.GET.get('suspected_risk')
     message_type = request.GET.get('message_type')
     sort = request.GET.get('sort', 'newest')
 
@@ -42,9 +41,6 @@ def message_list(request):
 
     if classification:
         messages = messages.filter(classification=classification)
-
-    if suspected_risk:
-        messages = messages.filter(suspected_risk=suspected_risk)
 
     if message_type:
         messages = messages.filter(message_type=message_type)
@@ -66,7 +62,6 @@ def message_list(request):
         'message_page': message_page,
         'query': query or '',
         'selected_classification': classification or '',
-        'selected_suspected_risk': suspected_risk or '',
         'selected_message_type': message_type or '',
         'selected_sort': sort,
     }

@@ -19,11 +19,6 @@ class Message(models.Model):
         ('Unsure', 'Unsure'),
     ]
 
-    SUSPECTED_RISK_LEVELS = [
-        ('Low', 'Low'),
-        ('Medium', 'Medium'),
-        ('High', 'High'),
-    ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     message_content = models.TextField()
@@ -31,7 +26,6 @@ class Message(models.Model):
     sender = models.CharField(max_length=255, blank=True)
     additional_details = models.TextField(blank=True)
     classification = models.CharField(max_length=20, choices=CLASSIFICATIONS)
-    suspected_risk = models.CharField(max_length=10, choices=SUSPECTED_RISK_LEVELS)
     submission_date = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='liked_messages', blank=True)
     screenshot = models.ImageField(upload_to='message_screenshots/', blank=True, null=True)
@@ -78,7 +72,7 @@ class Message(models.Model):
     pii_notes = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.message_type} - {self.classification} - {self.suspected_risk}"
+        return f"{self.message_type} - {self.classification}"
 
 class AIAnalysis(models.Model):
     VERDICT_CHOICES = [

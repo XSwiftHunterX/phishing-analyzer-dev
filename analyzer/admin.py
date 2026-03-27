@@ -5,10 +5,10 @@ from .models import Message, Comment, UserProfile, MessageReport, CommentReport,
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'message_type', 'classification', 'suspected_risk',
+        'id', 'message_type', 'classification',
         'user', 'submission_date', 'is_approved', 'is_flagged', 'is_removed'
     )
-    list_filter = ('message_type', 'classification', 'suspected_risk', 'is_approved', 'is_flagged', 'is_removed')
+    list_filter = ('message_type', 'classification', 'is_approved', 'is_flagged', 'is_removed')
     search_fields = ('message_content', 'sender', 'user__username')
     ordering = ('-submission_date',)
 

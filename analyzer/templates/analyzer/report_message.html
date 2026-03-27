@@ -20,7 +20,6 @@
                 <div class="border rounded p-3 bg-light mb-4">
                     <div class="mb-2">
                         <strong>{{ message.message_type }}</strong>
-                        <span class="badge bg-secondary">Risk: {{ message.suspected_risk }}</span>
                     </div>
                     <p class="mb-0">{{ message.message_content|truncatechars:250 }}</p>
                 </div>

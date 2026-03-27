@@ -43,7 +43,6 @@
                         <span class="badge bg-warning text-dark">Unsure</span>
                     {% endif %}
 
-                    <span class="badge bg-secondary">Suspected Risk: {{ message.suspected_risk }}</span>
                     <span class="badge bg-dark">{{ message.message_type }}</span>
                 </div>
             </div>
@@ -211,14 +210,6 @@
                                                 <span class="badge bg-success">Legitimate</span>
                                             {% elif item.message.classification == "Unsure" %}
                                                 <span class="badge bg-warning text-dark">Unsure</span>
-                                            {% endif %}
-
-                                            {% if item.message.suspected_risk == "High" %}
-                                                <span class="badge bg-danger">High Risk</span>
-                                            {% elif item.message.suspected_risk == "Medium" %}
-                                                <span class="badge bg-warning text-dark">Medium Risk</span>
-                                            {% elif item.message.suspected_risk == "Low" %}
-                                                <span class="badge bg-success">Low Risk</span>
                                             {% endif %}
                                         </div>
                                     </div>

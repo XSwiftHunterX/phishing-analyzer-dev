@@ -60,21 +60,12 @@
                 <label for="{{ form.classification.id_for_label }}" class="form-label">Your Classification</label>
                 {{ form.classification }}
                 <div class="form-text">
-                    Select what you currently believe this message is.
+                    Mark <strong>Phishing</strong> if you believe the message is a scam, malicious, fake, deceptive, or impersonating someone or something.<br>
+                    Mark <strong>Unsure</strong> if you are uncertain and trying to check whether it is safe or suspicious.<br>
+                    Mark <strong>Legitimate</strong> only if you have confirmed or strongly beleive the message is real.
                 </div>
                 {% if form.classification.errors %}
                     <div class="text-danger small mt-1">{{ form.classification.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="mb-3">
-                <label for="{{ form.suspected_risk.id_for_label }}" class="form-label">Suspected Risk Level</label>
-                {{ form.suspected_risk }}
-                <div class="form-text">
-                    Choose the level of risk you think this message presents.
-                </div>
-                {% if form.suspected_risk.errors %}
-                    <div class="text-danger small mt-1">{{ form.suspected_risk.errors }}</div>
                 {% endif %}
             </div>
 
@@ -90,7 +81,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="{{ form.additional_details.id_for_label }}" class="form-label">Additional Details</label>
+                <label for="{{ form.additional_details.id_for_label }}" class="form-label">Additional Details (Optional)</label>
                 {{ form.additional_details }}
                 <div class="form-text">
                     Add any helpful context, such as whether you clicked a link, recognized the sender, or received similar messages before.
