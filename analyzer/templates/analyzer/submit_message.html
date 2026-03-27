@@ -23,9 +23,17 @@
             compare similar messages, and discuss whether a message may be phishing.
         </p>
 
+        <div class="alert alert-warning d-flex align-items-start gap-2 mb-4">
+            <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+            <div>
+                <strong>Public Submission Notice</strong><br>
+                This message will be visible to the community after submission.
+                Avoid sharing sensitive personal information unless it is directly relevant to the reported message.
+            </div>
+        </div>
+        
         <div class="alert alert-info">
             <strong>Submitting as:</strong> {{ user.username }}<br>
-            Please avoid posting highly sensitive personal information unless it is necessary for discussion.
         </div>
 
         <form method="post" enctype="multipart/form-data" novalidate>

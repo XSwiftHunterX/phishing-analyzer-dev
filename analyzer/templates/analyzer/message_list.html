@@ -4,12 +4,81 @@
 
 {% block content %}
 
-<div class="mb-4">
-    <h1 class="fw-bold mb-2">Phishing Message Analyzer</h1>
-    <p class="text-muted mb-0">
-        A community-driven platform for analyzing and sharing phishing messages. <br>
-        Users can submit or browse suspicious email and SMS messages, discuss them with others, and help identify possible phishing attempts.
-    </p>
+<div class="card shadow-sm mb-4 border-0">
+    <div class="card-body p-4 p-md-5">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <h1 class="display-6 fw-bold mb-3">Phishing Message Analyzer</h1>
+                <p class="lead text-muted mb-3">
+                    Analyze suspicious messages with AI, review community feedback, and search real scam reports in one place.
+                </p>
+                <p class="mb-4">
+                    Submit a suspicious message to receive instant AI-powered feedback, then let the community help review it.
+                    Your report can help other users spot similar scams, compare warning signs, and make safer decisions.
+                    You can also search the database to see whether someone else has already reported the same sender,
+                    platform, phone number, email, or suspicious message.
+                </p>
+
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <a href="{% url 'submit_message' %}" class="btn btn-primary">
+                        <i class="bi bi-shield-exclamation"></i> Submit a Message
+                    </a>
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'account_signup' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-person-plus"></i> Create Account
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100 bg-light">
+                            <div class="fw-semibold mb-1">
+                                <i class="bi bi-cpu"></i> AI Analysis
+                            </div>
+                            <div class="small text-muted">
+                                Get immediate automated feedback, confidence scoring, and red-flag detection to help evaluate suspicious messages quickly.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100 bg-light">
+                            <div class="fw-semibold mb-1">
+                                <i class="bi bi-people"></i> Community Review
+                            </div>
+                            <div class="small text-muted">
+                                Other users can review reported messages, discuss suspicious details, and help double-check the AI’s conclusions.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100 bg-light">
+                            <div class="fw-semibold mb-1">
+                                <i class="bi bi-search"></i> Search Real Reports
+                            </div>
+                            <div class="small text-muted">
+                                Browse and search previously submitted reports to see whether others have encountered the same scam before.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="border rounded p-4 bg-light h-100">
+                    <h2 class="h5 mb-3">Why use this platform?</h2>
+                    <ul class="mb-0 ps-3">
+                        <li class="mb-2">Get instant feedback before taking action.</li>
+                        <li class="mb-2">Compare AI results with real community input.</li>
+                        <li class="mb-2">Help build a public library of phishing reports.</li>
+                        <li class="mb-0">Search past reports for repeated scam patterns.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% if not user.is_authenticated %}
