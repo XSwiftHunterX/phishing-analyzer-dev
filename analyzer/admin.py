@@ -19,13 +19,13 @@ class MessageAdmin(admin.ModelAdmin):
         'is_reported',
     )
     list_filter = (
+        'moderation_status',
+        'is_flagged',
         'message_type',
         'classification',
-        'moderation_status',
+        'pii_scan_status',
         'image_moderation_status',
         'image_relevance_status',
-        'pii_scan_status',
-        'is_flagged',
     )
     search_fields = ('message_content', 'sender', 'user__username')
     ordering = ('-submission_date',)
@@ -166,7 +166,7 @@ class CommentAdmin(admin.ModelAdmin):
         'created_at',
         'moderation_status',
     )
-    list_filter = ('moderation_status', 'requires_human_review', 'created_at')
+    list_filter = ('moderation_status', 'created_at')
     search_fields = ('content', 'user__username', 'message__message_content')
     ordering = ('-created_at',)
 

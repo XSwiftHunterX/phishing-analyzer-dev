@@ -52,8 +52,6 @@ class Message(models.Model):
         default=ModerationStatus.APPROVED,
     )
     moderation_reason = models.TextField(blank=True)
-    moderation_score = models.FloatField(default=0.0)
-    requires_human_review = models.BooleanField(default=False)
 
     image_moderation_status = models.CharField(
         max_length=20,
@@ -128,8 +126,6 @@ class Comment(models.Model):
         default=ModerationStatus.APPROVED,
     )
     moderation_reason = models.TextField(blank=True)
-    moderation_score = models.FloatField(default=0.0)
-    requires_human_review = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Comment by {self.user.username} on message {self.message.id}"
@@ -145,8 +141,6 @@ class UserProfile(models.Model):
         default=ModerationStatus.APPROVED,
     )
     moderation_reason = models.TextField(blank=True)
-    moderation_score = models.FloatField(default=0.0)
-    requires_human_review = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user.username}'s profile"
