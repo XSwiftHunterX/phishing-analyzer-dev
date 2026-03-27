@@ -11,6 +11,7 @@ class MessageForm(forms.ModelForm):
             'message_content',
             'message_type',
             'sender',
+            'platform',
             'additional_details',
             'screenshot',
             'classification',
@@ -20,6 +21,10 @@ class MessageForm(forms.ModelForm):
             'sender': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter email address, phone number, company name, or sender ID'
+            }),
+            'platform': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Examples: Gmail, Outlook, iMessage, WhatsApp, Discord, Instagram'
             }),
             'classification': forms.Select(attrs={'class': 'form-select'}),
             'screenshot': forms.ClearableFileInput(attrs={
@@ -60,6 +65,18 @@ class MessageForm(forms.ModelForm):
 
         self._sender_moderation = result
         return sender
+
+    def clean_platform(self):
+        platform = self.cleaned_data.get('platform', '')
+        result = moderate_text(platform, context="platform")
+
+        if result.status == "rejected":
+            raise forms.ValidationError(
+                "The platform field contains text that is not allowed."
+            )
+
+        self._platform_moderation = result
+        return platform
 
     def clean_additional_details(self):
         details = self.cleaned_data.get('additional_details', '')

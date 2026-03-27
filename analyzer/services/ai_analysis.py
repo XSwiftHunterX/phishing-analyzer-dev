@@ -76,6 +76,7 @@ ANALYSIS_SCHEMA = {
 
 def _build_prompt(message):
     sender = (message.sender or "").strip()
+    platform = (message.platform or "").strip()
     message_type = (message.message_type or "").strip()
     message_content = (message.message_content or "").strip()
     additional_details = (message.additional_details or "").strip()
@@ -112,6 +113,7 @@ Field guidance:
 
 Submitted message data:
 Sender: {sender}
+Platform / source: {platform}
 Message type: {message_type}
 Message content: {message_content}
 Additional details: {additional_details}

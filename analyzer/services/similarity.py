@@ -24,10 +24,20 @@ def normalize_sender(sender):
     return (sender or "").strip().lower()
 
 
+def normalize_platform(platform):
+    return (platform or "").strip().lower()
+
+
+def normalize_message_type(message_type):
+    return (message_type or "").strip().lower()
+
+
 def find_similar_messages(message, limit=5):
     """
     Finds similar messages using:
     - same sender
+    - matching message type
+    - matching platform
     - cross-checks between sender field and AI-extracted indicators
     - matching AI-extracted indicators
     - overlapping content wording
@@ -41,6 +51,8 @@ def find_similar_messages(message, limit=5):
     results = []
 
     source_sender = normalize_sender(message.sender)
+    source_type = normalize_message_type(message.message_type)
+    source_platform = normalize_platform(getattr(message, "platform", ""))
     source_content_words = clean_word_set(message.message_content)
 
     source_analysis = getattr(message, "ai_analysis", None)
@@ -67,11 +79,27 @@ def find_similar_messages(message, limit=5):
         reasons = []
 
         candidate_sender = normalize_sender(candidate.sender)
+        candidate_type = normalize_message_type(candidate.message_type)
+        candidate_platform = normalize_platform(getattr(candidate, "platform", ""))
 
         # --- direct sender match ---
         if source_sender and candidate_sender and source_sender == candidate_sender:
             score += 50
             reasons.append("Same sender")
+
+        # --- message type match ---
+        if source_type and candidate_type and source_type == candidate_type:
+            score += 8
+            reasons.append("Same message type")
+
+        # --- platform match ---
+        if source_platform and candidate_platform:
+            if source_platform == candidate_platform:
+                score += 10
+                reasons.append("Same platform")
+            elif source_platform in candidate_platform or candidate_platform in source_platform:
+                score += 5
+                reasons.append("Similar platform")
 
         candidate_analysis = getattr(candidate, "ai_analysis", None)
 
@@ -159,15 +187,15 @@ def find_similar_messages(message, limit=5):
         if overlap:
             overlap_count = len(overlap)
 
-            if overlap_count >= 2:
-                score += overlap_count * 2
+            if overlap_count >= 3:
+                score += overlap_count * 3
 
-                if overlap_count >= 5:
+                if overlap_count >= 6:
                     reasons.append("Very similar wording")
                 else:
-                    reasons.append("Some similar wording")
+                    reasons.append("Similar wording")
 
-        if score > 10:
+        if score >= 15:
             unique_reasons = []
             seen = set()
             for reason in reasons:

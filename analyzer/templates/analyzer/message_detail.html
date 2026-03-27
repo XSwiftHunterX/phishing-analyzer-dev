@@ -59,7 +59,7 @@
         </div>
 
         <div class="row g-3 mb-4">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="border rounded p-3 h-100 bg-light">
                     <div class="text-muted small mb-1">Sender</div>
                     <div>
@@ -72,7 +72,20 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <div class="border rounded p-3 h-100 bg-light">
+                    <div class="text-muted small mb-1">Platform</div>
+                    <div>
+                        {% if message.platform %}
+                            {{ message.platform }}
+                        {% else %}
+                            Not provided
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
                 <div class="border rounded p-3 h-100 bg-light">
                     <div class="text-muted small mb-1">Submitted By</div>
                     <div>
@@ -87,7 +100,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="border rounded p-3 h-100 bg-light">
                     <div class="text-muted small mb-1">Submitted On</div>
                     <div>{{ message.submission_date|date:"F j, Y \a\t g:i A" }}</div>
@@ -199,11 +212,11 @@
                                     <div>
                                         <strong>{{ item.message.sender|default:"Unknown sender" }}</strong>
 
-                                        <div class="mt-1">
-                                            {% if item.message.message_type == "Email" %}
-                                                <span class="badge bg-primary">Email</span>
-                                            {% elif item.message.message_type == "SMS" %}
-                                                <span class="badge bg-info text-dark">SMS</span>
+                                        <div class="mt-1 d-flex flex-wrap gap-1">
+                                            <span class="badge bg-dark">{{ item.message.message_type }}</span>
+
+                                            {% if item.message.platform %}
+                                                <span class="badge bg-light text-dark border">{{ item.message.platform }}</span>
                                             {% endif %}
 
                                             {% if item.message.classification == "Phishing" %}

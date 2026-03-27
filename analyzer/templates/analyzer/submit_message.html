@@ -46,6 +46,17 @@
             </div>
 
             <div class="mb-3">
+                <label for="{{ form.platform.id_for_label }}" class="form-label">Platform / Source</label>
+                {{ form.platform }}
+                <div class="form-text">
+                    Example: Gmail, Outlook, iMessage, WhatsApp, Discord, Instagram, Facebook, Telegram, or voicemail.
+                </div>
+                {% if form.platform.errors %}
+                    <div class="text-danger small mt-1">{{ form.platform.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
                 <label for="{{ form.sender.id_for_label }}" class="form-label">Sender</label>
                 {{ form.sender }}
                 <div class="form-text">

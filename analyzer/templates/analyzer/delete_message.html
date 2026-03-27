@@ -19,8 +19,12 @@
                 </div>
 
                 <div class="border rounded p-3 bg-light mb-4">
-                    <div class="mb-2">
-                        <strong>{{ message.message_type }}</strong>
+                    <div class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+                        <span class="badge bg-dark">{{ message.message_type }}</span>
+
+                        {% if message.platform %}
+                            <span class="badge bg-light text-dark border">{{ message.platform }}</span>
+                        {% endif %}
 
                         {% if message.classification == "Phishing" %}
                             <span class="badge bg-danger">Phishing</span>
@@ -36,8 +40,14 @@
                     </p>
 
                     {% if message.sender %}
-                        <p class="text-muted mb-0">
+                        <p class="text-muted mb-1">
                             <strong>Sender:</strong> {{ message.sender }}
+                        </p>
+                    {% endif %}
+
+                    {% if message.platform %}
+                        <p class="text-muted mb-0">
+                            <strong>Platform:</strong> {{ message.platform }}
                         </p>
                     {% endif %}
                 </div>

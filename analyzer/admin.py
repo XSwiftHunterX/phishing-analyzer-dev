@@ -10,6 +10,7 @@ class MessageAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'message_type',
+        'platform',
         'classification',
         'user',
         'submission_date',
@@ -27,7 +28,7 @@ class MessageAdmin(admin.ModelAdmin):
         'image_moderation_status',
         'image_relevance_status',
     )
-    search_fields = ('message_content', 'sender', 'user__username')
+    search_fields = ('message_content', 'sender', 'platform', 'user__username')
     ordering = ('-submission_date',)
 
     fieldsets = (
@@ -35,6 +36,7 @@ class MessageAdmin(admin.ModelAdmin):
             'fields': (
                 'user',
                 'message_type',
+                'platform',
                 'classification',
                 'sender',
                 'message_content',

@@ -10,7 +10,11 @@ class ModerationStatus(models.TextChoices):
 class Message(models.Model):
     MESSAGE_TYPES = [
         ('Email', 'Email'),
-        ('SMS', 'SMS'),
+        ('SMS', 'SMS / Text Message'),
+        ('Call', 'Phone Call / Voicemail'),
+        ('Social', 'Social Media'),
+        ('App', 'Messaging App'),
+        ('Other', 'Other'),
     ]
 
     CLASSIFICATIONS = [
@@ -19,11 +23,11 @@ class Message(models.Model):
         ('Unsure', 'Unsure'),
     ]
 
-
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     message_content = models.TextField()
     message_type = models.CharField(max_length=10, choices=MESSAGE_TYPES)
     sender = models.CharField(max_length=255, blank=True)
+    platform = models.CharField(max_length=100, blank=True)
     additional_details = models.TextField(blank=True)
     classification = models.CharField(max_length=20, choices=CLASSIFICATIONS)
     submission_date = models.DateTimeField(auto_now_add=True)

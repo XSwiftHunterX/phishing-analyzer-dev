@@ -25,11 +25,11 @@
 
         <form method="get" class="row g-3">
             <div class="col-12">
-                <label for="q" class="form-label">Search Messages, Senders, or Usernames</label>
-                <input type="text" id="q" name="q" value="{{ query }}" class="form-control" placeholder="Search by content, sender, or username">
+                <label for="q" class="form-label">Search Messages, Senders, Platforms, or Usernames</label>
+                <input type="text" id="q" name="q" value="{{ query }}" class="form-control" placeholder="Search by content, sender, platform, or username">
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label for="classification" class="form-label">Classification</label>
                 <select id="classification" name="classification" class="form-select">
                     <option value="">All</option>
@@ -40,16 +40,31 @@
             </div>
 
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label for="message_type" class="form-label">Message Type</label>
                 <select id="message_type" name="message_type" class="form-select">
                     <option value="">All</option>
                     <option value="Email" {% if selected_message_type == "Email" %}selected{% endif %}>Email</option>
-                    <option value="SMS" {% if selected_message_type == "SMS" %}selected{% endif %}>SMS</option>
+                    <option value="SMS" {% if selected_message_type == "SMS" %}selected{% endif %}>SMS / Text Message</option>
+                    <option value="Call" {% if selected_message_type == "Call" %}selected{% endif %}>Phone Call / Voicemail</option>
+                    <option value="Social" {% if selected_message_type == "Social" %}selected{% endif %}>Social Media</option>
+                    <option value="App" {% if selected_message_type == "App" %}selected{% endif %}>Messaging App</option>
+                    <option value="Other" {% if selected_message_type == "Other" %}selected{% endif %}>Other</option>
                 </select>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <label for="platform" class="form-label">Platform / Source</label>
+                <input
+                    type="text"
+                    id="platform"
+                    name="platform"
+                    value="{{ selected_platform }}"
+                    class="form-control"
+                    placeholder="e.g. Gmail, Discord, WhatsApp">
+            </div>
+
+            <div class="col-md-3">
                 <label for="sort" class="form-label">Sort By</label>
                 <select id="sort" name="sort" class="form-select">
                     <option value="newest" {% if selected_sort == "newest" %}selected{% endif %}>Newest First</option>
@@ -101,6 +116,12 @@
                     {% if message.sender %}
                         <p class="text-muted mb-2">
                             <strong>Sender:</strong> {{ message.sender }}
+                        </p>
+                    {% endif %}
+
+                    {% if message.platform %}
+                        <p class="text-muted mb-2">
+                            <strong>Platform:</strong> {{ message.platform }}
                         </p>
                     {% endif %}
 
@@ -158,13 +179,13 @@
 
     {% if message_page.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">
+            <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
                 <i class="bi bi-chevron-bar-left"></i> First
             </a>
         </li>
 
         <li class="page-item">
-            <a class="page-link" href="?page={{ message_page.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">
+            <a class="page-link" href="?page={{ message_page.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
                 <i class="bi bi-chevron-left"></i> Previous
             </a>
         </li>
@@ -179,7 +200,7 @@
                 </li>
             {% else %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">
+                    <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
                         {{ num }}
                     </a>
                 </li>
@@ -190,13 +211,13 @@
 
     {% if message_page.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ message_page.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">
+            <a class="page-link" href="?page={{ message_page.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
                 Next <i class="bi bi-chevron-right"></i>
             </a>
         </li>
 
         <li class="page-item">
-            <a class="page-link" href="?page={{ message_page.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">
+            <a class="page-link" href="?page={{ message_page.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
                 Last <i class="bi bi-chevron-bar-right"></i>
             </a>
         </li>

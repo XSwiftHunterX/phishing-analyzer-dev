@@ -49,6 +49,7 @@ def apply_message_moderation(message, form):
     field_results = [
         getattr(form, '_message_content_moderation', None),
         getattr(form, '_sender_moderation', None),
+        getattr(form, '_platform_moderation', None),
         getattr(form, '_additional_details_moderation', None),
     ]
     field_results = [result for result in field_results if result is not None]
@@ -68,6 +69,7 @@ def apply_message_moderation(message, form):
     pii_results = [
         detect_pii(message.message_content, context="message_content", sender=message.sender),
         detect_pii(message.sender, context="sender", sender=message.sender),
+        detect_pii(message.platform, context="platform", sender=message.sender),
         detect_pii(message.additional_details, context="additional_details", sender=message.sender),
     ]
 
@@ -260,12 +262,14 @@ def message_list(request):
     query = request.GET.get('q')
     classification = request.GET.get('classification')
     message_type = request.GET.get('message_type')
+    platform = request.GET.get('platform')
     sort = request.GET.get('sort', 'newest')
 
     if query:
         messages = messages.filter(
             Q(message_content__icontains=query) |
             Q(sender__icontains=query) |
+            Q(platform__icontains=query) |
             Q(user__username__icontains=query)
         )
 
@@ -274,6 +278,9 @@ def message_list(request):
 
     if message_type:
         messages = messages.filter(message_type=message_type)
+
+    if platform:
+        messages = messages.filter(platform__icontains=platform)
 
     if sort == 'oldest':
         messages = messages.order_by('submission_date')
@@ -293,6 +300,7 @@ def message_list(request):
         'query': query or '',
         'selected_classification': classification or '',
         'selected_message_type': message_type or '',
+        'selected_platform': platform or '',
         'selected_sort': sort,
     }
 
