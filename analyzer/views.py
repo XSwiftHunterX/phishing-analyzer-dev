@@ -16,8 +16,29 @@ from .services.image_moderation import moderate_uploaded_image
 from .services.profile_image_moderation import moderate_profile_image
 from .services.ai_analysis import analyze_message, save_analysis_result
 from .services.similarity import find_similar_messages
+from django_ratelimit.decorators import ratelimit
+from django.http import HttpResponse
+from django.shortcuts import redirect
 
 # Create your views here.
+def add_ratelimit_message(request, action: str):
+    messages.warning(request, get_ratelimit_message(action))
+
+def get_ratelimit_message(action: str) -> str:
+    messages_map = {
+        "submit_message": "You're submitting messages too quickly. Please wait a bit before trying again.",
+        "comment": "You're posting comments too quickly. Please slow down a bit before commenting again.",
+        "edit_message": "You're editing messages too quickly. Please wait a moment before making more changes.",
+        "edit_comment": "You're editing comments too quickly. Please wait a moment before trying again.",
+        "report_message": "You've submitted several reports recently. Please wait before reporting more messages.",
+        "report_comment": "You've submitted several reports recently. Please wait before reporting more comments.",
+    }
+
+    return messages_map.get(
+        action,
+        "You're doing that a bit too quickly. Please wait a moment before trying again."
+    )
+
 def apply_message_moderation(message, form):
     field_results = [
         getattr(form, '_message_content_moderation', None),
@@ -271,6 +292,7 @@ def message_list(request):
 
     return render(request, 'analyzer/message_list.html', context)
 
+@ratelimit(key='user_or_ip', rate='10/10m', method='POST', block=False)
 def message_detail(request, message_id):
     message = get_object_or_404(
         Message,
@@ -293,6 +315,11 @@ def message_detail(request, message_id):
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect('account_login')
+
+        if getattr(request, "limited", False):
+            add_ratelimit_message(request, "comment")
+            return redirect('message_detail', message_id=message.id)
+
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
@@ -320,8 +347,13 @@ def message_detail(request, message_id):
     return render(request, 'analyzer/message_detail.html', context)
 
 @login_required
+@ratelimit(key='user_or_ip', rate='5/20m', method='POST', block=False)
 def submit_message(request):
     if request.method == 'POST':
+        if getattr(request, "limited", False):
+            add_ratelimit_message(request, "submit_message")
+            return redirect('submit_message')
+
         form = MessageForm(request.POST, request.FILES)
         if form.is_valid():
             message = form.save(commit=False)
@@ -344,6 +376,7 @@ def submit_message(request):
     return render(request, 'analyzer/submit_message.html', {'form': form})
 
 @login_required
+@ratelimit(key='user_or_ip', rate='10/10m', method='POST', block=False)
 def edit_message(request, message_id):
     message = get_object_or_404(Message, id=message_id)
 
@@ -351,6 +384,10 @@ def edit_message(request, message_id):
         return redirect('message_list')
 
     if request.method == 'POST':
+        if getattr(request, "limited", False):
+            add_ratelimit_message(request, "edit_message")
+            return redirect('edit_message', message_id=message.id)
+
         form = MessageForm(request.POST, request.FILES, instance=message)
         if form.is_valid():
             updated_message = form.save(commit=False)
@@ -387,6 +424,7 @@ def delete_message(request, message_id):
     return render(request, 'analyzer/delete_message.html', {'message': message})
 
 @login_required
+@ratelimit(key='user_or_ip', rate='10/10m', method='POST', block=False)
 def edit_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
 
@@ -394,6 +432,10 @@ def edit_comment(request, comment_id):
         return redirect('message_detail', message_id=comment.message.id)
 
     if request.method == 'POST':
+        if getattr(request, "limited", False):
+            add_ratelimit_message(request, "edit_comment")
+            return redirect('edit_comment', comment_id=comment.id)
+
         form = CommentForm(request.POST, instance=comment)
         if form.is_valid():
             updated_comment = form.save(commit=False)
@@ -404,13 +446,6 @@ def edit_comment(request, comment_id):
             updated_comment.save()
 
             add_comment_submission_feedback(request, updated_comment, updated=True)
-
-            if updated_comment.moderation_status in (
-                ModerationStatus.PENDING,
-                ModerationStatus.REJECTED,
-            ):
-                return redirect('message_detail', message_id=comment.message.id)
-
             return redirect('message_detail', message_id=comment.message.id)
     else:
         form = CommentForm(instance=comment)
@@ -558,6 +593,7 @@ def delete_account(request):
     return render(request, 'analyzer/delete_account.html')
 
 @login_required
+@ratelimit(key='user_or_ip', rate='10/h', method='POST', block=False)
 def report_message(request, message_id):
     message = get_object_or_404(Message, id=message_id, is_removed=False)
 
@@ -567,6 +603,10 @@ def report_message(request, message_id):
         return redirect('message_detail', message_id=message.id)
 
     if request.method == 'POST':
+        if getattr(request, "limited", False):
+            add_ratelimit_message(request, "report_message")
+            return redirect('message_detail', message_id=message.id)
+
         form = MessageReportForm(request.POST)
         if form.is_valid():
             report = form.save(commit=False)
@@ -588,6 +628,7 @@ def report_message(request, message_id):
     })
 
 @login_required
+@ratelimit(key='user_or_ip', rate='10/h', method='POST', block=False)
 def report_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id, is_removed=False)
 
@@ -597,6 +638,10 @@ def report_comment(request, comment_id):
         return redirect('message_detail', message_id=comment.message.id)
 
     if request.method == 'POST':
+        if getattr(request, "limited", False):
+            add_ratelimit_message(request, "report_comment")
+            return redirect('message_detail', message_id=comment.message.id)
+
         form = CommentReportForm(request.POST)
         if form.is_valid():
             report = form.save(commit=False)
