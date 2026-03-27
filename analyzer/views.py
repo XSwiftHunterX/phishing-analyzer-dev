@@ -158,11 +158,6 @@ def submit_message(request):
                 if result.status == "pending":
                     overall_status = ModerationStatus.PENDING
 
-            message.moderation_status = overall_status
-            message.moderation_reason = " | ".join(overall_reason_parts)
-            message.moderation_score = overall_score
-            message.requires_human_review = requires_human_review
-
             pii_results = [
                 detect_pii(message.message_content, context="message_content", sender=message.sender),
                 detect_pii(message.sender, context="sender", sender=message.sender),
@@ -187,6 +182,8 @@ def submit_message(request):
             message.pii_scan_status = pii_status
             message.pii_notes = " | ".join(pii_notes_parts)
 
+            image_reason_parts = []
+
             if message.screenshot:
                 image_mod_result = moderate_uploaded_image(message.screenshot)
 
@@ -197,15 +194,21 @@ def submit_message(request):
                 message.image_relevance_status = image_mod_result.relevance_status
                 message.image_relevance_reason = image_mod_result.relevance_reason
 
+                if image_mod_result.moderation_reason:
+                    image_reason_parts.append(image_mod_result.moderation_reason)
+
+                if image_mod_result.relevance_reason:
+                    image_reason_parts.append(image_mod_result.relevance_reason)
+
                 if image_mod_result.moderation_status == "pending":
-                    message.requires_human_review = True
-                    if message.moderation_status == ModerationStatus.APPROVED:
-                        message.moderation_status = ModerationStatus.PENDING
+                    requires_human_review = True
+                    if overall_status == ModerationStatus.APPROVED:
+                        overall_status = ModerationStatus.PENDING
 
                 if image_mod_result.relevance_status == "pending":
-                    message.requires_human_review = True
-                    if message.moderation_status == ModerationStatus.APPROVED:
-                        message.moderation_status = ModerationStatus.PENDING
+                    requires_human_review = True
+                    if overall_status == ModerationStatus.APPROVED:
+                        overall_status = ModerationStatus.PENDING
 
                 screenshot_result = scan_screenshot_for_pii(
                     message.screenshot,
@@ -240,28 +243,38 @@ def submit_message(request):
 
             if screenshot_result and screenshot_result.detected:
                 if screenshot_result.redacted_image_content:
-                    # Screenshot PII was successfully redacted, so do not force pending
                     pass
                 else:
                     message.pii_scan_status = ModerationStatus.PENDING
                     message.pii_review_required = True
-                    message.requires_human_review = True
-                    if message.moderation_status == ModerationStatus.APPROVED:
-                        message.moderation_status = ModerationStatus.PENDING
+                    requires_human_review = True
+                    if overall_status == ModerationStatus.APPROVED:
+                        overall_status = ModerationStatus.PENDING
 
             if pii_status == ModerationStatus.PENDING:
-                message.requires_human_review = True
-                if message.moderation_status == ModerationStatus.APPROVED:
-                    message.moderation_status = ModerationStatus.PENDING
+                requires_human_review = True
+                if overall_status == ModerationStatus.APPROVED:
+                    overall_status = ModerationStatus.PENDING
+
+            all_reasons = []
+            all_reasons.extend(overall_reason_parts)
+            all_reasons.extend(image_reason_parts)
+            all_reasons.extend(pii_notes_parts)
+
+            if screenshot_result and screenshot_result.notes:
+                all_reasons.append(screenshot_result.notes)
+
+            message.moderation_status = overall_status
+            message.moderation_reason = "\n• " + "\n• ".join(all_reasons)
+            message.moderation_score = overall_score
+            message.requires_human_review = requires_human_review
 
             message.save()
 
-            # --- AI ANALYSIS ---
             try:
                 analysis_data = analyze_message(message)
                 save_analysis_result(message, analysis_data)
             except Exception as e:
-                # Don't break submission if AI fails
                 print(f"AI analysis failed: {e}")
 
             if message.pii_scan_status == ModerationStatus.PENDING:
@@ -289,6 +302,7 @@ def submit_message(request):
         form = MessageForm()
 
     return render(request, 'analyzer/submit_message.html', {'form': form})
+
 
 @login_required
 def edit_message(request, message_id):
@@ -327,11 +341,6 @@ def edit_message(request, message_id):
                 if result.status == "pending":
                     overall_status = ModerationStatus.PENDING
 
-            updated_message.moderation_status = overall_status
-            updated_message.moderation_reason = " | ".join(overall_reason_parts)
-            updated_message.moderation_score = overall_score
-            updated_message.requires_human_review = requires_human_review
-
             pii_results = [
                 detect_pii(updated_message.message_content, context="message_content", sender=updated_message.sender),
                 detect_pii(updated_message.sender, context="sender", sender=updated_message.sender),
@@ -356,6 +365,8 @@ def edit_message(request, message_id):
             updated_message.pii_scan_status = pii_status
             updated_message.pii_notes = " | ".join(pii_notes_parts)
 
+            image_reason_parts = []
+
             if updated_message.screenshot:
                 image_mod_result = moderate_uploaded_image(updated_message.screenshot)
 
@@ -366,15 +377,21 @@ def edit_message(request, message_id):
                 updated_message.image_relevance_status = image_mod_result.relevance_status
                 updated_message.image_relevance_reason = image_mod_result.relevance_reason
 
+                if image_mod_result.moderation_reason:
+                    image_reason_parts.append(image_mod_result.moderation_reason)
+
+                if image_mod_result.relevance_reason:
+                    image_reason_parts.append(image_mod_result.relevance_reason)
+
                 if image_mod_result.moderation_status == "pending":
-                    updated_message.requires_human_review = True
-                    if updated_message.moderation_status == ModerationStatus.APPROVED:
-                        updated_message.moderation_status = ModerationStatus.PENDING
+                    requires_human_review = True
+                    if overall_status == ModerationStatus.APPROVED:
+                        overall_status = ModerationStatus.PENDING
 
                 if image_mod_result.relevance_status == "pending":
-                    updated_message.requires_human_review = True
-                    if updated_message.moderation_status == ModerationStatus.APPROVED:
-                        updated_message.moderation_status = ModerationStatus.PENDING
+                    requires_human_review = True
+                    if overall_status == ModerationStatus.APPROVED:
+                        overall_status = ModerationStatus.PENDING
 
                 screenshot_result = scan_screenshot_for_pii(
                     updated_message.screenshot,
@@ -409,19 +426,31 @@ def edit_message(request, message_id):
 
             if screenshot_result and screenshot_result.detected:
                 if screenshot_result.redacted_image_content:
-                    # Screenshot PII was successfully redacted, so do not force pending
                     pass
                 else:
                     updated_message.pii_scan_status = ModerationStatus.PENDING
                     updated_message.pii_review_required = True
-                    updated_message.requires_human_review = True
-                    if updated_message.moderation_status == ModerationStatus.APPROVED:
-                        updated_message.moderation_status = ModerationStatus.PENDING
+                    requires_human_review = True
+                    if overall_status == ModerationStatus.APPROVED:
+                        overall_status = ModerationStatus.PENDING
 
             if pii_status == ModerationStatus.PENDING:
-                updated_message.requires_human_review = True
-                if updated_message.moderation_status == ModerationStatus.APPROVED:
-                    updated_message.moderation_status = ModerationStatus.PENDING
+                requires_human_review = True
+                if overall_status == ModerationStatus.APPROVED:
+                    overall_status = ModerationStatus.PENDING
+
+            all_reasons = []
+            all_reasons.extend(overall_reason_parts)
+            all_reasons.extend(image_reason_parts)
+            all_reasons.extend(pii_notes_parts)
+
+            if screenshot_result and screenshot_result.notes:
+                all_reasons.append(screenshot_result.notes)
+
+            updated_message.moderation_status = overall_status
+            updated_message.moderation_reason = "\n• " + "\n• ".join(all_reasons)
+            updated_message.moderation_score = overall_score
+            updated_message.requires_human_review = requires_human_review
 
             updated_message.save()
 

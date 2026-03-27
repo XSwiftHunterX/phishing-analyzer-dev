@@ -109,11 +109,13 @@
                     {% if message.redacted_screenshot %}
                         <img src="{{ message.redacted_screenshot.url }}"
                             alt="Redacted message screenshot"
-                            class="img-fluid rounded border shadow-sm">
+                            class="img-fluid rounded border shadow-sm d-block mx-auto"
+                            style="max-width: 600px; width: 100%; height: auto;">
                     {% else %}
                         <img src="{{ message.screenshot.url }}"
                             alt="Uploaded message screenshot"
-                            class="img-fluid rounded border shadow-sm">
+                            class="img-fluid rounded border shadow-sm d-block mx-auto"
+                            style="max-width: 600px; width: 100%; height: auto;">
                     {% endif %}
                 </div>
             </div>
