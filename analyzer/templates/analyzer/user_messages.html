@@ -65,6 +65,7 @@
                         </a>
                     </h5>
 
+                    <!-- BADGES -->
                     <div class="mb-2 d-flex flex-wrap gap-2">
                         {% if message.classification == "Phishing" %}
                             <span class="badge bg-danger">Phishing</span>
@@ -79,7 +80,18 @@
                         {% if message.platform %}
                             <span class="badge bg-light text-dark border">{{ message.platform }}</span>
                         {% endif %}
+
+                        {% if message.moderation_status == "pending" %}
+                            <span class="badge bg-warning text-dark">Pending Review</span>
+                        {% endif %}
                     </div>
+
+                    <!-- OWNER PENDING NOTICE -->
+                    {% if message.moderation_status == "pending" and user == message.user %}
+                        <p class="text-warning mb-2">
+                            <strong>This message is under review and is only visible to you right now.</strong>
+                        </p>
+                    {% endif %}
 
                     <p class="card-text mb-2">
                         {{ message.message_content|truncatechars:180 }}

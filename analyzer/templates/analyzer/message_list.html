@@ -162,7 +162,7 @@
                 <div class="{% if message.screenshot %}col-md-8{% else %}col-12{% endif %}">
                     <h5 class="card-title mb-1">
                         <a href="{% url 'message_detail' message.id %}" class="text-decoration-none">
-                            {{ message.message_type }} Message
+                            {{ message.message_type }} Message Report
                         </a>
                     </h5>
 
@@ -176,6 +176,10 @@
                         {% endif %}
 
                         <span class="badge bg-dark">{{ message.message_type }}</span>
+
+                        {% if message.platform %}
+                            <span class="badge bg-light text-dark border">{{ message.platform }}</span>
+                        {% endif %}
                     </div>
 
                     <p class="card-text mb-2">
@@ -185,12 +189,6 @@
                     {% if message.sender %}
                         <p class="text-muted mb-2">
                             <strong>Sender:</strong> {{ message.sender }}
-                        </p>
-                    {% endif %}
-
-                    {% if message.platform %}
-                        <p class="text-muted mb-2">
-                            <strong>Platform:</strong> {{ message.platform }}
                         </p>
                     {% endif %}
 

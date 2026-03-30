@@ -18,8 +18,19 @@
                     </p>
                 </div>
 
+                {% if message.moderation_status == "pending" %}
+                    <div class="alert alert-warning mb-4">
+                        <strong><i class="bi bi-hourglass-split"></i> Pending Review</strong><br>
+                        This message is currently under review and may not be visible to other users.
+                        {% if message.moderation_reason %}
+                            <br><strong>Reason:</strong> {{ message.moderation_reason }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+
                 <div class="border rounded p-3 bg-light mb-4">
                     <div class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+
                         <span class="badge bg-dark">{{ message.message_type }}</span>
 
                         {% if message.platform %}
@@ -32,6 +43,10 @@
                             <span class="badge bg-success">Legitimate</span>
                         {% else %}
                             <span class="badge bg-warning text-dark">Unsure</span>
+                        {% endif %}
+
+                        {% if message.moderation_status == "pending" %}
+                            <span class="badge bg-warning text-dark">Pending</span>
                         {% endif %}
                     </div>
 

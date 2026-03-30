@@ -19,19 +19,37 @@
     <div class="card-body">
         <h1 class="h3 mb-2">Submit a Message Report</h1>
         <p class="text-muted mb-4">
-            Share a suspicious or legitimate message with the community. Your submission can help others recognize scams,
-            compare similar messages, and discuss whether a message may be phishing.
+            Submit a suspicious or legitimate message to receive AI analysis, help the community identify scams,
+            and make it easier for others to search for similar reports in the future.
         </p>
+
+        <div class="alert alert-info d-flex align-items-start gap-2 mb-4">
+            <i class="bi bi-cpu-fill mt-1"></i>
+            <div>
+                <strong>Instant AI Analysis</strong><br>
+                After submission, your message may be analyzed automatically to help identify red flags,
+                suspicious patterns, and other warning signs.
+            </div>
+        </div>
 
         <div class="alert alert-warning d-flex align-items-start gap-2 mb-4">
             <i class="bi bi-exclamation-triangle-fill mt-1"></i>
             <div>
                 <strong>Public Submission Notice</strong><br>
-                This message will be visible to the community after submission.
+                Messages submitted to this platform may be visible to other community members.
                 Avoid sharing sensitive personal information unless it is directly relevant to the reported message.
             </div>
         </div>
-        
+
+        <div class="alert alert-secondary d-flex align-items-start gap-2 mb-4">
+            <i class="bi bi-people-fill mt-1"></i>
+            <div>
+                <strong>Community Review</strong><br>
+                Other users may review your report and help confirm whether a message looks suspicious,
+                legitimate, or potentially phishing.
+            </div>
+        </div>
+
         <div class="alert alert-info">
             <strong>Submitting as:</strong> {{ user.username }}<br>
         </div>
@@ -48,6 +66,9 @@
             <div class="mb-3">
                 <label for="{{ form.message_type.id_for_label }}" class="form-label">Message Type</label>
                 {{ form.message_type }}
+                <div class="form-text">
+                    Choose the channel the message came through, such as email, text message, phone call, social media, messaging app, or another source.
+                </div>
                 {% if form.message_type.errors %}
                     <div class="text-danger small mt-1">{{ form.message_type.errors }}</div>
                 {% endif %}
@@ -81,7 +102,7 @@
                 <div class="form-text">
                     Mark <strong>Phishing</strong> if you believe the message is a scam, malicious, fake, deceptive, or impersonating someone or something.<br>
                     Mark <strong>Unsure</strong> if you are uncertain and trying to check whether it is safe or suspicious.<br>
-                    Mark <strong>Legitimate</strong> only if you have confirmed or strongly beleive the message is real.
+                    Mark <strong>Legitimate</strong> only if you have confirmed or strongly believe the message is real.
                 </div>
                 {% if form.classification.errors %}
                     <div class="text-danger small mt-1">{{ form.classification.errors }}</div>
@@ -114,7 +135,7 @@
                 <label for="{{ form.screenshot.id_for_label }}" class="form-label">Screenshot (Optional)</label>
                 {{ form.screenshot }}
                 <div class="form-text">
-                    Upload a screenshot of the message if available. This can help others analyze formatting, links, or branding used in the message.
+                    Upload a screenshot of the message if available. This can help analyze formatting, links, branding, or other suspicious details.
                 </div>
                 {% if form.screenshot.errors %}
                     <div class="text-danger small mt-1">{{ form.screenshot.errors }}</div>

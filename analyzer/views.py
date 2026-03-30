@@ -1,6 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Message, Comment, UserProfile, MessageReport, CommentReport, ModerationStatus, UserProfileReport
+from .models import (
+    Message,
+    Comment,
+    UserProfile,
+    MessageReport,
+    CommentReport,
+    ModerationStatus,
+    UserProfileReport,
+)
 from .forms import (
     MessageForm,
     CommentForm,
@@ -22,12 +30,12 @@ from .services.profile_image_moderation import moderate_profile_image
 from .services.ai_analysis import analyze_message, save_analysis_result
 from .services.similarity import find_similar_messages
 from django_ratelimit.decorators import ratelimit
-from django.http import HttpResponse
-from django.shortcuts import redirect
+from .services.text_moderation import moderate_text
 
-# Create your views here.
+
 def add_ratelimit_message(request, action: str):
     messages.warning(request, get_ratelimit_message(action))
+
 
 def get_ratelimit_message(action: str) -> str:
     messages_map = {
@@ -44,6 +52,7 @@ def get_ratelimit_message(action: str) -> str:
         action,
         "You're doing that a bit too quickly. Please wait a moment before trying again."
     )
+
 
 def apply_message_moderation(message, form):
     field_results = [
@@ -188,6 +197,7 @@ def apply_message_moderation(message, form):
 
     return message
 
+
 def add_message_submission_feedback(request, message, updated=False):
     reasons = []
 
@@ -225,6 +235,7 @@ def add_message_submission_feedback(request, message, updated=False):
         else:
             messages.success(request, "Your message was posted successfully.")
 
+
 def apply_comment_moderation(comment, form):
     moderation_result = getattr(form, '_moderation_result', None)
 
@@ -237,21 +248,54 @@ def apply_comment_moderation(comment, form):
 
     return comment
 
+
 def add_comment_submission_feedback(request, comment, updated=False):
     if comment.moderation_status == ModerationStatus.REJECTED:
         prefix = "Your updated comment was" if updated else "Your comment was"
         messages.error(request, f"{prefix} rejected and could not be posted.")
     elif comment.moderation_status == ModerationStatus.PENDING:
         prefix = "Your updated comment is" if updated else "Your comment was"
-        messages.warning(request, f"{prefix} pending moderator review.")
+        messages.warning(
+            request,
+            f"{prefix} submitted and is now under review. It is only visible to you right now."
+        )
     else:
         if updated:
             messages.success(request, "Your comment was updated successfully.")
         else:
             messages.success(request, "Your comment was posted successfully.")
 
+
+def can_view_message(request, message):
+    if message.is_removed:
+        return False
+
+    if message.moderation_status == ModerationStatus.APPROVED:
+        return True
+
+    if request.user.is_authenticated:
+        if request.user == message.user or request.user.is_staff:
+            return True
+
+    return False
+
+
+def can_view_comment(request, comment):
+    if comment.is_removed:
+        return False
+
+    if comment.moderation_status == ModerationStatus.APPROVED:
+        return True
+
+    if request.user.is_authenticated:
+        if request.user == comment.user or request.user.is_staff:
+            return True
+
+    return False
+
+
 def message_list(request):
-    messages = Message.objects.filter(
+    message_qs = Message.objects.filter(
         is_removed=False,
         moderation_status=ModerationStatus.APPROVED
     ).annotate(
@@ -266,7 +310,7 @@ def message_list(request):
     sort = request.GET.get('sort', 'newest')
 
     if query:
-        messages = messages.filter(
+        message_qs = message_qs.filter(
             Q(message_content__icontains=query) |
             Q(sender__icontains=query) |
             Q(platform__icontains=query) |
@@ -274,24 +318,24 @@ def message_list(request):
         )
 
     if classification:
-        messages = messages.filter(classification=classification)
+        message_qs = message_qs.filter(classification=classification)
 
     if message_type:
-        messages = messages.filter(message_type=message_type)
+        message_qs = message_qs.filter(message_type=message_type)
 
     if platform:
-        messages = messages.filter(platform__icontains=platform)
+        message_qs = message_qs.filter(platform__icontains=platform)
 
     if sort == 'oldest':
-        messages = messages.order_by('submission_date')
+        message_qs = message_qs.order_by('submission_date')
     elif sort == 'most_liked':
-        messages = messages.order_by('-like_count', '-submission_date')
+        message_qs = message_qs.order_by('-like_count', '-submission_date')
     elif sort == 'most_commented':
-        messages = messages.order_by('-comment_count', '-submission_date')
+        message_qs = message_qs.order_by('-comment_count', '-submission_date')
     else:
-        messages = messages.order_by('-submission_date')
+        message_qs = message_qs.order_by('-submission_date')
 
-    paginator = Paginator(messages, 10)
+    paginator = Paginator(message_qs, 10)
     page_number = request.GET.get('page')
     message_page = paginator.get_page(page_number)
 
@@ -306,24 +350,27 @@ def message_list(request):
 
     return render(request, 'analyzer/message_list.html', context)
 
+
 @ratelimit(key='user_or_ip', rate='10/10m', method='POST', block=False)
 def message_detail(request, message_id):
     message = get_object_or_404(
         Message,
         id=message_id,
         is_removed=False,
-        moderation_status=ModerationStatus.APPROVED
     )
-    comments = message.comments.filter(
-        is_removed=False,
-        moderation_status=ModerationStatus.APPROVED
-    ).order_by('-created_at')
+
+    if not can_view_message(request, message):
+        messages.warning(request, "That message is not available.")
+        return redirect('message_list')
+
+    all_comments = message.comments.filter(is_removed=False).order_by('-created_at')
+    comments_for_view = [comment for comment in all_comments if can_view_comment(request, comment)]
 
     has_liked_message = False
     if request.user.is_authenticated:
         has_liked_message = request.user in message.likes.all()
 
-    for comment in comments:
+    for comment in comments_for_view:
         comment.has_liked = request.user.is_authenticated and request.user in comment.likes.all()
 
     if request.method == 'POST':
@@ -341,6 +388,25 @@ def message_detail(request, message_id):
             comment.user = request.user
 
             comment = apply_comment_moderation(comment, form)
+
+            if comment.moderation_status == ModerationStatus.REJECTED:
+                add_comment_submission_feedback(request, comment, updated=False)
+                context = {
+                    'message': message,
+                    'comments': comments_for_view,
+                    'form': form,
+                    'has_liked_message': has_liked_message,
+                    'similar_messages': [],
+                    'is_owner_viewing_pending': (
+                        request.user.is_authenticated
+                        and request.user == message.user
+                        and message.moderation_status == ModerationStatus.PENDING
+                    ),
+                }
+                if message.moderation_status == ModerationStatus.APPROVED:
+                    context['similar_messages'] = find_similar_messages(message)
+                return render(request, 'analyzer/message_detail.html', context)
+
             comment.save()
 
             add_comment_submission_feedback(request, comment, updated=False)
@@ -348,17 +414,25 @@ def message_detail(request, message_id):
     else:
         form = CommentForm()
 
-    similar_messages = find_similar_messages(message)
+    similar_messages = []
+    if message.moderation_status == ModerationStatus.APPROVED:
+        similar_messages = find_similar_messages(message)
 
     context = {
         'message': message,
-        'comments': comments,
+        'comments': comments_for_view,
         'form': form,
         'has_liked_message': has_liked_message,
         'similar_messages': similar_messages,
+        'is_owner_viewing_pending': (
+            request.user.is_authenticated
+            and request.user == message.user
+            and message.moderation_status == ModerationStatus.PENDING
+        ),
     }
 
     return render(request, 'analyzer/message_detail.html', context)
+
 
 @login_required
 @ratelimit(key='user_or_ip', rate='5/20m', method='POST', block=False)
@@ -373,21 +447,99 @@ def submit_message(request):
             message = form.save(commit=False)
             message.user = request.user
 
-            message = apply_message_moderation(message, form)
+            message.moderation_status = ModerationStatus.PENDING
+            message.moderation_reason = "Processing submission..."
             message.save()
 
-            try:
-                analysis_data = analyze_message(message)
-                save_analysis_result(message, analysis_data)
-            except Exception as e:
-                print(f"AI analysis failed: {e}")
+            request.session['processing_message_id'] = message.id
 
-            add_message_submission_feedback(request, message, updated=False)
-            return redirect('message_list')
+            return redirect('processing_message', message_id=message.id)
     else:
         form = MessageForm()
 
     return render(request, 'analyzer/submit_message.html', {'form': form})
+
+@login_required
+def processing_message(request, message_id):
+    message = get_object_or_404(
+        Message,
+        id=message_id,
+        user=request.user,
+        is_removed=False,
+    )
+
+    if request.session.get('processing_message_id') != message.id:
+        return redirect('message_detail', message_id=message.id)
+
+    return render(request, 'analyzer/processing_message.html', {
+        'message': message,
+    })
+
+
+@login_required
+def finalize_message_submission(request, message_id):
+    message = get_object_or_404(
+        Message,
+        id=message_id,
+        user=request.user,
+        is_removed=False,
+    )
+
+    if request.session.get('processing_message_id') != message.id:
+        return redirect('message_detail', message_id=message.id)
+
+    # Clear the session flag so refreshing doesn't keep reprocessing.
+    request.session.pop('processing_message_id', None)
+
+    # Rebuild the form from the saved message so moderation helpers still work.
+    form = MessageForm(instance=message)
+    form._message_content_moderation = None
+    form._sender_moderation = None
+    form._platform_moderation = None
+    form._additional_details_moderation = None
+
+    # Re-run the form-level moderation checks directly against saved values.
+    # This preserves your current moderation pipeline design.
+    try:
+        content = message.message_content or ""
+        sender = message.sender or ""
+        platform = message.platform or ""
+        details = message.additional_details or ""
+
+        form.cleaned_data = {
+            'message_content': content,
+            'sender': sender,
+            'platform': platform,
+            'additional_details': details,
+        }
+
+        form._message_content_moderation = moderate_text(content, context="message_content")
+        form._sender_moderation = moderate_text(sender, context="sender")
+        form._platform_moderation = moderate_text(platform, context="platform")
+        form._additional_details_moderation = moderate_text(details, context="additional_details")
+    except Exception as e:
+        messages.error(request, "There was a problem processing your submission.")
+        print(f"Message processing failed before moderation: {e}")
+        message.delete()
+        return redirect('submit_message')
+
+    message = apply_message_moderation(message, form)
+
+    if message.moderation_status == ModerationStatus.REJECTED:
+        messages.error(request, "Your message could not be posted.")
+        message.delete()
+        return redirect('submit_message')
+
+    message.save()
+
+    try:
+        analysis_data = analyze_message(message)
+        save_analysis_result(message, analysis_data)
+    except Exception as e:
+        print(f"AI analysis failed: {e}")
+
+    add_message_submission_feedback(request, message, updated=False)
+    return redirect('message_detail', message_id=message.id)
 
 @login_required
 @ratelimit(key='user_or_ip', rate='10/10m', method='POST', block=False)
@@ -408,20 +560,30 @@ def edit_message(request, message_id):
             updated_message.user = request.user
 
             updated_message = apply_message_moderation(updated_message, form)
+
+            if updated_message.moderation_status == ModerationStatus.REJECTED:
+                add_message_submission_feedback(request, updated_message, updated=True)
+                return render(
+                    request,
+                    'analyzer/edit_message.html',
+                    {'form': form, 'message': message}
+                )
+
             updated_message.save()
 
-            add_message_submission_feedback(request, updated_message, updated=True)
+            try:
+                analysis_data = analyze_message(updated_message)
+                save_analysis_result(updated_message, analysis_data)
+            except Exception as e:
+                print(f"AI analysis failed: {e}")
 
-            if updated_message.moderation_status in (
-                ModerationStatus.PENDING,
-                ModerationStatus.REJECTED,
-            ):
-                return redirect('message_list')
-            return redirect('message_detail', message_id=message.id)
+            add_message_submission_feedback(request, updated_message, updated=True)
+            return redirect('message_detail', message_id=updated_message.id)
     else:
         form = MessageForm(instance=message)
 
     return render(request, 'analyzer/edit_message.html', {'form': form, 'message': message})
+
 
 @login_required
 def delete_message(request, message_id):
@@ -436,6 +598,7 @@ def delete_message(request, message_id):
         return redirect('message_list')
 
     return render(request, 'analyzer/delete_message.html', {'message': message})
+
 
 @login_required
 @ratelimit(key='user_or_ip', rate='10/10m', method='POST', block=False)
@@ -457,6 +620,15 @@ def edit_comment(request, comment_id):
             updated_comment.message = comment.message
 
             updated_comment = apply_comment_moderation(updated_comment, form)
+
+            if updated_comment.moderation_status == ModerationStatus.REJECTED:
+                add_comment_submission_feedback(request, updated_comment, updated=True)
+                return render(
+                    request,
+                    'analyzer/edit_comment.html',
+                    {'form': form, 'comment': comment}
+                )
+
             updated_comment.save()
 
             add_comment_submission_feedback(request, updated_comment, updated=True)
@@ -465,6 +637,7 @@ def edit_comment(request, comment_id):
         form = CommentForm(instance=comment)
 
     return render(request, 'analyzer/edit_comment.html', {'form': form, 'comment': comment})
+
 
 @login_required
 def delete_comment(request, comment_id):
@@ -481,6 +654,7 @@ def delete_comment(request, comment_id):
 
     return render(request, 'analyzer/delete_comment.html', {'comment': comment})
 
+
 @login_required
 def toggle_message_like(request, message_id):
     if request.method != 'POST':
@@ -495,6 +669,7 @@ def toggle_message_like(request, message_id):
 
     return redirect('message_detail', message_id=message.id)
 
+
 @login_required
 def toggle_comment_like(request, comment_id):
     if request.method != 'POST':
@@ -508,6 +683,7 @@ def toggle_comment_like(request, comment_id):
         comment.likes.add(request.user)
 
     return redirect('message_detail', message_id=comment.message.id)
+
 
 @login_required
 def profile_view(request):
@@ -538,6 +714,7 @@ def profile_view(request):
 
     return render(request, 'analyzer/profile.html', context)
 
+
 @login_required
 def edit_profile(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
@@ -566,7 +743,6 @@ def edit_profile(request):
                 profile.save()
 
                 messages.success(request, "Your profile was updated successfully.")
-
                 return redirect('profile')
     else:
         user_form = ProfileForm(instance=request.user)
@@ -577,15 +753,27 @@ def edit_profile(request):
         'profile_form': profile_form,
     })
 
+
 def user_messages(request, username):
     user = get_object_or_404(User, username=username)
     profile, created = UserProfile.objects.get_or_create(user=user)
 
-    user_posts = Message.objects.filter(
-        user=user,
-        is_removed=False,
-        moderation_status=ModerationStatus.APPROVED
-    ).order_by('-submission_date')
+    if request.user.is_authenticated and request.user == user:
+        user_posts = Message.objects.filter(
+            user=user,
+            is_removed=False,
+        ).exclude(moderation_status=ModerationStatus.REJECTED).order_by('-submission_date')
+    elif request.user.is_authenticated and request.user.is_staff:
+        user_posts = Message.objects.filter(
+            user=user,
+            is_removed=False,
+        ).order_by('-submission_date')
+    else:
+        user_posts = Message.objects.filter(
+            user=user,
+            is_removed=False,
+            moderation_status=ModerationStatus.APPROVED
+        ).order_by('-submission_date')
 
     context = {
         'profile_user': user,
@@ -594,6 +782,7 @@ def user_messages(request, username):
     }
 
     return render(request, 'analyzer/user_messages.html', context)
+
 
 @login_required
 def delete_account(request):
@@ -605,6 +794,7 @@ def delete_account(request):
         return redirect('message_list')
 
     return render(request, 'analyzer/delete_account.html')
+
 
 @login_required
 @ratelimit(key='user_or_ip', rate='10/h', method='POST', block=False)
@@ -641,6 +831,7 @@ def report_message(request, message_id):
         'message': message,
     })
 
+
 @login_required
 @ratelimit(key='user_or_ip', rate='10/h', method='POST', block=False)
 def report_comment(request, comment_id):
@@ -676,6 +867,7 @@ def report_comment(request, comment_id):
         'comment': comment,
     })
 
+
 @login_required
 @ratelimit(key='user', rate='10/h', method='POST', block=False)
 def report_profile(request, username):
@@ -693,7 +885,7 @@ def report_profile(request, username):
 
     if request.method == 'POST':
         if getattr(request, "limited", False):
-            add_ratelimit_message(request, "report profiles")
+            add_ratelimit_message(request, "report_profile")
             return redirect('user_messages', username=profile_user.username)
 
         form = UserProfileReportForm(request.POST)

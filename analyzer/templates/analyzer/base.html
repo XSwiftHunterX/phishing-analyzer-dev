@@ -41,7 +41,7 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
-    <div class="container">
+    <div class="container-xl">
         <a class="navbar-brand fw-bold" href="{% url 'message_list' %}">
             <i class="bi bi-shield-exclamation me-2"></i>Phishing Message Analyzer
         </a>
@@ -86,7 +86,7 @@
     </div>
 </nav>
 
-<div class="container pb-5">
+<div class="container-xl pb-5">
 
     {% if messages %}
         {% for message in messages %}

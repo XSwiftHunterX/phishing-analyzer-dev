@@ -1,0 +1,62 @@
+{% extends "analyzer/base.html" %}
+
+{% block title %}Processing Message{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body p-5 text-center">
+                <div class="mb-4">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+
+                <h1 class="h3 mb-3">Processing Your Submission</h1>
+                <p class="text-muted mb-4">
+                    We’re reviewing your message, checking screenshots and privacy issues, and preparing AI analysis.
+                    This should only take a moment.
+                </p>
+
+                <div class="border rounded p-3 bg-light text-start mx-auto" style="max-width: 600px;">
+                    <div class="mb-2">
+                        <strong>Message Type:</strong> {{ message.message_type }}
+                    </div>
+
+                    {% if message.platform %}
+                        <div class="mb-2">
+                            <strong>Platform:</strong> {{ message.platform }}
+                        </div>
+                    {% endif %}
+
+                    {% if message.sender %}
+                        <div class="mb-2">
+                            <strong>Sender:</strong> {{ message.sender }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-0">
+                        <strong>Preview:</strong><br>
+                        {{ message.message_content|truncatechars:180 }}
+                    </div>
+                </div>
+
+                <p class="text-muted small mt-4 mb-0">
+                    You will be redirected automatically when processing is complete.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            window.location.href = "{% url 'finalize_message_submission' message.id %}";
+        }, 400);
+    });
+</script>
+
+{% endblock %}

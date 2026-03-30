@@ -18,13 +18,27 @@
                     </p>
                 </div>
 
-                <div class="border rounded p-3 bg-light mb-4">
-                    <p class="mb-1">
-                        <strong>{{ comment.user.username }}</strong>
-                    </p>
+                {% if comment.moderation_status == "pending" %}
+                    <div class="alert alert-warning mb-4">
+                        <strong><i class="bi bi-hourglass-split"></i> Pending Review</strong><br>
+                        This comment is currently under review and may not be visible to other users.
+                        {% if comment.moderation_reason %}
+                            <br><strong>Reason:</strong> {{ comment.moderation_reason }}
+                        {% endif %}
+                    </div>
+                {% endif %}
 
-                    <p class="mb-2" style="white-space: pre-wrap;">
-                        {{ comment.content|truncatechars:200 }}
+                <div class="border rounded p-3 bg-light mb-4">
+                    <div class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+                        <strong>{{ comment.user.username }}</strong>
+
+                        {% if comment.moderation_status == "pending" %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% endif %}
+                    </div>
+
+                    <p class="mb-2">
+                        {{ comment.content|striptags|truncatechars:200 }}
                     </p>
 
                     <p class="text-muted small mb-0">
