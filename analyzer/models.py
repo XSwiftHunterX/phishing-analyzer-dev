@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from .validators import validate_image
 
 # Create your models here.
 class ModerationStatus(models.TextChoices):
@@ -32,7 +33,12 @@ class Message(models.Model):
     classification = models.CharField(max_length=20, choices=CLASSIFICATIONS)
     submission_date = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='liked_messages', blank=True)
-    screenshot = models.ImageField(upload_to='message_screenshots/', blank=True, null=True)
+    screenshot = models.ImageField(
+        upload_to='message_screenshots/',
+        validators=[validate_image],
+        blank=True,
+        null=True
+    )
     redacted_screenshot = models.ImageField(
         upload_to='redacted_message_screenshots/',
         blank=True,
@@ -137,7 +143,12 @@ class Comment(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
-    profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    profile_image = models.ImageField(
+        upload_to='profile_images/',
+        validators=[validate_image],
+        blank=True,
+        null=True
+    )
 
     moderation_status = models.CharField(
         max_length=20,
