@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'analyzer.apps.AnalyzerConfig',
     'allauth',
     'allauth.account',
+    'django_huey',
 ]
 
 SITE_ID = 1
@@ -162,6 +163,25 @@ DEFAULT_FROM_EMAIL = 'noreply@phishinganalyzer.local'
 ACCOUNT_FORMS = {
     'login': 'analyzer.forms.StyledLoginForm',
     'signup': 'analyzer.forms.StyledSignupForm',
+}
+
+DJANGO_HUEY = {
+    'default': 'default',
+    'queues': {
+        'default': {
+            'huey_class': 'huey.RedisHuey',
+            'name': 'phishing-site',
+            'url': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0'),
+            'immediate': False,
+            'results': True,
+            'store_none': False,
+            'utc': True,
+            'consumer': {
+                'workers': 1,
+                'worker_type': 'thread',
+            },
+        },
+    },
 }
 
 LOGGING = {

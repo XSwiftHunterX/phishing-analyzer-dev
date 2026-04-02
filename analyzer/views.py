@@ -31,6 +31,7 @@ from .services.ai_analysis import analyze_message, save_analysis_result
 from .services.similarity import find_similar_messages
 from django_ratelimit.decorators import ratelimit
 from .services.text_moderation import moderate_text
+from .tasks import run_ai_analysis_task
 
 
 def add_ratelimit_message(request, action: str):
@@ -450,6 +451,8 @@ def submit_message(request):
             message.moderation_status = ModerationStatus.PENDING
             message.moderation_reason = "Processing submission..."
             message.save()
+            
+            run_ai_analysis_task(message.id)
 
             request.session['processing_message_id'] = message.id
 

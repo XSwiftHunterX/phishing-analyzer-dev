@@ -2,8 +2,8 @@ from django.core.exceptions import ValidationError
 from PIL import Image
 
 def validate_image(file):
-    # Check MIME type
-    if not file.content_type.startswith('image/'):
+    content_type = getattr(file, "content_type", None)
+    if content_type and not content_type.startswith("image/"):
         raise ValidationError("File must be an image.")
 
     try:
@@ -14,8 +14,11 @@ def validate_image(file):
 
     file.seek(0)
 
-    img = Image.open(file)
+    try:
+        img = Image.open(file)
+        if img.width > 5000 or img.height > 5000:
+            raise ValidationError("Image too large (max 5000x5000).")
+    except Exception:
+        raise ValidationError("Invalid image file.")
 
-    # Limit dimensions
-    if img.width > 5000 or img.height > 5000:
-        raise ValidationError("Image too large (max 5000x5000).")
+    file.seek(0)
