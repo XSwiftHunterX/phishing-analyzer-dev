@@ -31,8 +31,9 @@ from .services.ai_analysis import analyze_message, save_analysis_result
 from .services.similarity import find_similar_messages
 from django_ratelimit.decorators import ratelimit
 from .services.text_moderation import moderate_text
-from .tasks import run_ai_analysis_task
-
+from .tasks import run_ai_analysis_task, run_image_processing_task
+from django.http import JsonResponse
+from django.urls import reverse
 
 def add_ratelimit_message(request, action: str):
     messages.warning(request, get_ratelimit_message(action))
@@ -196,6 +197,126 @@ def apply_message_moderation(message, form):
         if all_reasons else ""
     )
 
+    return message
+
+
+def apply_text_only_message_moderation(message, form):
+    field_results = [
+        getattr(form, '_message_content_moderation', None),
+        getattr(form, '_sender_moderation', None),
+        getattr(form, '_platform_moderation', None),
+        getattr(form, '_additional_details_moderation', None),
+    ]
+    field_results = [result for result in field_results if result is not None]
+
+    overall_status = ModerationStatus.APPROVED
+    overall_reason_parts = []
+
+    for result in field_results:
+        if result.reason:
+            overall_reason_parts.append(result.reason)
+
+        if result.status == "rejected":
+            overall_status = ModerationStatus.REJECTED
+        elif result.status == "pending" and overall_status != ModerationStatus.REJECTED:
+            overall_status = ModerationStatus.PENDING
+
+    pii_results = [
+        detect_pii(message.message_content, context="message_content", sender=message.sender),
+        detect_pii(message.sender, context="sender", sender=message.sender),
+        detect_pii(message.platform, context="platform", sender=message.sender),
+        detect_pii(message.additional_details, context="additional_details", sender=message.sender),
+    ]
+
+    pii_detected = any(result.detected for result in pii_results)
+    pii_review_required = any(result.review_required for result in pii_results)
+
+    pii_status = ModerationStatus.APPROVED
+    pii_notes_parts = []
+
+    for result in pii_results:
+        if result.notes:
+            pii_notes_parts.append(result.notes)
+
+        if result.status == "rejected":
+            pii_status = ModerationStatus.REJECTED
+        elif result.status == "pending" and pii_status != ModerationStatus.REJECTED:
+            pii_status = ModerationStatus.PENDING
+
+    message.pii_detected = pii_detected
+    message.pii_review_required = pii_review_required
+    message.pii_scan_status = pii_status
+    message.pii_notes = " | ".join(pii_notes_parts)
+
+    if pii_status == ModerationStatus.REJECTED:
+        overall_status = ModerationStatus.REJECTED
+    elif pii_status == ModerationStatus.PENDING and overall_status != ModerationStatus.REJECTED:
+        overall_status = ModerationStatus.PENDING
+
+    all_reasons = []
+    all_reasons.extend(overall_reason_parts)
+    all_reasons.extend(pii_notes_parts)
+
+    message.moderation_status = overall_status
+    message.moderation_reason = (
+        "\n• " + "\n• ".join(all_reasons)
+        if all_reasons else ""
+    )
+
+    return message
+
+
+def apply_async_image_results_to_overall_moderation(message):
+    image_reason_parts = []
+
+    overall_status = message.moderation_status or ModerationStatus.APPROVED
+
+    if message.image_moderation_reason:
+        image_reason_parts.append(message.image_moderation_reason)
+
+    if message.image_relevance_reason:
+        image_reason_parts.append(message.image_relevance_reason)
+
+    if message.image_moderation_status == ModerationStatus.REJECTED:
+        overall_status = ModerationStatus.REJECTED
+    elif (
+        message.image_moderation_status == ModerationStatus.PENDING
+        and overall_status != ModerationStatus.REJECTED
+    ):
+        overall_status = ModerationStatus.PENDING
+
+    if message.image_relevance_status == ModerationStatus.REJECTED:
+        overall_status = ModerationStatus.REJECTED
+    elif (
+        message.image_relevance_status == ModerationStatus.PENDING
+        and overall_status != ModerationStatus.REJECTED
+    ):
+        overall_status = ModerationStatus.PENDING
+
+    if message.pii_scan_status == ModerationStatus.REJECTED:
+        overall_status = ModerationStatus.REJECTED
+    elif (
+        message.pii_scan_status == ModerationStatus.PENDING
+        and overall_status != ModerationStatus.REJECTED
+    ):
+        overall_status = ModerationStatus.PENDING
+
+    existing_reason = (message.moderation_reason or "").strip()
+
+    extra_reasons = []
+    if image_reason_parts:
+        extra_reasons.extend(image_reason_parts)
+
+    if extra_reasons:
+        extra_reason_text = "\n• " + "\n• ".join(extra_reasons)
+        if existing_reason:
+            message.moderation_reason = existing_reason + extra_reason_text
+        else:
+            message.moderation_reason = extra_reason_text
+    else:
+        message.moderation_reason = existing_reason
+
+    message.moderation_status = overall_status
     return message
 
 
@@ -453,6 +574,7 @@ def submit_message(request):
             message.save()
             
             run_ai_analysis_task(message.id)
+            run_image_processing_task(message.id)
 
             request.session['processing_message_id'] = message.id
 
@@ -476,6 +598,34 @@ def processing_message(request, message_id):
 
     return render(request, 'analyzer/processing_message.html', {
         'message': message,
+    })
+
+
+@login_required
+def message_processing_status(request, message_id):
+    message = get_object_or_404(
+        Message,
+        id=message_id,
+        user=request.user,
+        is_removed=False,
+    )
+
+    ready = (
+        message.ai_status == "completed" and
+        message.image_processing_status == "completed"
+    )
+
+    failed = (
+        message.ai_status == "failed" or
+        message.image_processing_status == "failed"
+    )
+
+    return JsonResponse({
+        "ready": ready,
+        "failed": failed,
+        "ai_status": message.ai_status,
+        "image_processing_status": message.image_processing_status,
+        "redirect_url": reverse('finalize_message_submission', args=[message.id]) if ready else "",
     })
 
 
@@ -526,7 +676,8 @@ def finalize_message_submission(request, message_id):
         message.delete()
         return redirect('submit_message')
 
-    message = apply_message_moderation(message, form)
+    message = apply_text_only_message_moderation(message, form)
+    message = apply_async_image_results_to_overall_moderation(message)
 
     if message.moderation_status == ModerationStatus.REJECTED:
         messages.error(request, "Your message could not be posted.")
@@ -534,12 +685,6 @@ def finalize_message_submission(request, message_id):
         return redirect('submit_message')
 
     message.save()
-
-    try:
-        analysis_data = analyze_message(message)
-        save_analysis_result(message, analysis_data)
-    except Exception as e:
-        print(f"AI analysis failed: {e}")
 
     add_message_submission_feedback(request, message, updated=False)
     return redirect('message_detail', message_id=message.id)

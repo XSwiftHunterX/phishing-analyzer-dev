@@ -24,6 +24,9 @@ class Message(models.Model):
         ('Unsure', 'Unsure'),
     ]
 
+    ai_status = models.CharField(max_length=20, default="pending")
+    image_processing_status = models.CharField(max_length=20, default="pending")
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     message_content = models.TextField()
     message_type = models.CharField(max_length=10, choices=MESSAGE_TYPES)

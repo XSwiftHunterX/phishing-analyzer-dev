@@ -43,7 +43,17 @@
                     </div>
                 </div>
 
-                <p class="text-muted small mt-4 mb-0">
+                <div class="mt-4 text-start mx-auto" style="max-width: 600px;">
+                    <p class="text-muted small mb-2">
+                        <strong>Current status:</strong>
+                    </p>
+                    <ul class="small text-muted mb-0">
+                        <li id="ai-status">AI analysis: waiting...</li>
+                        <li id="image-status">Image/privacy checks: waiting...</li>
+                    </ul>
+                </div>
+
+                <p class="text-muted small mt-4 mb-0" id="processing-note">
                     You will be redirected automatically when processing is complete.
                 </p>
             </div>
@@ -52,10 +62,40 @@
 </div>
 
 <script>
+    function checkProcessingStatus() {
+        fetch("{% url 'message_processing_status' message.id %}", {
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const aiStatusEl = document.getElementById("ai-status");
+            const imageStatusEl = document.getElementById("image-status");
+            const noteEl = document.getElementById("processing-note");
+
+            aiStatusEl.textContent = "AI analysis: " + data.ai_status;
+            imageStatusEl.textContent = "Image/privacy checks: " + data.image_processing_status;
+
+            if (data.failed) {
+                noteEl.textContent = "There was a problem processing your submission. Please refresh or try again.";
+                return;
+            }
+
+            if (data.ready) {
+                window.location.href = data.redirect_url;
+                return;
+            }
+
+            setTimeout(checkProcessingStatus, 2000);
+        })
+        .catch(() => {
+            setTimeout(checkProcessingStatus, 3000);
+        });
+    }
+
     window.addEventListener("load", function () {
-        setTimeout(function () {
-            window.location.href = "{% url 'finalize_message_submission' message.id %}";
-        }, 400);
+        setTimeout(checkProcessingStatus, 1500);
     });
 </script>
 

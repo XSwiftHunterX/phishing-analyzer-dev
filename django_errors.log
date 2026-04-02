@@ -48,3 +48,941 @@ Traceback (most recent call last):
     if not file.content_type.startswith('image/'):
            ^^^^^^^^^^^^^^^^^
 AttributeError: 'ImageFieldFile' object has no attribute 'content_type'
+[ERROR] 2026-04-02 12:02:52,928 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,016 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,100 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,183 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,267 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,350 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,436 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,520 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,603 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,689 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,774 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,857 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:53,940 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:54,023 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:54,107 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:54,190 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:54,276 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:54,359 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:54,448 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:54,531 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:54,696 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:54,782 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:54,948 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,036 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,119 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,203 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,290 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,375 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,458 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,544 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,628 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,712 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,799 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,885 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:55,968 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,053 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,139 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,222 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,320 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,403 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,487 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,571 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,654 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,737 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,820 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,904 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:56,989 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,072 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,160 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,243 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,333 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,417 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,500 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,583 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,666 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,750 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,835 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:57,919 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:58,002 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:58,088 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:58,172 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:58,255 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:58,338 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:58,421 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:58,504 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:58,587 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+[ERROR] 2026-04-02 12:02:58,672 django.security.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/devworkspace/venv/lib/python3.12/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com'. You may need to add 'ec2-18-189-215-139.us-east-2.compute.amazonaws.com' to ALLOWED_HOSTS.
