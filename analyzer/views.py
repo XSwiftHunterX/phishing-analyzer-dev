@@ -34,6 +34,7 @@ from .services.text_moderation import moderate_text
 from .tasks import run_ai_analysis_task, run_image_processing_task
 from django.http import JsonResponse
 from django.urls import reverse
+from django.utils import timezone
 
 def add_ratelimit_message(request, action: str):
     messages.warning(request, get_ratelimit_message(action))
@@ -481,6 +482,15 @@ def message_detail(request, message_id):
         is_removed=False,
     )
 
+    if (
+        request.user.is_authenticated
+        and request.user == message.user
+        and request.session.get("processing_message_id") == message.id
+        and not message.is_finalized
+        and message.processing_status in {"pending", "processing"}
+    ):
+        return redirect('processing_message', message_id=message.id)
+
     if not can_view_message(request, message):
         messages.warning(request, "That message is not available.")
         return redirect('message_list')
@@ -568,6 +578,9 @@ def submit_message(request):
         if form.is_valid():
             message = form.save(commit=False)
             message.user = request.user
+            message.processing_status = "pending"
+            message.processing_error = ""
+            message.is_finalized = False
 
             message.moderation_status = ModerationStatus.PENDING
             message.moderation_reason = "Processing submission..."
@@ -641,9 +654,6 @@ def finalize_message_submission(request, message_id):
     if request.session.get('processing_message_id') != message.id:
         return redirect('message_detail', message_id=message.id)
 
-    # Clear the session flag so refreshing doesn't keep reprocessing.
-    request.session.pop('processing_message_id', None)
-
     # Rebuild the form from the saved message so moderation helpers still work.
     form = MessageForm(instance=message)
     form._message_content_moderation = None
@@ -651,8 +661,6 @@ def finalize_message_submission(request, message_id):
     form._platform_moderation = None
     form._additional_details_moderation = None
 
-    # Re-run the form-level moderation checks directly against saved values.
-    # This preserves your current moderation pipeline design.
     try:
         content = message.message_content or ""
         sender = message.sender or ""
@@ -670,21 +678,41 @@ def finalize_message_submission(request, message_id):
         form._sender_moderation = moderate_text(sender, context="sender")
         form._platform_moderation = moderate_text(platform, context="platform")
         form._additional_details_moderation = moderate_text(details, context="additional_details")
+
     except Exception as e:
+        message.processing_status = "failed"
+        message.processing_error = "There was a problem finalizing this submission."
+        message.save(update_fields=["processing_status", "processing_error"])
+
         messages.error(request, "There was a problem processing your submission.")
         print(f"Message processing failed before moderation: {e}")
-        message.delete()
         return redirect('submit_message')
 
     message = apply_text_only_message_moderation(message, form)
     message = apply_async_image_results_to_overall_moderation(message)
 
     if message.moderation_status == ModerationStatus.REJECTED:
+        message.processing_status = "completed"
+        message.is_finalized = True
+        message.processing_error = ""
+        message.processing_completed_at = timezone.now()
+        message.save()
+
+        # Clear session after final state is saved
+        request.session.pop('processing_message_id', None)
+
         messages.error(request, "Your message could not be posted.")
         message.delete()
         return redirect('submit_message')
 
+    message.processing_status = "completed"
+    message.is_finalized = True
+    message.processing_error = ""
+    message.processing_completed_at = timezone.now()
     message.save()
+
+    # Clear the session flag only after finalize is complete
+    request.session.pop('processing_message_id', None)
 
     add_message_submission_feedback(request, message, updated=False)
     return redirect('message_detail', message_id=message.id)

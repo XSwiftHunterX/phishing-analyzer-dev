@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from .validators import validate_image
+from django.utils import timezone
 
 # Create your models here.
 class ModerationStatus(models.TextChoices):
@@ -26,6 +27,11 @@ class Message(models.Model):
 
     ai_status = models.CharField(max_length=20, default="pending")
     image_processing_status = models.CharField(max_length=20, default="pending")
+    processing_status = models.CharField(max_length=20, default="pending")
+    processing_started_at = models.DateTimeField(auto_now_add=True)
+    processing_completed_at = models.DateTimeField(blank=True, null=True)
+    processing_error = models.TextField(blank=True)
+    is_finalized = models.BooleanField(default=False)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     message_content = models.TextField()
