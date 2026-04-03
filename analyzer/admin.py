@@ -1,10 +1,24 @@
 from django.contrib import admin
+from django.utils import timezone
 from django.utils.html import format_html, conditional_escape
 from django.utils.safestring import mark_safe
-from .models import Message, Comment, UserProfile, MessageReport, CommentReport, UserProfileReport, AIAnalysis
 from django.urls import reverse
 
-# Register your models here.
+from .models import (
+    Message,
+    Comment,
+    UserProfile,
+    MessageReport,
+    CommentReport,
+    UserProfileReport,
+    AIAnalysis,
+)
+from .services.message_processing import (
+    reset_message_processing_state,
+    queue_message_processing,
+)
+
+
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     list_display = (
@@ -25,6 +39,7 @@ class MessageAdmin(admin.ModelAdmin):
     )
     list_filter = (
         'processing_status',
+        'processing_failure_type',
         'is_finalized',
         'ai_status',
         'image_processing_status',
@@ -38,6 +53,7 @@ class MessageAdmin(admin.ModelAdmin):
     )
     search_fields = ('message_content', 'sender', 'platform', 'user__username')
     ordering = ('-submission_date',)
+    actions = ['retry_failed_messages']
 
     fieldsets = (
         ('Message Info', {
@@ -61,6 +77,7 @@ class MessageAdmin(admin.ModelAdmin):
         ('Processing Info', {
             'fields': (
                 'processing_status',
+                'processing_failure_type',
                 'processing_error',
                 'is_finalized',
                 'ai_status',
@@ -113,12 +130,31 @@ class MessageAdmin(admin.ModelAdmin):
         'pii_review_required',
         'pii_notes',
         'processing_status',
+        'processing_failure_type',
         'processing_error',
         'is_finalized',
         'ai_status',
         'image_processing_status',
         'processing_completed_at',
     )
+
+    def save_model(self, request, obj, form, change):
+        if change:
+            original = Message.objects.get(pk=obj.pk)
+
+            admin_approved_failed_message = (
+                original.processing_status == "failed"
+                and obj.moderation_status == "approved"
+            )
+
+            if admin_approved_failed_message:
+                obj.processing_status = "completed"
+                obj.is_finalized = True
+                obj.processing_error = ""
+                obj.processing_failure_type = "admin_override"
+                obj.processing_completed_at = timezone.now()
+
+        super().save_model(request, obj, form, change)
 
     @admin.display(description='Moderation Summary')
     def moderation_summary(self, obj):
@@ -168,6 +204,24 @@ class MessageAdmin(admin.ModelAdmin):
             reason_block,
         )
 
+    @admin.action(description="Retry processing for selected failed messages")
+    def retry_failed_messages(self, request, queryset):
+        retried_count = 0
+
+        for message in queryset:
+            if message.processing_status != "failed":
+                continue
+
+            message = reset_message_processing_state(message)
+            message.save()
+            queue_message_processing(message)
+            retried_count += 1
+
+        self.message_user(
+            request,
+            f"{retried_count} failed message(s) were requeued for processing."
+        )
+
     @admin.display(boolean=True, description='Image Issue')
     def has_image_issue(self, obj):
         return (
@@ -182,6 +236,7 @@ class MessageAdmin(admin.ModelAdmin):
     @admin.display(boolean=True, description='Reported')
     def is_reported(self, obj):
         return obj.is_flagged
+
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
@@ -210,6 +265,7 @@ class CommentAdmin(admin.ModelAdmin):
 
     readonly_fields = ('created_at',)
 
+
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id', 'user')
@@ -231,6 +287,7 @@ class MessageReportAdmin(admin.ModelAdmin):
             url,
             obj.message.id
         )
+
 
 @admin.register(CommentReport)
 class CommentReportAdmin(admin.ModelAdmin):
@@ -257,12 +314,14 @@ class CommentReportAdmin(admin.ModelAdmin):
             obj.comment.message.id
         )
 
+
 @admin.register(UserProfileReport)
 class UserProfileReportAdmin(admin.ModelAdmin):
     list_display = ('id', 'profile', 'reporter', 'reason', 'created_at', 'is_reviewed')
     list_filter = ('reason', 'is_reviewed', 'created_at')
     search_fields = ('profile__user__username', 'reporter__username', 'details')
     ordering = ('-created_at',)
+
 
 @admin.register(AIAnalysis)
 class AIAnalysisAdmin(admin.ModelAdmin):

@@ -44,6 +44,10 @@ from .services.message_processing import (
     apply_text_only_message_moderation,
     apply_async_image_results_to_overall_moderation,
 )
+from .services.message_processing import (
+    reset_message_processing_state,
+    queue_message_processing,
+)
 import logging
 
 logger = logging.getLogger(__name__)
@@ -548,20 +552,11 @@ def retry_message_processing(request, message_id):
         return redirect('message_detail', message_id=message.id)
 
     # reset state
-    message.processing_status = "pending"
-    message.processing_error = ""
-    message.is_finalized = False
-    message.ai_status = "pending"
-    message.image_processing_status = "pending"
-    message.processing_completed_at = None
+    logger.info("Retry triggered for message %s by user %s", message.id, request.user.id)
+    message = reset_message_processing_state(message)
     message.save()
 
-    run_ai_analysis_task(message.id)
-    run_image_processing_task(message.id)
-    check_message_processing_timeout_task.schedule(
-        args=(message.id,),
-        delay=getattr(settings, "MESSAGE_PROCESSING_TIMEOUT_SECONDS", 180)
-    )
+    queue_message_processing(message)
 
     return redirect('processing_message', message_id=message.id)
 

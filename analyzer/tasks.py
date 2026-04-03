@@ -19,17 +19,23 @@ from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
-def mark_message_processing_failed(message, error_text):
+def mark_message_processing_failed(message, error_text, failure_type):
     message.processing_status = "failed"
     message.processing_error = error_text
-    message.save(update_fields=["processing_status", "processing_error"])
+    message.processing_failure_type = failure_type
+    message.save(update_fields=["processing_status", "processing_error", "processing_failure_type"])
 
 @task()
 def check_message_processing_timeout_task(message_id):
     try:
+        logger.info("Timeout check started for message %s", message_id)
         message = Message.objects.get(id=message_id)
 
         if message.is_finalized or message.processing_status == "completed":
+            logger.info(
+                "Timeout check skipped for message %s because it is already done",
+                message_id
+            )
             return
 
         timeout_seconds = getattr(settings, "MESSAGE_PROCESSING_TIMEOUT_SECONDS", 180)
@@ -38,9 +44,12 @@ def check_message_processing_timeout_task(message_id):
         if timezone.now() >= deadline:
             mark_message_processing_failed(
                 message,
-                "Processing took too long and timed out. Please try submitting again."
+                "Processing took too long and timed out. Please try submitting again.",
+                "timeout_failure",
             )
             logger.warning("Message %s timed out during processing", message_id)
+        else:
+            logger.info("Timeout check passed for message %s; not timed out yet", message_id)
 
     except Message.DoesNotExist:
         logger.error("Timeout check failed: message %s does not exist", message_id)
@@ -56,7 +65,17 @@ def maybe_queue_finalize(message_id):
         and not message.is_finalized
         and message.processing_status != "failed"
     ):
+        logger.info("Finalize queued for message %s", message_id)
         finalize_message_task(message.id)
+    else:
+        logger.info(
+            "Finalize not queued for message %s (ai_status=%s, image_processing_status=%s, is_finalized=%s, processing_status=%s)",
+            message_id,
+            message.ai_status,
+            message.image_processing_status,
+            message.is_finalized,
+            message.processing_status,
+        )
 
 
 @task()
@@ -68,7 +87,15 @@ def test_background_task():
 @task()
 def run_ai_analysis_task(message_id):
     try:
+        logger.info("AI analysis started for message %s", message_id)
         message = Message.objects.get(id=message_id)
+        if message.is_finalized or message.processing_status in {"completed", "failed"}:
+            logger.info(
+                "AI analysis skipped for message %s because processing is already %s",
+                message_id,
+                message.processing_status,
+            )
+            return
         message.ai_status = "processing"
         message.processing_status = "processing"
         message.save(update_fields=["ai_status", "processing_status"])
@@ -79,7 +106,7 @@ def run_ai_analysis_task(message_id):
         message.ai_status = "completed"
         message.save(update_fields=["ai_status"])
 
-        #maybe_queue_finalize(message_id)
+        maybe_queue_finalize(message_id)
 
         logger.info(f"AI analysis completed for message {message_id}")
     except Message.DoesNotExist:
@@ -90,7 +117,8 @@ def run_ai_analysis_task(message_id):
             message.ai_status = "failed"
             message.processing_status = "failed"
             message.processing_error = f"AI analysis failed: {e}"
-            message.save(update_fields=["ai_status", "processing_status", "processing_error"])
+            message.processing_failure_type = "ai_failure"
+            message.save(update_fields=["ai_status", "processing_status", "processing_error", "processing_failure_type"])
         except Exception:
             pass
         logger.exception(f"AI task failed for message {message_id}: {e}")
@@ -99,7 +127,15 @@ def run_ai_analysis_task(message_id):
 @task()
 def run_image_processing_task(message_id):
     try:
+        logger.info("Image processing started for message %s", message_id)
         message = Message.objects.get(id=message_id)
+        if message.is_finalized or message.processing_status in {"completed", "failed"}:
+            logger.info(
+                "Image processing skipped for message %s because processing is already %s",
+                message_id,
+                message.processing_status,
+            )
+            return
         message.image_processing_status = "processing"
         message.processing_status = "processing"
         message.save(update_fields=["image_processing_status", "processing_status"])
@@ -148,7 +184,7 @@ def run_image_processing_task(message_id):
         message.image_processing_status = "completed"
         message.save()
 
-        #maybe_queue_finalize(message_id)
+        maybe_queue_finalize(message_id)
 
     except Exception as e:
         try:
@@ -156,7 +192,8 @@ def run_image_processing_task(message_id):
             message.image_processing_status = "failed"
             message.processing_status = "failed"
             message.processing_error = f"Image processing failed: {e}"
-            message.save(update_fields=["image_processing_status", "processing_status", "processing_error"])
+            message.processing_failure_type = "image_failure"
+            message.save(update_fields=["image_processing_status", "processing_status", "processing_error", "processing_failure_type"])
         except Exception:
             pass
         logger.exception(f"Image processing failed for message {message_id}: {e}")
@@ -165,10 +202,12 @@ def run_image_processing_task(message_id):
 @task()
 def finalize_message_task(message_id):
     try:
+        logger.info("Finalization started for message %s", message_id)
         with transaction.atomic():
             message = Message.objects.select_for_update().get(id=message_id)
 
             if message.is_finalized:
+                logger.info("Finalization skipped for message %s because it was already finalized", message_id)
                 return
 
             form = MessageForm(instance=message)
@@ -180,6 +219,7 @@ def finalize_message_task(message_id):
             message.processing_status = "completed"
             message.is_finalized = True
             message.processing_error = ""
+            message.processing_failure_type = ""
             message.processing_completed_at = timezone.now()
             message.save()
 
@@ -192,7 +232,8 @@ def finalize_message_task(message_id):
             message = Message.objects.get(id=message_id)
             message.processing_status = "failed"
             message.processing_error = f"Finalization failed: {e}"
-            message.save(update_fields=["processing_status", "processing_error"])
+            message.processing_failure_type = "finalization_failure"
+            message.save(update_fields=["processing_status", "processing_error", "processing_failure_type"])
         except Exception:
             pass
         logger.exception(f"Finalization failed for message {message_id}: {e}")

@@ -1,7 +1,22 @@
 from .pii_detection import detect_pii
 from .text_moderation import moderate_text
 from ..models import ModerationStatus
+from django.conf import settings
 
+
+def queue_message_processing(message):
+    from ..tasks import (
+        run_ai_analysis_task,
+        run_image_processing_task,
+        check_message_processing_timeout_task,
+    )
+
+    run_ai_analysis_task(message.id)
+    run_image_processing_task(message.id)
+    check_message_processing_timeout_task.schedule(
+        args=(message.id,),
+        delay=getattr(settings, "MESSAGE_PROCESSING_TIMEOUT_SECONDS", 180)
+    )
 
 def apply_text_only_message_moderation(message, form):
     field_results = [
@@ -142,3 +157,14 @@ def populate_text_moderation_results(form, message):
     form._additional_details_moderation = moderate_text(details, context="additional_details")
 
     return form
+
+
+def reset_message_processing_state(message):
+    message.processing_status = "pending"
+    message.processing_error = ""
+    message.processing_failure_type = ""
+    message.is_finalized = False
+    message.ai_status = "pending"
+    message.image_processing_status = "pending"
+    message.processing_completed_at = None
+    return message
