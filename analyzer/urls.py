@@ -5,7 +5,7 @@ urlpatterns = [
     path('', views.message_list, name='message_list'),
     path('submit/', views.submit_message, name='submit_message'),
     path('submit/processing/<int:message_id>/', views.processing_message, name='processing_message'),
-    path('submit/finalize/<int:message_id>/', views.finalize_message_submission, name='finalize_message_submission'),
+    path('message/<int:message_id>/retry/', views.retry_message_processing, name='retry_message_processing'),
 
     path('edit/<int:message_id>/', views.edit_message, name='edit_message'),
     path('delete/<int:message_id>/', views.delete_message, name='delete_message'),

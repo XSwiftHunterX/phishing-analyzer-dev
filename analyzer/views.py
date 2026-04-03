@@ -19,6 +19,7 @@ from .forms import (
     UserProfileReportForm,
 )
 from django.db.models import Q, Count
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.contrib.auth import logout
@@ -31,10 +32,21 @@ from .services.ai_analysis import analyze_message, save_analysis_result
 from .services.similarity import find_similar_messages
 from django_ratelimit.decorators import ratelimit
 from .services.text_moderation import moderate_text
-from .tasks import run_ai_analysis_task, run_image_processing_task
+from .tasks import (
+    run_ai_analysis_task,
+    run_image_processing_task,
+    check_message_processing_timeout_task,
+)
 from django.http import JsonResponse
 from django.urls import reverse
 from django.utils import timezone
+from .services.message_processing import (
+    apply_text_only_message_moderation,
+    apply_async_image_results_to_overall_moderation,
+)
+import logging
+
+logger = logging.getLogger(__name__)
 
 def add_ratelimit_message(request, action: str):
     messages.warning(request, get_ratelimit_message(action))
@@ -198,126 +210,6 @@ def apply_message_moderation(message, form):
         if all_reasons else ""
     )
 
-    return message
-
-
-def apply_text_only_message_moderation(message, form):
-    field_results = [
-        getattr(form, '_message_content_moderation', None),
-        getattr(form, '_sender_moderation', None),
-        getattr(form, '_platform_moderation', None),
-        getattr(form, '_additional_details_moderation', None),
-    ]
-    field_results = [result for result in field_results if result is not None]
-
-    overall_status = ModerationStatus.APPROVED
-    overall_reason_parts = []
-
-    for result in field_results:
-        if result.reason:
-            overall_reason_parts.append(result.reason)
-
-        if result.status == "rejected":
-            overall_status = ModerationStatus.REJECTED
-        elif result.status == "pending" and overall_status != ModerationStatus.REJECTED:
-            overall_status = ModerationStatus.PENDING
-
-    pii_results = [
-        detect_pii(message.message_content, context="message_content", sender=message.sender),
-        detect_pii(message.sender, context="sender", sender=message.sender),
-        detect_pii(message.platform, context="platform", sender=message.sender),
-        detect_pii(message.additional_details, context="additional_details", sender=message.sender),
-    ]
-
-    pii_detected = any(result.detected for result in pii_results)
-    pii_review_required = any(result.review_required for result in pii_results)
-
-    pii_status = ModerationStatus.APPROVED
-    pii_notes_parts = []
-
-    for result in pii_results:
-        if result.notes:
-            pii_notes_parts.append(result.notes)
-
-        if result.status == "rejected":
-            pii_status = ModerationStatus.REJECTED
-        elif result.status == "pending" and pii_status != ModerationStatus.REJECTED:
-            pii_status = ModerationStatus.PENDING
-
-    message.pii_detected = pii_detected
-    message.pii_review_required = pii_review_required
-    message.pii_scan_status = pii_status
-    message.pii_notes = " | ".join(pii_notes_parts)
-
-    if pii_status == ModerationStatus.REJECTED:
-        overall_status = ModerationStatus.REJECTED
-    elif pii_status == ModerationStatus.PENDING and overall_status != ModerationStatus.REJECTED:
-        overall_status = ModerationStatus.PENDING
-
-    all_reasons = []
-    all_reasons.extend(overall_reason_parts)
-    all_reasons.extend(pii_notes_parts)
-
-    message.moderation_status = overall_status
-    message.moderation_reason = (
-        "\n• " + "\n• ".join(all_reasons)
-        if all_reasons else ""
-    )
-
-    return message
-
-
-def apply_async_image_results_to_overall_moderation(message):
-    image_reason_parts = []
-
-    overall_status = message.moderation_status or ModerationStatus.APPROVED
-
-    if message.image_moderation_reason:
-        image_reason_parts.append(message.image_moderation_reason)
-
-    if message.image_relevance_reason:
-        image_reason_parts.append(message.image_relevance_reason)
-
-    if message.image_moderation_status == ModerationStatus.REJECTED:
-        overall_status = ModerationStatus.REJECTED
-    elif (
-        message.image_moderation_status == ModerationStatus.PENDING
-        and overall_status != ModerationStatus.REJECTED
-    ):
-        overall_status = ModerationStatus.PENDING
-
-    if message.image_relevance_status == ModerationStatus.REJECTED:
-        overall_status = ModerationStatus.REJECTED
-    elif (
-        message.image_relevance_status == ModerationStatus.PENDING
-        and overall_status != ModerationStatus.REJECTED
-    ):
-        overall_status = ModerationStatus.PENDING
-
-    if message.pii_scan_status == ModerationStatus.REJECTED:
-        overall_status = ModerationStatus.REJECTED
-    elif (
-        message.pii_scan_status == ModerationStatus.PENDING
-        and overall_status != ModerationStatus.REJECTED
-    ):
-        overall_status = ModerationStatus.PENDING
-
-    existing_reason = (message.moderation_reason or "").strip()
-
-    extra_reasons = []
-    if image_reason_parts:
-        extra_reasons.extend(image_reason_parts)
-
-    if extra_reasons:
-        extra_reason_text = "\n• " + "\n• ".join(extra_reasons)
-        if existing_reason:
-            message.moderation_reason = existing_reason + extra_reason_text
-        else:
-            message.moderation_reason = extra_reason_text
-    else:
-        message.moderation_reason = existing_reason
-
-    message.moderation_status = overall_status
     return message
 
 
@@ -485,7 +377,6 @@ def message_detail(request, message_id):
     if (
         request.user.is_authenticated
         and request.user == message.user
-        and request.session.get("processing_message_id") == message.id
         and not message.is_finalized
         and message.processing_status in {"pending", "processing"}
     ):
@@ -588,8 +479,11 @@ def submit_message(request):
             
             run_ai_analysis_task(message.id)
             run_image_processing_task(message.id)
-
-            request.session['processing_message_id'] = message.id
+            
+            check_message_processing_timeout_task.schedule(
+                args=(message.id,),
+                delay=getattr(settings, "MESSAGE_PROCESSING_TIMEOUT_SECONDS", 180)
+            )
 
             return redirect('processing_message', message_id=message.id)
     else:
@@ -606,7 +500,7 @@ def processing_message(request, message_id):
         is_removed=False,
     )
 
-    if request.session.get('processing_message_id') != message.id:
+    if message.is_finalized or message.processing_status == "completed":
         return redirect('message_detail', message_id=message.id)
 
     return render(request, 'analyzer/processing_message.html', {
@@ -624,26 +518,25 @@ def message_processing_status(request, message_id):
     )
 
     ready = (
-        message.ai_status == "completed" and
-        message.image_processing_status == "completed"
+        message.processing_status == "completed"
+        and message.is_finalized
     )
 
-    failed = (
-        message.ai_status == "failed" or
-        message.image_processing_status == "failed"
-    )
+    failed = message.processing_status == "failed"
 
     return JsonResponse({
         "ready": ready,
         "failed": failed,
         "ai_status": message.ai_status,
         "image_processing_status": message.image_processing_status,
-        "redirect_url": reverse('finalize_message_submission', args=[message.id]) if ready else "",
+        "processing_status": message.processing_status,
+        "processing_error": message.processing_error,
+        "redirect_url": reverse('message_detail', args=[message.id]) if ready else "",
+        "message_id": message.id,
     })
 
-
 @login_required
-def finalize_message_submission(request, message_id):
+def retry_message_processing(request, message_id):
     message = get_object_or_404(
         Message,
         id=message_id,
@@ -651,71 +544,26 @@ def finalize_message_submission(request, message_id):
         is_removed=False,
     )
 
-    if request.session.get('processing_message_id') != message.id:
+    if message.processing_status != "failed":
         return redirect('message_detail', message_id=message.id)
 
-    # Rebuild the form from the saved message so moderation helpers still work.
-    form = MessageForm(instance=message)
-    form._message_content_moderation = None
-    form._sender_moderation = None
-    form._platform_moderation = None
-    form._additional_details_moderation = None
-
-    try:
-        content = message.message_content or ""
-        sender = message.sender or ""
-        platform = message.platform or ""
-        details = message.additional_details or ""
-
-        form.cleaned_data = {
-            'message_content': content,
-            'sender': sender,
-            'platform': platform,
-            'additional_details': details,
-        }
-
-        form._message_content_moderation = moderate_text(content, context="message_content")
-        form._sender_moderation = moderate_text(sender, context="sender")
-        form._platform_moderation = moderate_text(platform, context="platform")
-        form._additional_details_moderation = moderate_text(details, context="additional_details")
-
-    except Exception as e:
-        message.processing_status = "failed"
-        message.processing_error = "There was a problem finalizing this submission."
-        message.save(update_fields=["processing_status", "processing_error"])
-
-        messages.error(request, "There was a problem processing your submission.")
-        print(f"Message processing failed before moderation: {e}")
-        return redirect('submit_message')
-
-    message = apply_text_only_message_moderation(message, form)
-    message = apply_async_image_results_to_overall_moderation(message)
-
-    if message.moderation_status == ModerationStatus.REJECTED:
-        message.processing_status = "completed"
-        message.is_finalized = True
-        message.processing_error = ""
-        message.processing_completed_at = timezone.now()
-        message.save()
-
-        # Clear session after final state is saved
-        request.session.pop('processing_message_id', None)
-
-        messages.error(request, "Your message could not be posted.")
-        message.delete()
-        return redirect('submit_message')
-
-    message.processing_status = "completed"
-    message.is_finalized = True
+    # reset state
+    message.processing_status = "pending"
     message.processing_error = ""
-    message.processing_completed_at = timezone.now()
+    message.is_finalized = False
+    message.ai_status = "pending"
+    message.image_processing_status = "pending"
+    message.processing_completed_at = None
     message.save()
 
-    # Clear the session flag only after finalize is complete
-    request.session.pop('processing_message_id', None)
+    run_ai_analysis_task(message.id)
+    run_image_processing_task(message.id)
+    check_message_processing_timeout_task.schedule(
+        args=(message.id,),
+        delay=getattr(settings, "MESSAGE_PROCESSING_TIMEOUT_SECONDS", 180)
+    )
 
-    add_message_submission_feedback(request, message, updated=False)
-    return redirect('message_detail', message_id=message.id)
+    return redirect('processing_message', message_id=message.id)
 
 @login_required
 @ratelimit(key='user_or_ip', rate='10/10m', method='POST', block=False)
@@ -750,8 +598,11 @@ def edit_message(request, message_id):
             try:
                 analysis_data = analyze_message(updated_message)
                 save_analysis_result(updated_message, analysis_data)
-            except Exception as e:
-                print(f"AI analysis failed: {e}")
+            except Exception:
+                logger.exception(
+                    "AI analysis failed during edit_message for message %s",
+                    updated_message.id
+                )
 
             add_message_submission_feedback(request, updated_message, updated=True)
             return redirect('message_detail', message_id=updated_message.id)

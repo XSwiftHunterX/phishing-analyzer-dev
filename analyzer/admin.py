@@ -14,12 +14,20 @@ class MessageAdmin(admin.ModelAdmin):
         'classification',
         'user',
         'submission_date',
+        'processing_status',
+        'ai_status',
+        'image_processing_status',
+        'is_finalized',
         'moderation_status',
         'has_image_issue',
         'has_pii_issue',
         'is_reported',
     )
     list_filter = (
+        'processing_status',
+        'is_finalized',
+        'ai_status',
+        'image_processing_status',
         'moderation_status',
         'is_flagged',
         'message_type',
@@ -48,6 +56,16 @@ class MessageAdmin(admin.ModelAdmin):
             'fields': (
                 'moderation_summary',
                 'moderation_status',
+            )
+        }),
+        ('Processing Info', {
+            'fields': (
+                'processing_status',
+                'processing_error',
+                'is_finalized',
+                'ai_status',
+                'image_processing_status',
+                'processing_completed_at',
             )
         }),
         ('Screenshot Files', {
@@ -94,6 +112,12 @@ class MessageAdmin(admin.ModelAdmin):
         'pii_detected',
         'pii_review_required',
         'pii_notes',
+        'processing_status',
+        'processing_error',
+        'is_finalized',
+        'ai_status',
+        'image_processing_status',
+        'processing_completed_at',
     )
 
     @admin.display(description='Moderation Summary')

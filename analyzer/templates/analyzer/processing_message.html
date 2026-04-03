@@ -50,7 +50,14 @@
                     <ul class="small text-muted mb-0">
                         <li id="ai-status">AI analysis: waiting...</li>
                         <li id="image-status">Image/privacy checks: waiting...</li>
+                        <li id="final-status">Final review: waiting...</li>
                     </ul>
+
+                    <div id="retry-section" class="mt-3" style="display: none;">
+                        <a id="retry-button" href="#" class="btn btn-warning">
+                            Retry Processing
+                        </a>
+                    </div>
                 </div>
 
                 <p class="text-muted small mt-4 mb-0" id="processing-note">
@@ -62,6 +69,15 @@
 </div>
 
 <script>
+    function prettyStatus(value) {
+        if (!value) return "waiting...";
+        if (value === "pending") return "waiting...";
+        if (value === "processing") return "processing...";
+        if (value === "completed") return "completed";
+        if (value === "failed") return "failed";
+        return value;
+    }
+
     function checkProcessingStatus() {
         fetch("{% url 'message_processing_status' message.id %}", {
             headers: {
@@ -72,13 +88,22 @@
         .then(data => {
             const aiStatusEl = document.getElementById("ai-status");
             const imageStatusEl = document.getElementById("image-status");
+            const finalStatusEl = document.getElementById("final-status");
             const noteEl = document.getElementById("processing-note");
 
-            aiStatusEl.textContent = "AI analysis: " + data.ai_status;
-            imageStatusEl.textContent = "Image/privacy checks: " + data.image_processing_status;
+            aiStatusEl.textContent = "AI analysis: " + prettyStatus(data.ai_status);
+            imageStatusEl.textContent = "Image/privacy checks: " + prettyStatus(data.image_processing_status);
+            finalStatusEl.textContent = "Final review: " + prettyStatus(data.processing_status);
 
             if (data.failed) {
-                noteEl.textContent = "There was a problem processing your submission. Please refresh or try again.";
+                noteEl.textContent = data.processing_error || "There was a problem processing your submission.";
+
+                const retrySection = document.getElementById("retry-section");
+                const retryButton = document.getElementById("retry-button");
+
+                retryButton.href = `/message/${data.message_id}/retry/`;
+                retrySection.style.display = "block";
+
                 return;
             }
 
