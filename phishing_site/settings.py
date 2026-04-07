@@ -160,7 +160,7 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@phishinganalyzer.local'
+DEFAULT_FROM_EMAIL = 'noreply@localhost'
 
 ACCOUNT_FORMS = {
     'login': 'analyzer.forms.StyledLoginForm',
@@ -215,3 +215,17 @@ LOGGING = {
         },
     },
 }
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
+SECURE_REFERRER_POLICY = "same-origin"
+
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+
+ADMINS = [("Admin", "ben@benchurchill.net")]
+
+ACCOUNT_LOGOUT_ON_GET = False

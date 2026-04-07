@@ -33,6 +33,7 @@ class Message(models.Model):
     processing_error = models.TextField(blank=True)
     is_finalized = models.BooleanField(default=False)
     processing_failure_type = models.CharField(max_length=50, blank=True)
+    duplicate_submission_suspected = models.BooleanField(default=False)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     message_content = models.TextField()

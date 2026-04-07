@@ -345,6 +345,18 @@
             {% if user.is_authenticated %}
                 <form method="post" class="mb-4">
                     {% csrf_token %}
+
+                    <div style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;" aria-hidden="true">
+                        <label for="id_website">Leave this field empty</label>
+                        <input
+                            type="text"
+                            name="website"
+                            id="id_website"
+                            tabindex="-1"
+                            autocomplete="off"
+                        >
+                    </div>
+
                     {{ form.as_p }}
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-chat-dots"></i> Post Comment

@@ -216,6 +216,18 @@ def finalize_message_task(message_id):
             message = apply_text_only_message_moderation(message, form)
             message = apply_async_image_results_to_overall_moderation(message)
 
+            if message.duplicate_submission_suspected:
+                message.moderation_status = ModerationStatus.PENDING
+
+                duplicate_reason = "Possible duplicate submission in a short time."
+                existing_reason = (message.moderation_reason or "").strip()
+
+                if duplicate_reason not in existing_reason:
+                    if existing_reason:
+                        message.moderation_reason = existing_reason + "\n• " + duplicate_reason
+                    else:
+                        message.moderation_reason = duplicate_reason
+
             message.processing_status = "completed"
             message.is_finalized = True
             message.processing_error = ""

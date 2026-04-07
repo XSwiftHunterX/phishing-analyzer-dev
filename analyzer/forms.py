@@ -5,6 +5,16 @@ from allauth.account.forms import LoginForm, SignupForm
 from .services.text_moderation import moderate_text
 
 class MessageForm(forms.ModelForm):
+    website = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'autocomplete': 'off',
+            'tabindex': '-1',
+            'aria-hidden': 'true',
+            'style': 'position:absolute; left:-9999px; width:1px; height:1px; opacity:0;'
+        })
+    )
+
     class Meta:
         model = Message
         fields = [
@@ -41,6 +51,14 @@ class MessageForm(forms.ModelForm):
                 'placeholder': 'Add any extra context that may help others evaluate this message'
             }),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if cleaned_data.get("website"):
+            raise forms.ValidationError("Submission could not be processed.")
+
+        return cleaned_data
 
     def clean_message_content(self):
         content = self.cleaned_data.get('message_content', '')
@@ -91,6 +109,16 @@ class MessageForm(forms.ModelForm):
         return details
 
 class CommentForm(forms.ModelForm):
+    website = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'autocomplete': 'off',
+            'tabindex': '-1',
+            'aria-hidden': 'true',
+            'style': 'position:absolute; left:-9999px; width:1px; height:1px; opacity:0;'
+        })
+    )
+
     class Meta:
         model = Comment
         fields = ['content']
@@ -101,6 +129,14 @@ class CommentForm(forms.ModelForm):
                 'placeholder': 'Write your comment here'
             }),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if cleaned_data.get("website"):
+            raise forms.ValidationError("Comment could not be processed.")
+
+        return cleaned_data
 
     def clean_content(self):
         content = self.cleaned_data.get('content', '')
@@ -228,6 +264,16 @@ class StyledLoginForm(LoginForm):
         })
 
 class StyledSignupForm(SignupForm):
+    website = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "autocomplete": "off",
+            "tabindex": "-1",
+            "aria-hidden": "true",
+            "style": "position:absolute; left:-9999px; width:1px; height:1px; opacity:0;"
+        })
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -248,6 +294,14 @@ class StyledSignupForm(SignupForm):
                 "class": "form-control",
                 "placeholder": "Confirm your password"
             })
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if cleaned_data.get("website"):
+            raise forms.ValidationError("Signup could not be processed.")
+
+        return cleaned_data
 
     def save(self, request):
         user = super().save(request)

@@ -40,6 +40,7 @@ from .tasks import (
 from django.http import JsonResponse
 from django.urls import reverse
 from django.utils import timezone
+from datetime import timedelta
 from .services.message_processing import (
     apply_text_only_message_moderation,
     apply_async_image_results_to_overall_moderation,
@@ -215,6 +216,34 @@ def apply_message_moderation(message, form):
     )
 
     return message
+
+
+def mark_duplicate_message_submission_pending(message):
+    duplicate_reason = "Possible duplicate submission in a short time."
+    existing_reason = (message.moderation_reason or "").strip()
+
+    if duplicate_reason not in existing_reason:
+        if existing_reason:
+            message.moderation_reason = existing_reason + "\n• " + duplicate_reason
+        else:
+            message.moderation_reason = "• " + duplicate_reason
+
+    return message
+
+
+def mark_duplicate_comment_pending(comment):
+    duplicate_reason = "Possible duplicate comment in a short time."
+    existing_reason = (comment.moderation_reason or "").strip()
+
+    comment.moderation_status = ModerationStatus.PENDING
+
+    if duplicate_reason not in existing_reason:
+        if existing_reason:
+            comment.moderation_reason = existing_reason + "\n• " + duplicate_reason
+        else:
+            comment.moderation_reason = duplicate_reason
+
+    return comment
 
 
 def add_message_submission_feedback(request, message, updated=False):
@@ -416,6 +445,23 @@ def message_detail(request, message_id):
 
             comment = apply_comment_moderation(comment, form)
 
+            duplicate_cutoff = timezone.now() - timedelta(minutes=10)
+
+            normalized_content = " ".join(comment.content.split())
+
+            is_recent_duplicate_comment = any(
+                " ".join(existing.content.split()) == normalized_content
+                for existing in Comment.objects.filter(
+                    user=request.user,
+                    message=message,
+                    created_at__gte=duplicate_cutoff,
+                    is_removed=False,
+                )
+            )
+
+            if is_recent_duplicate_comment and comment.moderation_status != ModerationStatus.REJECTED:
+                comment = mark_duplicate_comment_pending(comment)
+
             if comment.moderation_status == ModerationStatus.REJECTED:
                 add_comment_submission_feedback(request, comment, updated=False)
                 context = {
@@ -462,7 +508,7 @@ def message_detail(request, message_id):
 
 
 @login_required
-@ratelimit(key='user_or_ip', rate='5/20m', method='POST', block=False)
+@ratelimit(key='user_or_ip', rate='4/20m', method='POST', block=False)
 def submit_message(request):
     if request.method == 'POST':
         if getattr(request, "limited", False):
@@ -473,12 +519,25 @@ def submit_message(request):
         if form.is_valid():
             message = form.save(commit=False)
             message.user = request.user
+            duplicate_cutoff = timezone.now() - timedelta(minutes=30)
+            normalized_message_content = " ".join((message.message_content or "").split())
+
+            is_recent_duplicate = any(
+                " ".join((existing.message_content or "").split()) == normalized_message_content
+                for existing in Message.objects.filter(
+                    user=request.user,
+                    submission_date__gte=duplicate_cutoff,
+                    is_removed=False,
+                )
+            )
             message.processing_status = "pending"
             message.processing_error = ""
             message.is_finalized = False
 
             message.moderation_status = ModerationStatus.PENDING
             message.moderation_reason = "Processing submission..."
+            if is_recent_duplicate:
+                message.duplicate_submission_suspected = True
             message.save()
             
             run_ai_analysis_task(message.id)
@@ -494,6 +553,7 @@ def submit_message(request):
         form = MessageForm()
 
     return render(request, 'analyzer/submit_message.html', {'form': form})
+
 
 @login_required
 def processing_message(request, message_id):
@@ -539,6 +599,7 @@ def message_processing_status(request, message_id):
         "message_id": message.id,
     })
 
+
 @login_required
 def retry_message_processing(request, message_id):
     message = get_object_or_404(
@@ -560,8 +621,9 @@ def retry_message_processing(request, message_id):
 
     return redirect('processing_message', message_id=message.id)
 
+
 @login_required
-@ratelimit(key='user_or_ip', rate='10/10m', method='POST', block=False)
+@ratelimit(key='user_or_ip', rate='5/10m', method='POST', block=False)
 def edit_message(request, message_id):
     message = get_object_or_404(Message, id=message_id)
 
@@ -623,7 +685,7 @@ def delete_message(request, message_id):
 
 
 @login_required
-@ratelimit(key='user_or_ip', rate='10/10m', method='POST', block=False)
+@ratelimit(key='user_or_ip', rate='5/10m', method='POST', block=False)
 def edit_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
 

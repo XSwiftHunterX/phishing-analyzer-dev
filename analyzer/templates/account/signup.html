@@ -23,6 +23,18 @@
 
                 <form method="post" action="{% url 'account_signup' %}" novalidate>
                     {% csrf_token %}
+                    
+                    <div style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;" aria-hidden="true">
+                        <label for="id_website">Leave this field empty</label>
+                        <input
+                            type="text"
+                            name="website"
+                            id="id_website"
+                            value="{{ form.website.value|default_if_none:'' }}"
+                            tabindex="-1"
+                            autocomplete="off"
+                        >
+                    </div>
 
                     {% if form.non_field_errors %}
                         <div class="alert alert-danger">
