@@ -3,6 +3,7 @@ from .models import Message, Comment, UserProfile, MessageReport, CommentReport,
 from django.contrib.auth.models import User
 from allauth.account.forms import LoginForm, SignupForm
 from .services.text_moderation import moderate_text
+from .validators import MAX_IMAGE_FILE_SIZE
 
 class MessageForm(forms.ModelForm):
     website = forms.CharField(
@@ -108,6 +109,14 @@ class MessageForm(forms.ModelForm):
         self._additional_details_moderation = result
         return details
 
+    def clean_screenshot(self):
+        screenshot = self.cleaned_data.get('screenshot')
+
+        if screenshot and screenshot.size > MAX_IMAGE_FILE_SIZE:
+            raise forms.ValidationError("Screenshot must be 5 MB or smaller.")
+
+        return screenshot
+
 class CommentForm(forms.ModelForm):
     website = forms.CharField(
         required=False,
@@ -211,6 +220,14 @@ class UserProfileForm(forms.ModelForm):
         self._bio_moderation_result = result
         return bio
 
+    def clean_profile_image(self):
+        profile_image = self.cleaned_data.get('profile_image')
+
+        if profile_image and profile_image.size > MAX_IMAGE_FILE_SIZE:
+            raise forms.ValidationError("Profile image must be 5 MB or smaller.")
+
+        return profile_image
+
 class MessageReportForm(forms.ModelForm):
     class Meta:
         model = MessageReport
@@ -277,6 +294,12 @@ class StyledSignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        if "username" in self.fields:
+            self.fields["username"].widget.attrs.update({
+                "class": "form-control",
+                "placeholder": "Choose a username"
+            })
+
         if "email" in self.fields:
             self.fields["email"].widget.attrs.update({
                 "class": "form-control",
@@ -302,6 +325,17 @@ class StyledSignupForm(SignupForm):
             raise forms.ValidationError("Signup could not be processed.")
 
         return cleaned_data
+
+    def clean_username(self):
+        username = self.cleaned_data.get("username", "")
+        result = moderate_text(username, context="username")
+
+        if result.status == "rejected":
+            raise forms.ValidationError(
+                "This username is not allowed."
+            )
+
+        return username
 
     def save(self, request):
         user = super().save(request)
