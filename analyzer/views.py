@@ -218,19 +218,6 @@ def apply_message_moderation(message, form):
     return message
 
 
-def mark_duplicate_message_submission_pending(message):
-    duplicate_reason = "Possible duplicate submission in a short time."
-    existing_reason = (message.moderation_reason or "").strip()
-
-    if duplicate_reason not in existing_reason:
-        if existing_reason:
-            message.moderation_reason = existing_reason + "\n• " + duplicate_reason
-        else:
-            message.moderation_reason = "• " + duplicate_reason
-
-    return message
-
-
 def mark_duplicate_comment_pending(comment):
     duplicate_reason = "Possible duplicate comment in a short time."
     existing_reason = (comment.moderation_reason or "").strip()

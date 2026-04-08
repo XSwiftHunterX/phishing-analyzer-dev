@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from allauth.account.forms import LoginForm, SignupForm
 from .services.text_moderation import moderate_text
 from .validators import MAX_IMAGE_FILE_SIZE
+from .services.image_reencoding import reencode_uploaded_image
 
 class MessageForm(forms.ModelForm):
     website = forms.CharField(
@@ -115,6 +116,9 @@ class MessageForm(forms.ModelForm):
         if screenshot and screenshot.size > MAX_IMAGE_FILE_SIZE:
             raise forms.ValidationError("Screenshot must be 5 MB or smaller.")
 
+        if screenshot:
+            screenshot = reencode_uploaded_image(screenshot)
+
         return screenshot
 
 class CommentForm(forms.ModelForm):
@@ -225,6 +229,9 @@ class UserProfileForm(forms.ModelForm):
 
         if profile_image and profile_image.size > MAX_IMAGE_FILE_SIZE:
             raise forms.ValidationError("Profile image must be 5 MB or smaller.")
+
+        if profile_image:
+            profile_image = reencode_uploaded_image(profile_image)
 
         return profile_image
 

@@ -79,12 +79,6 @@ def maybe_queue_finalize(message_id):
 
 
 @task()
-def test_background_task():
-    logger.error("Huey test task ran successfully.")
-    return "ok"
-
-
-@task()
 def run_ai_analysis_task(message_id):
     try:
         logger.info("AI analysis started for message %s", message_id)
