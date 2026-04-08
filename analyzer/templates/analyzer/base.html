@@ -15,6 +15,36 @@
             letter-spacing: 0.2px;
         }
 
+        .navbar .nav-link {
+            font-weight: 500;
+        }
+
+        .navbar .nav-link.active {
+            color: #fff !important;
+        }
+
+        .navbar .dropdown-menu {
+            border: none;
+            border-radius: 0.85rem;
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
+            padding: 0.5rem;
+        }
+
+        .navbar .dropdown-item {
+            border-radius: 0.5rem;
+            padding: 0.55rem 0.75rem;
+        }
+
+        .navbar .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: -2px;
+        }
+
         .message-card {
             transition: all 0.15s ease-in-out;
         }
@@ -29,12 +59,24 @@
             background-color: #ffffff;
         }
 
+        .footer-heading {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #212529;
+        }
+
         .footer-link {
+            color: #6c757d;
             text-decoration: none;
         }
 
         .footer-link:hover {
+            color: #212529;
             text-decoration: underline;
+        }
+
+        .footer-note {
+            border-top: 1px solid #dee2e6;
         }
     </style>
 </head>
@@ -42,8 +84,9 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
     <div class="container-xl">
-        <a class="navbar-brand fw-bold" href="{% url 'message_list' %}">
-            <i class="bi bi-shield-exclamation me-2"></i>Phishing Message Analyzer
+        <a class="navbar-brand fw-bold d-flex flex-column" href="{% url 'message_list' %}">
+            <span><i class="bi bi-shield-exclamation me-2"></i>Phishing Message Analyzer</span>
+            <span class="brand-subtitle d-none d-lg-block">Community reporting and AI-assisted analysis</span>
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -52,13 +95,75 @@
         </button>
 
         <div class="collapse navbar-collapse" id="mainNavbar">
-            <div class="ms-auto d-flex flex-column flex-lg-row align-items-lg-center gap-2 mt-3 mt-lg-0">
+            <ul class="navbar-nav ms-lg-4 me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'message_list' %}active{% endif %}"
+                       href="{% url 'message_list' %}">
+                        Browse Messages
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}"
+                       href="{% url 'about' %}">
+                        About
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'how_it_works' or request.resolver_match.url_name == 'contact_report_abuse' %}active{% endif %}"
+                       href="#"
+                       id="resourcesDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Resources
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'how_it_works' %}">
+                                <i class="bi bi-info-circle me-2"></i>How It Works
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'contact_report_abuse' %}">
+                                <i class="bi bi-flag me-2"></i>Contact / Report Abuse
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'privacy_policy' or request.resolver_match.url_name == 'terms_of_use' %}active{% endif %}"
+                       href="#"
+                       id="legalDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Legal
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="legalDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'privacy_policy' %}">
+                                <i class="bi bi-shield-lock me-2"></i>Privacy Policy
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'terms_of_use' %}">
+                                <i class="bi bi-file-text me-2"></i>Terms of Use
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 mt-3 mt-lg-0">
                 {% if user.is_authenticated %}
                     <span class="text-white small me-lg-2">
                         Logged in as <strong>{{ user.username }}</strong>
                     </span>
 
-                    <a href="{% url 'submit_message' %}" class="btn btn-outline-light btn-sm">
+                    <a href="{% url 'submit_message' %}" class="btn btn-primary btn-sm">
                         <i class="bi bi-plus-circle"></i> Submit Message
                     </a>
 
@@ -100,15 +205,68 @@
     {% block content %}{% endblock %}
 </div>
 
-<footer class="site-footer mt-5 py-4">
-    <div class="container text-center text-muted">
-        <p class="mb-1 fw-semibold">Phishing Message Analyzer</p>
-        <p class="small mb-2">
-            A community-driven platform for sharing and discussing suspicious messages.
-        </p>
-        <p class="small mb-0">
-            Built with Django • Designed for cybersecurity awareness and collaboration
-        </p>
+<footer class="site-footer mt-5 pt-5 pb-4">
+    <div class="container-xl">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <h5 class="fw-bold mb-2">Phishing Message Analyzer</h5>
+                <p class="text-muted mb-2">
+                    A community-driven platform for submitting, analyzing, and learning from suspicious messages.
+                </p>
+                <p class="small text-muted mb-0">
+                    Built for cybersecurity awareness, safer reporting, and shared learning.
+                </p>
+            </div>
+
+            <div class="col-6 col-md-2">
+                <h6 class="footer-heading mb-3">Platform</h6>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <a class="footer-link" href="{% url 'message_list' %}">Browse Messages</a>
+                    </li>
+                    <li class="mb-2">
+                        <a class="footer-link" href="{% url 'submit_message' %}">Submit Message</a>
+                    </li>
+                    <li class="mb-2">
+                        <a class="footer-link" href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="mb-2">
+                        <a class="footer-link" href="{% url 'how_it_works' %}">How It Works</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <h6 class="footer-heading mb-3">Support</h6>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <a class="footer-link" href="{% url 'contact_report_abuse' %}">Contact / Report Abuse</a>
+                    </li>
+                    <li class="mb-2">
+                        <a class="footer-link" href="{% url 'privacy_policy' %}">Privacy Policy</a>
+                    </li>
+                    <li class="mb-2">
+                        <a class="footer-link" href="{% url 'terms_of_use' %}">Terms of Use</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <h6 class="footer-heading mb-3">Reminder</h6>
+                <p class="small text-muted mb-0">
+                    AI-generated analysis is provided for informational purposes only and may be incomplete or inaccurate. Always verify suspicious messages through trusted official sources.
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-note mt-4 pt-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+            <p class="small text-muted mb-2 mb-md-0">
+                &copy; 2026 Phishing Message Analyzer. All rights reserved.
+            </p>
+            <p class="small text-muted mb-0">
+                Designed for phishing awareness and community reporting.
+            </p>
+        </div>
     </div>
 </footer>
 

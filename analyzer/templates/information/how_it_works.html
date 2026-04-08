@@ -1,0 +1,110 @@
+{% extends 'analyzer/base.html' %}
+
+{% block title %}How It Works{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <div class="mb-4">
+                <h1 class="mb-3">How It Works</h1>
+                <p class="lead text-muted">
+                    Learn how messages are submitted, analyzed, reviewed, and shared on the platform.
+                </p>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-3">1. Submit a Suspicious Message</h2>
+                    <p>
+                        Users can submit messages they believe may be phishing or scams. This can include emails, text messages, or other forms of communication.
+                    </p>
+                    <ul class="mb-0">
+                        <li>Enter the message content</li>
+                        <li>Provide sender details (if available)</li>
+                        <li>Select a classification (phishing, legitimate, or unsure)</li>
+                        <li>Optionally upload a screenshot for additional context</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-3">2. AI-Assisted Analysis</h2>
+                    <p>
+                        After submission, the platform uses AI to analyze the message and identify potential phishing indicators such as suspicious links, urgency tactics, or unusual requests.
+                    </p>
+                    <p class="mb-0">
+                        The analysis may include a summary, highlighted red flags, and a confidence-based assessment. This information is intended to help users better understand why a message may be risky.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-3">3. Moderation and Review</h2>
+                    <p>
+                        Submissions may go through automated and/or manual review to ensure they meet platform guidelines and are safe to display.
+                    </p>
+                    <ul class="mb-0">
+                        <li>Content may be approved, rejected, or held for review</li>
+                        <li>Images may be checked for relevance and safety</li>
+                        <li>Potentially sensitive information may be flagged or handled</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-3">4. View and Learn from Reports</h2>
+                    <p>
+                        Approved submissions become part of the platform’s searchable database, where users can explore real examples of suspicious messages.
+                    </p>
+                    <ul class="mb-0">
+                        <li>Browse recent or popular reports</li>
+                        <li>Search by message content, sender, or user</li>
+                        <li>Compare messages with similar reports</li>
+                        <li>Learn common phishing tactics and patterns</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-3">5. Community Interaction</h2>
+                    <p>
+                        Users can interact with content to help improve the platform and contribute to shared awareness.
+                    </p>
+                    <ul class="mb-0">
+                        <li>Comment on reports</li>
+                        <li>Like helpful submissions</li>
+                        <li>Report content that may violate guidelines</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-3">Important Note</h2>
+                    <p>
+                        AI-generated analysis is provided for informational purposes only and may not always be accurate. Users should independently verify suspicious messages through trusted and official sources before taking action.
+                    </p>
+                    <p class="mb-0">
+                        The platform is designed to support awareness and learning, not to replace professional judgment or security tools.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

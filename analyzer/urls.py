@@ -22,6 +22,12 @@ urlpatterns = [
     path('user/<str:username>/', views.user_messages, name='user_messages'),
     path('profile/delete/', views.delete_account, name='delete_account'),
 
+    path('about/', views.about_page, name='about'),
+    path('how-it-works/', views.how_it_works_page, name='how_it_works'),
+    path('privacy-policy/', views.privacy_policy_page, name='privacy_policy'),
+    path('terms-of-use/', views.terms_of_use_page, name='terms_of_use'),
+    path('contact/', views.contact_report_abuse_page, name='contact_report_abuse'),
+
     path('message/<int:message_id>/report/', views.report_message, name='report_message'),
     path('comment/<int:comment_id>/report/', views.report_comment, name='report_comment'),
     path('profile/<str:username>/report/', views.report_profile, name='report_profile'),

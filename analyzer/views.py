@@ -24,6 +24,7 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.shortcuts import render
 from .services.pii_detection import detect_pii
 from .services.screenshot_privacy import scan_screenshot_for_pii
 from .services.image_moderation import moderate_uploaded_image
@@ -976,3 +977,23 @@ def report_profile(request, username):
         'profile_user': profile_user,
         'profile': profile,
     })
+
+
+def about_page(request):
+    return render(request, 'information/about.html')
+
+
+def how_it_works_page(request):
+    return render(request, 'information/how_it_works.html')
+
+
+def privacy_policy_page(request):
+    return render(request, 'information/privacy_policy.html')
+
+
+def terms_of_use_page(request):
+    return render(request, 'information/terms_of_use.html')
+
+
+def contact_report_abuse_page(request):
+    return render(request, 'information/contact_report_abuse.html')
