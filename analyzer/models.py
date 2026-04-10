@@ -167,6 +167,11 @@ class UserProfile(models.Model):
     )
     moderation_reason = models.TextField(blank=True)
 
+    rate_limited_flag = models.BooleanField(default=False)
+    duplicate_abuse_flag = models.BooleanField(default=False)
+    flagged_at = models.DateTimeField(blank=True, null=True)
+    admin_flag_notes = models.TextField(blank=True)
+
     def __str__(self):
         return f"{self.user.username}'s profile"
 
