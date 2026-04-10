@@ -33,6 +33,10 @@ from .services.ai_analysis import analyze_message, save_analysis_result
 from .services.similarity import find_similar_messages
 from django_ratelimit.decorators import ratelimit
 from .services.text_moderation import moderate_text
+from .services.account_flags import (
+    flag_user_for_rate_limit,
+    flag_user_for_exact_duplicate,
+)
 from .tasks import (
     run_ai_analysis_task,
     run_image_processing_task,
@@ -387,7 +391,7 @@ def message_list(request):
     return render(request, 'analyzer/message_list.html', context)
 
 
-@ratelimit(key='user_or_ip', rate='10/10m', method='POST', block=False)
+@ratelimit(key='user', rate='10/10m', method='POST', block=False)
 def message_detail(request, message_id):
     message = get_object_or_404(
         Message,
@@ -496,10 +500,11 @@ def message_detail(request, message_id):
 
 
 @login_required
-@ratelimit(key='user_or_ip', rate='4/20m', method='POST', block=False)
+@ratelimit(key='user', rate='4/20m', method='POST', block=False)
 def submit_message(request):
     if request.method == 'POST':
         if getattr(request, "limited", False):
+            flag_user_for_rate_limit(request.user)
             add_ratelimit_message(request, "submit_message")
             return redirect('submit_message')
 
@@ -524,9 +529,14 @@ def submit_message(request):
 
             message.moderation_status = ModerationStatus.PENDING
             message.moderation_reason = "Processing submission..."
+
             if is_recent_duplicate:
                 message.duplicate_submission_suspected = True
+
             message.save()
+
+            if is_recent_duplicate:
+                flag_user_for_exact_duplicate(message)
             
             run_ai_analysis_task(message.id)
             run_image_processing_task(message.id)
@@ -611,7 +621,7 @@ def retry_message_processing(request, message_id):
 
 
 @login_required
-@ratelimit(key='user_or_ip', rate='5/10m', method='POST', block=False)
+@ratelimit(key='user', rate='5/10m', method='POST', block=False)
 def edit_message(request, message_id):
     message = get_object_or_404(Message, id=message_id)
 
@@ -673,7 +683,7 @@ def delete_message(request, message_id):
 
 
 @login_required
-@ratelimit(key='user_or_ip', rate='5/10m', method='POST', block=False)
+@ratelimit(key='user', rate='5/10m', method='POST', block=False)
 def edit_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
 
@@ -869,7 +879,7 @@ def delete_account(request):
 
 
 @login_required
-@ratelimit(key='user_or_ip', rate='10/h', method='POST', block=False)
+@ratelimit(key='user', rate='10/h', method='POST', block=False)
 def report_message(request, message_id):
     message = get_object_or_404(Message, id=message_id, is_removed=False)
 
@@ -905,7 +915,7 @@ def report_message(request, message_id):
 
 
 @login_required
-@ratelimit(key='user_or_ip', rate='10/h', method='POST', block=False)
+@ratelimit(key='user', rate='10/h', method='POST', block=False)
 def report_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id, is_removed=False)
 
