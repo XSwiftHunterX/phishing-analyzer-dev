@@ -4,37 +4,40 @@
 
 {% block content %}
 
-<div class="card shadow-sm mb-4 border-0">
+<div class="card shadow-sm mb-4 hero-card">
     <div class="card-body p-4 p-md-5">
         <div class="row align-items-center g-4">
             <div class="col-lg-8">
                 <h1 class="display-6 fw-bold mb-3">Phishing Message Analyzer</h1>
-                <p class="lead text-muted mb-3">
+                <p class="lead mb-3">
                     Analyze suspicious messages with AI, review community feedback, and search real scam reports in one place.
                 </p>
-                <p class="mb-4">
-                    Submit a suspicious message to receive instant AI-powered feedback, then let the community help review it.
-                    Your report can help other users spot similar scams, compare warning signs, and make safer decisions.
-                    You can also search the database to see whether someone else has already reported the same sender,
-                    platform, phone number, email, or suspicious message.
+                <p class="mb-3">
+                    Submit suspicious messages, get instant AI analysis, and compare with real reports from other users.
+                    Quickly identify scams, verify suspicious senders, and make safer decisions.
                 </p>
 
-                <div class="d-flex flex-wrap gap-2 mb-4">
+                <div class="d-flex flex-wrap gap-2 mb-3">
                     <a href="{% url 'submit_message' %}" class="btn btn-primary">
-                        <i class="bi bi-shield-exclamation"></i> Submit a Message
+                        <i class="bi bi-shield-exclamation me-1"></i> Submit a Message
                     </a>
                     {% if not user.is_authenticated %}
                         <a href="{% url 'account_signup' %}" class="btn btn-outline-secondary">
-                            <i class="bi bi-person-plus"></i> Create Account
+                            <i class="bi bi-person-plus me-1"></i> Create Account
                         </a>
                     {% endif %}
                 </div>
 
+                <p class="small text-muted mb-4">
+                    <i class="bi bi-shield-check me-1"></i>
+                    Community-moderated • AI-assisted • No private data required
+                </p>
+
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <div class="border rounded p-3 h-100 bg-light">
+                        <div class="border rounded-3 p-3 h-100 shadow-sm hero-feature-box">
                             <div class="fw-semibold mb-1">
-                                <i class="bi bi-cpu"></i> AI Analysis
+                                <i class="bi bi-cpu me-1"></i> AI Analysis
                             </div>
                             <div class="small text-muted">
                                 Get immediate automated feedback, confidence scoring, and red-flag detection to help evaluate suspicious messages quickly.
@@ -43,20 +46,20 @@
                     </div>
 
                     <div class="col-md-4">
-                        <div class="border rounded p-3 h-100 bg-light">
+                        <div class="border rounded-3 p-3 h-100 shadow-sm hero-feature-box">
                             <div class="fw-semibold mb-1">
-                                <i class="bi bi-people"></i> Community Review
+                                <i class="bi bi-people me-1"></i> Community Review
                             </div>
                             <div class="small text-muted">
-                                Other users can review reported messages, discuss suspicious details, and help double-check the AI’s conclusions.
+                                Other users can review reported messages, discuss suspicious details, and help double-check conclusions.
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-4">
-                        <div class="border rounded p-3 h-100 bg-light">
+                        <div class="border rounded-3 p-3 h-100 shadow-sm hero-feature-box">
                             <div class="fw-semibold mb-1">
-                                <i class="bi bi-search"></i> Search Real Reports
+                                <i class="bi bi-search me-1"></i> Search Real Reports
                             </div>
                             <div class="small text-muted">
                                 Browse and search previously submitted reports to see whether others have encountered the same scam before.
@@ -67,13 +70,13 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="border rounded p-4 bg-light h-100">
+                <div class="border rounded-3 p-4 h-100 shadow-sm hero-feature-box">
                     <h2 class="h5 mb-3">Why use this platform?</h2>
                     <ul class="mb-0 ps-3">
-                        <li class="mb-2">Get instant feedback before taking action.</li>
-                        <li class="mb-2">Compare AI results with real community input.</li>
-                        <li class="mb-2">Help build a public library of phishing reports.</li>
-                        <li class="mb-0">Search past reports for repeated scam patterns.</li>
+                        <li class="mb-2">Get fast feedback before taking action.</li>
+                        <li class="mb-2">Compare AI results with community input.</li>
+                        <li class="mb-2">Help build a searchable library of phishing reports.</li>
+                        <li class="mb-0">Spot repeated scam patterns and suspicious senders.</li>
                     </ul>
                 </div>
             </div>
@@ -82,20 +85,29 @@
 </div>
 
 {% if not user.is_authenticated %}
-    <div class="alert alert-info shadow-sm">
+    <div class="alert alert-info shadow-sm border-0">
         <strong>Want to contribute?</strong>
         Log in or create an account to submit messages, comment, and like posts.
     </div>
 {% endif %}
 
-<div class="card shadow-sm mb-4">
-    <div class="card-body">
-        <h5 class="card-title mb-3">Search and Filter Messages</h5>
+<div class="card shadow-sm mb-4 filter-card">
+    <div class="card-body p-4">
+        <h5 class="card-title mb-2">Search and Filter Messages</h5>
+        <p class="text-muted small mb-3">
+            Find reports by message content, sender, platform, or community activity.
+        </p>
 
         <form method="get" class="row g-3">
             <div class="col-12">
                 <label for="q" class="form-label">Search Messages, Senders, Platforms, or Usernames</label>
-                <input type="text" id="q" name="q" value="{{ query }}" class="form-control" placeholder="Search by content, sender, platform, or username">
+                <input
+                    type="text"
+                    id="q"
+                    name="q"
+                    value="{{ query }}"
+                    class="form-control"
+                    placeholder="Search by content, sender, platform, or username">
             </div>
 
             <div class="col-md-3">
@@ -107,7 +119,6 @@
                     <option value="Unsure" {% if selected_classification == "Unsure" %}selected{% endif %}>Unsure</option>
                 </select>
             </div>
-
 
             <div class="col-md-3">
                 <label for="message_type" class="form-label">Message Type</label>
@@ -144,55 +155,65 @@
             </div>
 
             <div class="col-12 d-flex flex-wrap gap-2">
-                <button type="submit" class="btn btn-primary">Apply Filters</button>
-                <a href="{% url 'message_list' %}" class="btn btn-outline-secondary">Reset</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-funnel me-1"></i> Apply Filters
+                </button>
+                <a href="{% url 'message_list' %}" class="btn btn-outline-secondary">
+                    Reset
+                </a>
             </div>
         </form>
     </div>
 </div>
 
+<p class="text-muted small mb-3">
+    Showing {{ message_page.paginator.count }} result{{ message_page.paginator.count|pluralize }}
+</p>
+
 {% for message in message_page %}
-    <div class="card shadow-sm mb-3 message-card
-    {% if message.classification == 'Phishing' %}border-danger
-    {% elif message.classification == 'Legitimate' %}border-success
-    {% else %}border-warning
-    {% endif %}">
-        <div class="card-body">
+    <div class="card shadow-sm mb-3 message-card">
+        <div class="card-body p-4">
             <div class="row g-3 align-items-start">
                 <div class="{% if message.screenshot %}col-md-8{% else %}col-12{% endif %}">
-                    <h5 class="card-title mb-1">
-                        <a href="{% url 'message_detail' message.id %}" class="text-decoration-none">
+                    <h5 class="card-title mb-2">
+                        <a href="{% url 'message_detail' message.id %}" class="text-decoration-none text-dark">
                             {{ message.message_type }} Message Report
                         </a>
                     </h5>
 
-                    <div class="mb-2 d-flex flex-wrap gap-2">
+                    <div class="mb-3 d-flex flex-wrap gap-2">
                         {% if message.classification == "Phishing" %}
-                            <span class="badge bg-danger">Phishing</span>
+                            <span class="badge badge-phishing">Phishing</span>
                         {% elif message.classification == "Legitimate" %}
-                            <span class="badge bg-success">Legitimate</span>
+                            <span class="badge badge-legit">Legitimate</span>
                         {% else %}
-                            <span class="badge bg-warning text-dark">Unsure</span>
+                            <span class="badge badge-unsure">Unsure</span>
                         {% endif %}
 
-                        <span class="badge bg-dark">{{ message.message_type }}</span>
+                        <span class="badge badge-type">{{ message.message_type }}</span>
 
                         {% if message.platform %}
-                            <span class="badge bg-light text-dark border">{{ message.platform }}</span>
+                            <span class="badge badge-platform">{{ message.platform }}</span>
+                        {% endif %}
+
+                        {% if message.moderation_status == "pending" %}
+                            <span class="badge bg-warning text-dark">Pending Review</span>
+                        {% elif message.moderation_status == "rejected" %}
+                            <span class="badge bg-secondary">Removed</span>
                         {% endif %}
                     </div>
 
-                    <p class="card-text mb-2">
+                    <p class="card-text mb-3">
                         {{ message.message_content|truncatechars:180 }}
                     </p>
 
                     {% if message.sender %}
-                        <p class="text-muted mb-2">
+                        <p class="text-muted small mb-2">
                             <strong>Sender:</strong> {{ message.sender }}
                         </p>
                     {% endif %}
 
-                    <p class="text-muted mb-1">
+                    <p class="text-muted small mb-1">
                         Submitted by:
                         {% if message.user %}
                             <a href="{% url 'user_messages' message.user.username %}">
@@ -203,19 +224,19 @@
                         {% endif %}
                     </p>
 
-                    <p class="text-muted mb-1">
+                    <p class="text-muted small mb-1">
                         Submitted on: {{ message.submission_date|date:"F j, Y \a\t g:i A" }}
                     </p>
 
-                    <p class="text-muted mb-3">
+                    <p class="text-muted small mb-3">
                         Likes: {{ message.like_count }} | Comments: {{ message.comment_count }}
                     </p>
 
-                    <div class="d-flex gap-2 flex-wrap">
-                        <a href="{% url 'message_detail' message.id %}" class="btn btn-primary btn-sm">View Details</a>
+                    <div class="d-flex gap-2 align-items-center flex-wrap mt-2">
+                        <a href="{% url 'message_detail' message.id %}" class="btn btn-primary btn-sm px-3">View</a>
 
                         {% if user.is_authenticated and message.user == user %}
-                            <a href="{% url 'edit_message' message.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
+                            <a href="{% url 'edit_message' message.id %}" class="btn btn-outline-secondary btn-sm">Edit</a>
                             <a href="{% url 'delete_message' message.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
                         {% endif %}
                     </div>
@@ -224,7 +245,8 @@
                 {% if message.redacted_screenshot or message.screenshot %}
                     <div class="col-md-4 text-center">
                         <a href="{% url 'message_detail' message.id %}">
-                            <img src="{% if message.redacted_screenshot %}{{ message.redacted_screenshot.url }}{% else %}{{ message.screenshot.url }}{% endif %}"
+                            <img
+                                src="{% if message.redacted_screenshot %}{{ message.redacted_screenshot.url }}{% else %}{{ message.screenshot.url }}{% endif %}"
                                 alt="Message screenshot thumbnail"
                                 class="img-fluid rounded border shadow-sm"
                                 style="max-height: 220px; width: 100%; object-fit: cover;">
@@ -235,62 +257,63 @@
         </div>
     </div>
 {% empty %}
-    <div class="alert alert-secondary shadow-sm">
-        No messages found.
+    <div class="alert alert-secondary shadow-sm text-center border-0">
+        <p class="mb-2">No messages found.</p>
+        <a href="{% url 'submit_message' %}" class="btn btn-primary btn-sm">
+            Submit the first report
+        </a>
     </div>
 {% endfor %}
 
 {% if message_page.has_other_pages %}
-<nav aria-label="Message pagination" class="mt-4">
-<ul class="pagination justify-content-center">
+<nav aria-label="Message pagination" class="mt-5">
+    <ul class="pagination justify-content-center">
 
-    {% if message_page.has_previous %}
-        <li class="page-item">
-            <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
-                <i class="bi bi-chevron-bar-left"></i> First
-            </a>
-        </li>
+        {% if message_page.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
+                    <i class="bi bi-chevron-bar-left"></i> First
+                </a>
+            </li>
 
-        <li class="page-item">
-            <a class="page-link" href="?page={{ message_page.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
-                <i class="bi bi-chevron-left"></i> Previous
-            </a>
-        </li>
-    {% endif %}
-
-    {% for num in message_page.paginator.page_range %}
-        {% if num >= message_page.number|add:'-2' and num <= message_page.number|add:'2' %}
-
-            {% if message_page.number == num %}
-                <li class="page-item active">
-                    <span class="page-link">{{ num }}</span>
-                </li>
-            {% else %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
-                        {{ num }}
-                    </a>
-                </li>
-            {% endif %}
-
+            <li class="page-item">
+                <a class="page-link" href="?page={{ message_page.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
+                    <i class="bi bi-chevron-left"></i> Previous
+                </a>
+            </li>
         {% endif %}
-    {% endfor %}
 
-    {% if message_page.has_next %}
-        <li class="page-item">
-            <a class="page-link" href="?page={{ message_page.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
-                Next <i class="bi bi-chevron-right"></i>
-            </a>
-        </li>
+        {% for num in message_page.paginator.page_range %}
+            {% if num >= message_page.number|add:'-2' and num <= message_page.number|add:'2' %}
+                {% if message_page.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
+                            {{ num }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
 
-        <li class="page-item">
-            <a class="page-link" href="?page={{ message_page.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
-                Last <i class="bi bi-chevron-bar-right"></i>
-            </a>
-        </li>
-    {% endif %}
+        {% if message_page.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ message_page.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
+                    Next <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
 
-</ul>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ message_page.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if selected_classification %}&classification={{ selected_classification }}{% endif %}{% if selected_message_type %}&message_type={{ selected_message_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_platform %}&platform={{ selected_platform }}{% endif %}">
+                    Last <i class="bi bi-chevron-bar-right"></i>
+                </a>
+            </li>
+        {% endif %}
+
+    </ul>
 </nav>
 {% endif %}
 

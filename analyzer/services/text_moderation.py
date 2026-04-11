@@ -149,7 +149,6 @@ PROHIBITED_WORDS = {
     "bung hole",
     "bunghole",
     "busty",
-    "butt",
     "buttcheeks",
     "butthole",
     "camel toe",

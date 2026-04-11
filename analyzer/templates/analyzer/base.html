@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #dbeafe;
         }
 
         .navbar {
             padding-top: 0.65rem;
             padding-bottom: 0.65rem;
+            background-color: #1e293b !important;
         }
 
         .navbar-brand {
@@ -24,7 +25,7 @@
         .brand-subtitle {
             font-size: 0.68rem;
             line-height: 1.1;
-            color: rgba(255, 255, 255, 0.58);
+            color: rgba(255, 255, 255, 0.68);
             margin-top: 0.1rem;
         }
 
@@ -55,43 +56,158 @@
         }
 
         .navbar .dropdown-item:hover {
-            background-color: #f8f9fa;
+            background-color: #f8fafc;
+        }
+
+        .container-xl {
+            max-width: 1200px;
+        }
+
+        .card {
+            background-color: #f8fbff !important;
+            border: 1px solid #bfdbfe !important;
+            border-radius: 0.9rem;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, #eff6ff 0%, #f8fbff 100%) !important;
+            border: 1px solid #93c5fd !important;
+        }
+
+        .hero-card h1,
+        .hero-card h2,
+        .hero-card h3,
+        .hero-card h4,
+        .hero-card h5 {
+            color: #0f172a;
+        }
+
+        .hero-card .lead {
+            color: #334155 !important;
+        }
+
+        .hero-feature-box {
+            background-color: rgba(255, 255, 255, 0.94) !important;
+            border-color: #bfdbfe !important;
+        }
+
+        .filter-card {
+            background-color: #f8fbff !important;
+            border: 1px solid #93c5fd !important;
         }
 
         .message-card {
+            background-color: #ffffff !important;
+            border: 1px solid #bfdbfe !important;
             transition: all 0.15s ease-in-out;
         }
 
         .message-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15);
+            box-shadow: 0 0.75rem 1.5rem rgba(30, 64, 175, 0.12);
+            border-color: #93c5fd !important;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        .btn-outline-secondary {
+            color: #334155;
+            border-color: #94a3b8;
+        }
+
+        .btn-outline-secondary:hover,
+        .btn-outline-secondary:focus {
+            background-color: #e2e8f0;
+            color: #0f172a;
+            border-color: #94a3b8;
+        }
+
+        .btn-outline-danger:hover,
+        .btn-outline-danger:focus {
+            color: #fff;
+        }
+
+        /* Forms */
+        .form-control,
+        .form-select {
+            border-radius: 0.75rem;
+            border-color: #bfdbfe;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+        }
+
+        /* Base badge style */
+        .badge {
+            font-weight: 500;
+            padding: 0.45em 0.65em;
+            border-radius: 0.5rem;
+        }
+
+        .badge-phishing {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .badge-legit {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-unsure {
+            background-color: #fef9c3;
+            color: #854d0e;
+        }
+
+        .badge-type {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-platform {
+            background-color: #eff6ff;
+            color: #334155;
+            border: 1px solid #bfdbfe;
         }
 
         .site-footer {
-            border-top: 1px solid #dee2e6;
-            background-color: #ffffff;
+            border-top: 1px solid #bfdbfe;
+            background-color: #eff6ff;
         }
 
         .footer-heading {
             font-size: 0.85rem;
             font-weight: 700;
             letter-spacing: 0.02em;
-            color: #212529;
+            color: #1e3a8a;
             text-transform: uppercase;
         }
 
         .footer-link {
-            color: #6c757d;
+            color: #475569;
             text-decoration: none;
         }
 
         .footer-link:hover {
-            color: #212529;
+            color: #1e3a8a;
             text-decoration: underline;
         }
 
         .footer-note {
-            border-top: 1px solid #dee2e6;
+            border-top: 1px solid #bfdbfe;
             margin-top: 1.75rem;
             padding-top: 1rem;
         }
@@ -99,7 +215,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
     <div class="container-xl">
         <a class="navbar-brand fw-bold d-flex flex-column" href="{% url 'message_list' %}">
             <span><i class="bi bi-shield-exclamation me-2"></i>Phishing Message Analyzer</span>
@@ -219,7 +335,7 @@
 <div class="container-xl pb-5">
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm border-0" role="alert">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -233,7 +349,7 @@
     <div class="container-xl">
         <div class="row g-3">
             <div class="col-md-4">
-                <h5 class="fw-bold mb-2">Phishing Message Analyzer</h5>
+                <h5 class="fw-bold mb-2 text-dark">Phishing Message Analyzer</h5>
                 <p class="text-muted mb-2">
                     A community-driven platform for submitting, analyzing, and learning from suspicious messages.
                 </p>
