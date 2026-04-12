@@ -20,10 +20,17 @@
 
                 <div class="themed-box p-3 mb-4">
                     <div class="d-flex align-items-start gap-3">
-                        <div class="rounded-circle border d-inline-flex align-items-center justify-content-center shadow-sm themed-box flex-shrink-0"
-                             style="width: 56px; height: 56px;">
-                            <i class="bi bi-person text-muted"></i>
-                        </div>
+                        {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}"
+                                alt="Profile image"
+                                class="rounded-circle border shadow-sm flex-shrink-0"
+                                style="width: 56px; height: 56px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle border d-inline-flex align-items-center justify-content-center shadow-sm themed-box flex-shrink-0"
+                                style="width: 56px; height: 56px;">
+                                <i class="bi bi-person text-muted"></i>
+                            </div>
+                        {% endif %}
 
                         <div class="w-100">
                             <div class="fw-semibold">{{ profile_user.username }}</div>

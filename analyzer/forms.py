@@ -39,7 +39,7 @@ class MessageForm(forms.ModelForm):
                 'placeholder': 'Examples: Gmail, Outlook, iMessage, WhatsApp, Discord, Instagram'
             }),
             'classification': forms.Select(attrs={'class': 'form-select'}),
-            'screenshot': forms.ClearableFileInput(attrs={
+            'screenshot': forms.FileInput(attrs={
                 'class': 'form-control'
             }),
             'message_content': forms.Textarea(attrs={
@@ -207,7 +207,7 @@ class UserProfileForm(forms.ModelForm):
                 'rows': 4,
                 'placeholder': 'Tell the community a little about yourself'
             }),
-            'profile_image': forms.ClearableFileInput(attrs={
+            'profile_image': forms.FileInput(attrs={
                 'class': 'form-control'
             }),
         }

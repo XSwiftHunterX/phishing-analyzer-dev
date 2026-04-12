@@ -95,13 +95,30 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="{{ profile_form.profile_image.id_for_label }}" class="form-label">Profile Image</label>
+                        <label for="{{ profile_form.profile_image.id_for_label }}" class="form-label">
+                            Profile Image
+                        </label>
+
+                        {% if profile.profile_image %}
+                            <div class="themed-box p-3 mb-3 text-center">
+                                <div class="text-muted small mb-2">Current Profile Image</div>
+                                <img src="{{ profile.profile_image.url }}"
+                                    alt="Current profile image"
+                                    class="rounded-circle border shadow-sm"
+                                    style="width: 120px; height: 120px; object-fit: cover;">
+                            </div>
+                        {% endif %}
+
                         {{ profile_form.profile_image }}
+
                         <div class="form-text">
-                            Choose an image that represents you appropriately on the platform.
+                            Upload a new image to replace the current one.
                         </div>
+
                         {% if profile_form.profile_image.errors %}
-                            <div class="text-danger small mt-1">{{ profile_form.profile_image.errors }}</div>
+                            <div class="text-danger small mt-1">
+                                {{ profile_form.profile_image.errors }}
+                            </div>
                         {% endif %}
                     </div>
 

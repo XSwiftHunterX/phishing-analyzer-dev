@@ -110,7 +110,6 @@
             <h5 class="mb-3">Message Content</h5>
 
             <div class="mb-3">
-                <label for="{{ form.message_content.id_for_label }}" class="form-label">Message Content</label>
                 {{ form.message_content }}
                 <div class="form-text">
                     Paste the message exactly as received whenever possible.
@@ -121,10 +120,10 @@
             </div>
 
             <hr class="my-4">
-            <h5 class="mb-3">Additional Information</h5>
+            <h5 class="mb-3">Additional Information (Optional)</h5>
 
             <div class="mb-4">
-                <label for="{{ form.additional_details.id_for_label }}" class="form-label">Additional Details (Optional)</label>
+                <label for="{{ form.additional_details.id_for_label }}" class="form-label">Additional Details</label>
                 {{ form.additional_details }}
                 <div class="form-text">
                     Add any helpful context, such as whether you clicked a link, recognized the sender, or received similar messages before.
@@ -135,7 +134,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="{{ form.screenshot.id_for_label }}" class="form-label">Screenshot (Optional)</label>
+                <label for="{{ form.screenshot.id_for_label }}" class="form-label">Screenshot</label>
                 {{ form.screenshot }}
                 <div class="form-text">
                     Upload a screenshot of the message if available. This can help analyze formatting, links, branding, or other suspicious details.
