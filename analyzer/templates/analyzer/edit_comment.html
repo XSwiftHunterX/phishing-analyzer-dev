@@ -6,18 +6,19 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-8">
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm p-1">
+            <div class="card-body p-4 p-md-5">
+
                 <div class="mb-4">
-                    <h1 class="h3 mb-2">Edit Comment</h1>
-                    <p class="text-muted mb-0">
+                    <h1 class="h3 mb-1">Edit Comment</h1>
+                    <p class="text-muted small mb-0">
                         Update your comment to make your feedback clearer and more helpful to others.
                     </p>
                 </div>
 
                 {% if comment.moderation_status == "pending" %}
-                    <div class="alert alert-warning mb-4">
-                        <strong><i class="bi bi-hourglass-split"></i> Pending Review</strong><br>
+                    <div class="alert alert-warning shadow-sm border-0 mb-4">
+                        <strong><i class="bi bi-hourglass-split me-1"></i> Pending Review</strong><br>
                         This comment is currently under review and may not be visible to other users.
                         Saving changes may re-trigger moderation checks.
                         {% if comment.moderation_reason %}
@@ -26,11 +27,21 @@
                     </div>
                 {% endif %}
 
+                <div class="themed-box p-3 mb-4">
+                    <div class="d-flex gap-2 align-items-start">
+                        <i class="bi bi-info-circle mt-1"></i>
+                        <div class="small">
+                            <strong>Comment guidance</strong><br>
+                            Keep your comment respectful, focused on the message, and helpful to others reviewing the report.
+                        </div>
+                    </div>
+                </div>
+
                 <form method="post" novalidate>
                     {% csrf_token %}
 
                     {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
+                        <div class="alert alert-danger border-0 shadow-sm">
                             {{ form.non_field_errors }}
                         </div>
                     {% endif %}
@@ -39,20 +50,29 @@
                         <label for="{{ form.content.id_for_label }}" class="form-label">Comment</label>
                         {{ form.content }}
                         <div class="form-text">
-                            Keep your comment clear, respectful, and focused on evaluating the message.
+                            Focus on suspicious details, red flags, legitimacy clues, or helpful context.
                         </div>
                         {% if form.content.errors %}
                             <div class="text-danger small mt-1">{{ form.content.errors }}</div>
                         {% endif %}
                     </div>
 
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Save Changes
-                        </button>
-                        <a href="{% url 'message_detail' comment.message.id %}" class="btn btn-outline-secondary">Cancel</a>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4">
+                        <div class="text-muted small">
+                            Thoughtful comments improve the quality of community review.
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'message_detail' comment.message.id %}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save me-1"></i> Save Changes
+                            </button>
+                        </div>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>

@@ -6,27 +6,52 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-8">
-        <div class="card shadow-sm border-warning">
-            <div class="card-body p-4">
+        <div class="card shadow-sm p-1">
+            <div class="card-body p-4 p-md-5">
+
+                <!-- HEADER -->
                 <div class="mb-4">
-                    <h1 class="h3 mb-2">
-                        <i class="bi bi-flag"></i> Report Comment
+                    <h1 class="h3 mb-1">
+                        <i class="bi bi-flag me-1"></i> Report Comment
                     </h1>
-                    <p class="text-muted mb-0">
+                    <p class="text-muted small mb-0">
                         Report this comment if it contains spam, abuse, sensitive personal information, or other problematic content.
                     </p>
                 </div>
 
-                <div class="border rounded p-3 bg-light mb-4">
-                    <p class="mb-1"><strong>{{ comment.user.username }}</strong></p>
-                    <p class="mb-0">{{ comment.content|truncatechars:250 }}</p>
+                <!-- COMMENT PREVIEW -->
+                <div class="themed-box p-3 mb-4">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                        <div class="fw-semibold">
+                            {{ comment.user.username }}
+                        </div>
+                        <div class="text-muted small">
+                            {{ comment.created_at|date:"M j, Y" }}
+                        </div>
+                    </div>
+
+                    <p class="mb-0 small">
+                        {{ comment.content|truncatechars:250 }}
+                    </p>
                 </div>
 
+                <!-- INFO PANEL -->
+                <div class="themed-box p-3 mb-4">
+                    <div class="d-flex gap-2 align-items-start">
+                        <i class="bi bi-info-circle mt-1"></i>
+                        <div class="small">
+                            <strong>Before you report</strong><br>
+                            Use reporting for abusive, misleading, spam, or inappropriate content. Include details if they will help moderators review the issue more accurately.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORM -->
                 <form method="post" novalidate>
                     {% csrf_token %}
 
                     {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
+                        <div class="alert alert-danger border-0 shadow-sm">
                             {{ form.non_field_errors }}
                         </div>
                     {% endif %}
@@ -42,18 +67,32 @@
                     <div class="mb-4">
                         <label for="{{ form.details.id_for_label }}" class="form-label">Additional Details (Optional)</label>
                         {{ form.details }}
+                        <div class="form-text">
+                            Add any context that may help moderators understand the issue.
+                        </div>
                         {% if form.details.errors %}
                             <div class="text-danger small mt-1">{{ form.details.errors }}</div>
                         {% endif %}
                     </div>
 
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-flag"></i> Submit Report
-                        </button>
-                        <a href="{% url 'message_detail' comment.message.id %}" class="btn btn-outline-secondary">Cancel</a>
+                    <!-- ACTIONS -->
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4">
+                        <div class="text-muted small">
+                            Reports help maintain a safe and respectful community.
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'message_detail' comment.message.id %}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-warning px-4">
+                                <i class="bi bi-flag me-1"></i> Submit Report
+                            </button>
+                        </div>
                     </div>
+
                 </form>
+
             </div>
         </div>
     </div>

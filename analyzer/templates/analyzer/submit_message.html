@@ -5,53 +5,37 @@
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-    <div class="d-flex gap-2 flex-wrap">
-        <a href="{% url 'message_list' %}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Back to Message List
+    <div class="d-flex gap-2 flex-wrap mb-2">
+        <a href="{% url 'message_list' %}" class="btn btn-outline-secondary btn-sm px-3">
+            <i class="bi bi-arrow-left me-1"></i> Back to Message List
         </a>
-        <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-person"></i> My Profile
+        <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-sm px-3">
+            <i class="bi bi-person me-1"></i> My Profile
         </a>
     </div>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-body">
+<div class="card shadow-sm p-1">
+    <div class="card-body p-4 p-md-5">
         <h1 class="h3 mb-2">Submit a Message Report</h1>
-        <p class="text-muted mb-4">
+        <p class="text-muted mb-3">
             Submit a suspicious or legitimate message to receive AI analysis, help the community identify scams,
             and make it easier for others to search for similar reports in the future.
         </p>
 
-        <div class="alert alert-info d-flex align-items-start gap-2 mb-4">
-            <i class="bi bi-cpu-fill mt-1"></i>
-            <div>
-                <strong>Instant AI Analysis</strong><br>
-                After submission, your message may be analyzed automatically to help identify red flags,
-                suspicious patterns, and other warning signs.
-            </div>
-        </div>
+        <p class="text-muted small mb-4">
+            Submitting as <strong>{{ user.username }}</strong>
+        </p>
 
-        <div class="alert alert-warning d-flex align-items-start gap-2 mb-4">
-            <i class="bi bi-exclamation-triangle-fill mt-1"></i>
-            <div>
-                <strong>Public Submission Notice</strong><br>
-                Messages submitted to this platform may be visible to other community members.
-                Avoid sharing sensitive personal information unless it is directly relevant to the reported message.
+        <div class="alert alert-info shadow-sm border-0 mb-4">
+            <div class="d-flex gap-3 align-items-start">
+                <i class="bi bi-info-circle fs-5 mt-1"></i>
+                <div>
+                    <strong>How this works</strong><br>
+                    Your submission may be analyzed automatically to identify red flags and suspicious patterns.
+                    Reports may be visible to the community, so avoid including sensitive personal information unless necessary.
+                </div>
             </div>
-        </div>
-
-        <div class="alert alert-secondary d-flex align-items-start gap-2 mb-4">
-            <i class="bi bi-people-fill mt-1"></i>
-            <div>
-                <strong>Community Review</strong><br>
-                Other users may review your report and help confirm whether a message looks suspicious,
-                legitimate, or potentially phishing.
-            </div>
-        </div>
-
-        <div class="alert alert-info">
-            <strong>Submitting as:</strong> {{ user.username }}<br>
         </div>
 
         <form method="post" enctype="multipart/form-data" novalidate>
@@ -69,10 +53,12 @@
             </div>
 
             {% if form.non_field_errors %}
-                <div class="alert alert-danger">
+                <div class="alert alert-danger shadow-sm border-0">
                     {{ form.non_field_errors }}
                 </div>
             {% endif %}
+
+            <h5 class="mb-3">Message Information</h5>
 
             <div class="mb-3">
                 <label for="{{ form.message_type.id_for_label }}" class="form-label">Message Type</label>
@@ -120,6 +106,9 @@
                 {% endif %}
             </div>
 
+            <hr class="my-4">
+            <h5 class="mb-3">Message Content</h5>
+
             <div class="mb-3">
                 <label for="{{ form.message_content.id_for_label }}" class="form-label">Message Content</label>
                 {{ form.message_content }}
@@ -130,6 +119,9 @@
                     <div class="text-danger small mt-1">{{ form.message_content.errors }}</div>
                 {% endif %}
             </div>
+
+            <hr class="my-4">
+            <h5 class="mb-3">Additional Information</h5>
 
             <div class="mb-4">
                 <label for="{{ form.additional_details.id_for_label }}" class="form-label">Additional Details (Optional)</label>
@@ -153,11 +145,20 @@
                 {% endif %}
             </div>
 
-            <div class="d-flex gap-2 flex-wrap">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-send"></i> Submit Message
-                </button>
-                <a href="{% url 'message_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4">
+                <div class="text-muted small">
+                    Your report helps others identify scams and suspicious messages.
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="{% url 'message_list' %}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-send me-1"></i> Submit Report
+                    </button>
+                </div>
             </div>
         </form>
     </div>

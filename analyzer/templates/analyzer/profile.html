@@ -5,26 +5,26 @@
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-    <a href="{% url 'message_list' %}" class="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-arrow-left"></i> Back to Message List
+    <a href="{% url 'message_list' %}" class="btn btn-outline-secondary btn-sm px-3">
+        <i class="bi bi-arrow-left me-1"></i> Back to Message List
     </a>
 </div>
 
-<div class="card shadow-sm mb-4">
-    <div class="card-body">
+<div class="card shadow-sm mb-4 p-1">
+    <div class="card-body p-4 p-md-5">
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
             <div>
                 <h1 class="h3 mb-1">My Profile</h1>
-                <p class="text-muted mb-0">
-                    View your account information and community activity.
+                <p class="text-muted small mb-0">
+                    Manage your account, review your activity, and track your contributions.
                 </p>
             </div>
-            <div class="d-flex gap-2 flex-wrap">
+            <div class="d-flex gap-2 flex-wrap align-items-center">
                 <a href="{% url 'edit_profile' %}" class="btn btn-primary">
-                    <i class="bi bi-pencil-square"></i> Edit Profile
+                    <i class="bi bi-pencil-square me-1"></i> Edit Profile
                 </a>
                 <a href="{% url 'delete_account' %}" class="btn btn-outline-danger">
-                    <i class="bi bi-trash"></i> Delete Account
+                    <i class="bi bi-trash me-1"></i> Delete Account
                 </a>
             </div>
         </div>
@@ -36,7 +36,7 @@
                          class="img-fluid rounded-circle border shadow-sm mb-3"
                          style="width: 180px; height: 180px; object-fit: cover;">
                 {% else %}
-                    <div class="rounded-circle border bg-light d-inline-flex align-items-center justify-content-center shadow-sm mb-3"
+                    <div class="rounded-circle border d-inline-flex align-items-center justify-content-center shadow-sm mb-3 themed-box"
                          style="width: 180px; height: 180px;">
                         <i class="bi bi-person fs-1 text-muted"></i>
                     </div>
@@ -46,35 +46,35 @@
             <div class="col-md-8">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="border rounded p-3 bg-light h-100">
+                        <div class="themed-box p-3 h-100">
                             <div class="text-muted small mb-1">Username</div>
                             <div class="fw-semibold">{{ profile_user.username }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <div class="border rounded p-3 bg-light h-100">
+                        <div class="themed-box p-3 h-100">
                             <div class="text-muted small mb-1">Email</div>
                             <div class="fw-semibold">{{ profile_user.email|default:"Not provided" }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <div class="border rounded p-3 bg-light h-100">
+                        <div class="themed-box p-3 h-100">
                             <div class="text-muted small mb-1">First Name</div>
                             <div class="fw-semibold">{{ profile_user.first_name|default:"Not provided" }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <div class="border rounded p-3 bg-light h-100">
+                        <div class="themed-box p-3 h-100">
                             <div class="text-muted small mb-1">Last Name</div>
                             <div class="fw-semibold">{{ profile_user.last_name|default:"Not provided" }}</div>
                         </div>
                     </div>
 
                     <div class="col-12">
-                        <div class="border rounded p-3 bg-light">
+                        <div class="themed-box p-3">
                             <div class="text-muted small mb-1">Bio</div>
                             <div class="fw-semibold">
                                 {% if profile.bio %}
@@ -92,44 +92,52 @@
     </div>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-body">
+<div class="card shadow-sm p-1">
+    <div class="card-body p-4 p-md-5">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
             <div>
                 <h2 class="h4 mb-1">Profile Stats</h2>
                 <p class="text-muted mb-0">A snapshot of your activity on the platform.</p>
             </div>
-            <a href="{% url 'user_messages' profile_user.username %}" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-collection"></i> View My Messages
+            <a href="{% url 'user_messages' profile_user.username %}" class="btn btn-outline-secondary btn-sm px-3">
+                <i class="bi bi-collection me-1"></i> View My Messages
             </a>
         </div>
 
         <div class="row g-3">
             <div class="col-sm-6 col-lg-3">
-                <div class="border rounded p-3 bg-light h-100 text-center">
-                    <div class="text-muted small mb-1">Messages Submitted</div>
-                    <div class="fs-3 fw-bold">{{ message_count }}</div>
+                <div class="themed-box p-3 h-100 text-center">
+                    <div class="text-muted small mb-1">
+                        <i class="bi bi-envelope me-1"></i> Messages Submitted
+                    </div>
+                    <div class="fs-2 fw-bold text-primary">{{ message_count }}</div>
                 </div>
             </div>
 
             <div class="col-sm-6 col-lg-3">
-                <div class="border rounded p-3 bg-light h-100 text-center">
-                    <div class="text-muted small mb-1">Comments Posted</div>
-                    <div class="fs-3 fw-bold">{{ comment_count }}</div>
+                <div class="themed-box p-3 h-100 text-center">
+                    <div class="text-muted small mb-1">
+                        <i class="bi bi-chat-left-text me-1"></i> Comments Posted
+                    </div>
+                    <div class="fs-2 fw-bold text-primary">{{ comment_count }}</div>
                 </div>
             </div>
 
             <div class="col-sm-6 col-lg-3">
-                <div class="border rounded p-3 bg-light h-100 text-center">
-                    <div class="text-muted small mb-1">Message Likes Received</div>
-                    <div class="fs-3 fw-bold">{{ message_likes_received }}</div>
+                <div class="themed-box p-3 h-100 text-center">
+                    <div class="text-muted small mb-1">
+                        <i class="bi bi-hand-thumbs-up me-1"></i> Message Likes Received
+                    </div>
+                    <div class="fs-2 fw-bold text-primary">{{ message_likes_received }}</div>
                 </div>
             </div>
 
             <div class="col-sm-6 col-lg-3">
-                <div class="border rounded p-3 bg-light h-100 text-center">
-                    <div class="text-muted small mb-1">Comment Likes Received</div>
-                    <div class="fs-3 fw-bold">{{ comment_likes_received }}</div>
+                <div class="themed-box p-3 h-100 text-center">
+                    <div class="text-muted small mb-1">
+                        <i class="bi bi-hand-thumbs-up me-1"></i> Comment Likes Received
+                    </div>
+                    <div class="fs-2 fw-bold text-primary">{{ comment_likes_received }}</div>
                 </div>
             </div>
         </div>

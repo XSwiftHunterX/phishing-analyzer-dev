@@ -6,21 +6,29 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-8">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm p-1">
             <div class="card-body p-5 text-center">
+
+                <!-- Spinner -->
                 <div class="mb-4">
                     <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
 
-                <h1 class="h3 mb-3">Processing Your Submission</h1>
+                <!-- Title -->
+                <h1 class="h3 mb-2">Processing Your Submission</h1>
+
+                <!-- Subtext -->
                 <p class="text-muted mb-4">
-                    We’re reviewing your message, checking screenshots and privacy issues, and preparing AI analysis.
-                    This should only take a moment.
+                    We’re analyzing your message, checking screenshots, and preparing AI insights.
+                    This usually takes just a few seconds.
                 </p>
 
-                <div class="border rounded p-3 bg-light text-start mx-auto" style="max-width: 600px;">
+                <!-- Message Preview Card -->
+                <div class="border rounded-3 p-3 text-start mx-auto mb-4"
+                     style="max-width: 600px; background-color: #f8fbff; border-color: #bfdbfe;">
+                    
                     <div class="mb-2">
                         <strong>Message Type:</strong> {{ message.message_type }}
                     </div>
@@ -39,34 +47,59 @@
 
                     <div class="mb-0">
                         <strong>Preview:</strong><br>
-                        {{ message.message_content|truncatechars:180 }}
+                        <span class="text-muted">
+                            {{ message.message_content|truncatechars:180 }}
+                        </span>
                     </div>
                 </div>
 
-                <div class="mt-4 text-start mx-auto" style="max-width: 600px;">
+                <!-- Status Section -->
+                <div class="text-start mx-auto" style="max-width: 600px;">
                     <p class="text-muted small mb-2">
-                        <strong>Current status:</strong>
+                        <strong>Processing status</strong>
                     </p>
-                    <ul class="small text-muted mb-0">
-                        <li id="ai-status">AI analysis: waiting...</li>
-                        <li id="image-status">Image/privacy checks: waiting...</li>
-                        <li id="final-status">Final review: waiting...</li>
+
+                    <ul class="small mb-3" style="list-style: none; padding-left: 0;">
+                        <li id="ai-status" class="status-item">⏳ AI analysis: waiting...</li>
+                        <li id="image-status" class="status-item">⏳ Image/privacy checks: waiting...</li>
+                        <li id="final-status" class="status-item">⏳ Final review: waiting...</li>
                     </ul>
 
+                    <!-- Retry -->
                     <div id="retry-section" class="mt-3" style="display: none;">
                         <a id="retry-button" href="#" class="btn btn-warning">
-                            Retry Processing
+                            <i class="bi bi-arrow-repeat me-1"></i> Retry Processing
                         </a>
                     </div>
                 </div>
 
+                <!-- Footer note -->
                 <p class="text-muted small mt-4 mb-0" id="processing-note">
                     You will be redirected automatically when processing is complete.
                 </p>
+
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.status-item {
+    padding: 0.35rem 0;
+}
+
+.status-complete {
+    color: #16a34a;
+}
+
+.status-processing {
+    color: #2563eb;
+}
+
+.status-failed {
+    color: #dc2626;
+}
+</style>
 
 <script>
     function prettyStatus(value) {
@@ -78,11 +111,32 @@
         return value;
     }
 
+    function applyStatusStyle(element, label, value) {
+        element.classList.remove("status-complete", "status-processing", "status-failed");
+
+        let icon = "⏳";
+        let statusText = "waiting...";
+
+        if (value === "processing") {
+            icon = "🔄";
+            statusText = "processing...";
+            element.classList.add("status-processing");
+        } else if (value === "completed") {
+            icon = "✅";
+            statusText = "completed";
+            element.classList.add("status-complete");
+        } else if (value === "failed") {
+            icon = "❌";
+            statusText = "failed";
+            element.classList.add("status-failed");
+        }
+
+        element.textContent = `${icon} ${label}: ${statusText}`;
+    }
+
     function checkProcessingStatus() {
         fetch("{% url 'message_processing_status' message.id %}", {
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
-            }
+            headers: { "X-Requested-With": "XMLHttpRequest" }
         })
         .then(response => response.json())
         .then(data => {
@@ -95,6 +149,10 @@
             imageStatusEl.textContent = "Image/privacy checks: " + prettyStatus(data.image_processing_status);
             finalStatusEl.textContent = "Final review: " + prettyStatus(data.processing_status);
 
+            applyStatusStyle(aiStatusEl, "AI analysis", data.ai_status);
+            applyStatusStyle(imageStatusEl, "Image/privacy checks", data.image_processing_status);
+            applyStatusStyle(finalStatusEl, "Final review", data.processing_status);
+
             if (data.failed) {
                 noteEl.textContent = data.processing_error || "There was a problem processing your submission.";
 
@@ -103,7 +161,6 @@
 
                 retryButton.href = `/message/${data.message_id}/retry/`;
                 retrySection.style.display = "block";
-
                 return;
             }
 

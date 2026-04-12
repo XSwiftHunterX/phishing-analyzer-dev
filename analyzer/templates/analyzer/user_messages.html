@@ -5,13 +5,13 @@
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-    <a href="{% url 'message_list' %}" class="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-arrow-left"></i> Back to Message List
+    <a href="{% url 'message_list' %}" class="btn btn-outline-secondary btn-sm px-3">
+        <i class="bi bi-arrow-left me-1"></i> Back to Message List
     </a>
 </div>
 
-<div class="card shadow-sm mb-4">
-    <div class="card-body">
+<div class="card shadow-sm mb-4 p-1">
+    <div class="card-body p-4">
         <div class="row g-4 align-items-center">
             <div class="col-md-3 text-center">
                 {% if profile.profile_image %}
@@ -19,7 +19,7 @@
                          class="img-fluid rounded-circle border shadow-sm"
                          style="width: 140px; height: 140px; object-fit: cover;">
                 {% else %}
-                    <div class="rounded-circle border bg-light d-inline-flex align-items-center justify-content-center shadow-sm"
+                    <div class="rounded-circle border d-inline-flex align-items-center justify-content-center shadow-sm themed-box"
                          style="width: 140px; height: 140px;">
                         <i class="bi bi-person fs-1 text-muted"></i>
                     </div>
@@ -27,10 +27,12 @@
             </div>
 
             <div class="col-md-9">
-                <h1 class="fw-bold mb-2">{{ profile_user.username }}'s Messages</h1>
-                <p class="text-muted mb-2">Browse messages submitted by this community member.</p>
+                <h1 class="fw-bold mb-1">{{ profile_user.username }}</h1>
+                <p class="text-muted small mb-2">
+                    Messages submitted by this community member.
+                </p>
 
-                <p class="mb-0">
+                <p class="mb-2">
                     {% if profile.bio %}
                         {{ profile.bio }}
                     {% else %}
@@ -40,8 +42,8 @@
 
                 {% if user.is_authenticated and user.username != profile_user.username %}
                     <a href="{% url 'report_profile' profile_user.username %}" 
-                    class="btn btn-outline-warning btn-sm mt-2">
-                        <i class="bi bi-flag"></i> Report Profile
+                       class="btn btn-outline-warning btn-sm mt-2">
+                        <i class="bi bi-flag me-1"></i> Report Profile
                     </a>
                 {% endif %}
             </div>
@@ -50,85 +52,77 @@
 </div>
 
 {% for message in user_posts %}
-    <div class="card shadow-sm mb-3 message-card
-    {% if message.classification == 'Phishing' %}border-danger
-    {% elif message.classification == 'Legitimate' %}border-success
-    {% else %}border-warning
-    {% endif %}">
-        <div class="card-body">
+    <div class="card shadow-sm mb-3 message-card p-1">
+        <div class="card-body p-4">
             <div class="row g-3 align-items-start">
 
                 <div class="{% if message.screenshot %}col-md-8{% else %}col-12{% endif %}">
-                    <h5 class="card-title mb-1">
-                        <a href="{% url 'message_detail' message.id %}" class="text-decoration-none">
-                            Message Report
+                    <h5 class="card-title mb-2">
+                        <a href="{% url 'message_detail' message.id %}" class="text-decoration-none text-dark">
+                            {{ message.message_type }} Message Report
                         </a>
                     </h5>
 
                     <!-- BADGES -->
-                    <div class="mb-2 d-flex flex-wrap gap-2">
+                    <div class="mb-3 d-flex flex-wrap gap-2">
+
                         {% if message.classification == "Phishing" %}
-                            <span class="badge bg-danger">Phishing</span>
+                            <span class="badge badge-phishing">Phishing</span>
                         {% elif message.classification == "Legitimate" %}
-                            <span class="badge bg-success">Legitimate</span>
+                            <span class="badge badge-legit">Legitimate</span>
                         {% else %}
-                            <span class="badge bg-warning text-dark">Unsure</span>
+                            <span class="badge badge-unsure">Unsure</span>
                         {% endif %}
 
-                        <span class="badge bg-dark">{{ message.message_type }}</span>
+                        <span class="badge badge-type">{{ message.message_type }}</span>
 
                         {% if message.platform %}
-                            <span class="badge bg-light text-dark border">{{ message.platform }}</span>
+                            <span class="badge badge-platform">{{ message.platform }}</span>
                         {% endif %}
 
                         {% if message.moderation_status == "pending" %}
-                            <span class="badge bg-warning text-dark">Pending Review</span>
+                            <span class="badge badge-unsure">Pending Review</span>
                         {% endif %}
                     </div>
 
-                    <!-- OWNER PENDING NOTICE -->
                     {% if message.moderation_status == "pending" and user == message.user %}
-                        <p class="text-warning mb-2">
-                            <strong>This message is under review and is only visible to you right now.</strong>
+                        <p class="text-warning small mb-2">
+                            <strong>This message is under review and only visible to you.</strong>
                         </p>
                     {% endif %}
 
-                    <p class="card-text mb-2">
+                    <p class="card-text mb-3">
                         {{ message.message_content|truncatechars:180 }}
                     </p>
 
                     {% if message.sender %}
-                        <p class="text-muted mb-2">
+                        <p class="text-muted small mb-2">
                             <strong>Sender:</strong> {{ message.sender }}
                         </p>
                     {% endif %}
 
-                    {% if message.platform %}
-                        <p class="text-muted mb-2">
-                            <strong>Platform:</strong> {{ message.platform }}
-                        </p>
-                    {% endif %}
-
-                    <p class="text-muted mb-1">
+                    <p class="text-muted small mb-1">
                         Submitted on {{ message.submission_date|date:"F j, Y" }}
                     </p>
 
-                    <p class="text-muted mb-3">
+                    <p class="text-muted small mb-3">
                         Likes: {{ message.likes.count }} | Comments: {{ message.comments.count }}
                     </p>
 
-                    <div class="d-flex gap-2 flex-wrap">
-                        <a href="{% url 'message_detail' message.id %}" class="btn btn-primary btn-sm">
-                            View Details
+                    <div class="d-flex gap-2 align-items-center flex-wrap mt-2">
+                        <a href="{% url 'message_detail' message.id %}" class="btn btn-primary btn-sm px-3">
+                            View
                         </a>
 
                         {% if user.is_authenticated and message.user == user %}
-                            <a href="{% url 'edit_message' message.id %}" class="btn btn-outline-primary btn-sm">
-                                Edit
-                            </a>
-                            <a href="{% url 'delete_message' message.id %}" class="btn btn-outline-danger btn-sm">
-                                Delete
-                            </a>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'edit_message' message.id %}" class="btn btn-outline-secondary btn-sm">
+                                    Edit
+                                </a>
+                                <a href="{% url 'delete_message' message.id %}" class="btn btn-outline-danger btn-sm">
+                                    Delete
+                                </a>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
@@ -137,9 +131,9 @@
                 <div class="col-md-4 text-center">
                     <a href="{% url 'message_detail' message.id %}">
                         <img src="{% if message.redacted_screenshot %}{{ message.redacted_screenshot.url }}{% else %}{{ message.screenshot.url }}{% endif %}"
-                            alt="Message screenshot"
-                            class="img-fluid rounded border shadow-sm"
-                            style="max-height:220px;width:100%;object-fit:cover;">
+                             alt="Message screenshot"
+                             class="img-fluid rounded border shadow-sm"
+                             style="max-height:220px;width:100%;object-fit:cover;">
                     </a>
                 </div>
                 {% endif %}
@@ -148,8 +142,8 @@
         </div>
     </div>
 {% empty %}
-    <div class="alert alert-secondary shadow-sm">
-        This user has not submitted any messages yet.
+    <div class="alert alert-secondary shadow-sm text-center border-0">
+        <p class="mb-2">This user has not submitted any messages yet.</p>
     </div>
 {% endfor %}
 

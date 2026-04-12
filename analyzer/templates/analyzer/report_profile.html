@@ -6,49 +6,89 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-8">
-        <div class="card shadow-sm border-warning">
-            <div class="card-body p-4">
+        <div class="card shadow-sm p-1">
+            <div class="card-body p-4 p-md-5">
 
                 <div class="mb-4">
-                    <h1 class="h3 mb-2">
-                        <i class="bi bi-flag"></i> Report Profile
+                    <h1 class="h3 mb-1">
+                        <i class="bi bi-flag me-1"></i> Report Profile
                     </h1>
-                    <p class="text-muted mb-0">
+                    <p class="text-muted small mb-0">
                         Report this user if their profile or behavior violates community guidelines.
                     </p>
                 </div>
 
-                <div class="border rounded p-3 bg-light mb-4">
-                    <strong>{{ profile_user.username }}</strong>
-                    <p class="mb-0 mt-2">
-                        {% if profile.bio %}
-                            {{ profile.bio|truncatechars:200 }}
-                        {% else %}
-                            <span class="text-muted">No bio provided.</span>
-                        {% endif %}
-                    </p>
+                <div class="themed-box p-3 mb-4">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle border d-inline-flex align-items-center justify-content-center shadow-sm themed-box flex-shrink-0"
+                             style="width: 56px; height: 56px;">
+                            <i class="bi bi-person text-muted"></i>
+                        </div>
+
+                        <div class="w-100">
+                            <div class="fw-semibold">{{ profile_user.username }}</div>
+                            <p class="mb-0 mt-2 small">
+                                {% if profile.bio %}
+                                    {{ profile.bio|truncatechars:200 }}
+                                {% else %}
+                                    <span class="text-muted">No bio provided.</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
-                <form method="post">
+                <div class="themed-box p-3 mb-4">
+                    <div class="d-flex gap-2 align-items-start">
+                        <i class="bi bi-info-circle mt-1"></i>
+                        <div class="small">
+                            <strong>Before you report</strong><br>
+                            Use profile reporting for impersonation, abusive behavior, inappropriate profile content, spam, or other guideline violations. Include details if they will help moderators review the issue more accurately.
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post" novalidate>
                     {% csrf_token %}
 
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger border-0 shadow-sm">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
                     <div class="mb-3">
-                        <label class="form-label">Reason</label>
+                        <label for="{{ form.reason.id_for_label }}" class="form-label">Reason</label>
                         {{ form.reason }}
+                        {% if form.reason.errors %}
+                            <div class="text-danger small mt-1">{{ form.reason.errors }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label">Additional Details (Optional)</label>
+                        <label for="{{ form.details.id_for_label }}" class="form-label">Additional Details (Optional)</label>
                         {{ form.details }}
+                        <div class="form-text">
+                            Add any context that may help moderators understand the concern.
+                        </div>
+                        {% if form.details.errors %}
+                            <div class="text-danger small mt-1">{{ form.details.errors }}</div>
+                        {% endif %}
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-flag"></i> Submit Report
-                        </button>
-                        <a href="{% url 'user_messages' profile_user.username %}" class="btn btn-outline-secondary">
-                            Cancel
-                        </a>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4">
+                        <div class="text-muted small">
+                            Reports help keep the community safe and trustworthy.
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'user_messages' profile_user.username %}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-warning px-4">
+                                <i class="bi bi-flag me-1"></i> Submit Report
+                            </button>
+                        </div>
                     </div>
 
                 </form>
