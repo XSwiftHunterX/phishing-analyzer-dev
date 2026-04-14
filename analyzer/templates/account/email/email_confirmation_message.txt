@@ -1,0 +1,8 @@
+Confirm your email address for PhishWatch
+
+Thanks for signing up for PhishWatch.
+
+Please confirm your email by visiting this link:
+{{ activate_url }}
+
+If you did not create a PhishWatch account, you can safely ignore this email.
