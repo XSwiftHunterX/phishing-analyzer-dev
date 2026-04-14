@@ -164,7 +164,16 @@ def reset_message_processing_state(message):
     message.processing_error = ""
     message.processing_failure_type = ""
     message.is_finalized = False
+
+    message.image_moderation_status = "pending"
+    message.image_relevance_status = "pending"
+    message.redacted_screenshot = None
+
     message.ai_status = "pending"
     message.image_processing_status = "pending"
     message.processing_completed_at = None
+
+    if hasattr(message, "ai_analysis") and message.ai_analysis:
+        message.ai_analysis.delete()
+
     return message

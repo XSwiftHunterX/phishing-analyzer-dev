@@ -634,6 +634,7 @@ def edit_message(request, message_id):
             return redirect('edit_message', message_id=message.id)
 
         form = MessageForm(request.POST, request.FILES, instance=message)
+
         if form.is_valid():
             updated_message = form.save(commit=False)
             updated_message.user = request.user
@@ -648,19 +649,17 @@ def edit_message(request, message_id):
                     {'form': form, 'message': message}
                 )
 
+            updated_message = reset_message_processing_state(updated_message)
+
+            updated_message.moderation_status = ModerationStatus.PENDING
+            updated_message.moderation_reason = "Processing edited submission..."
+
             updated_message.save()
 
-            try:
-                analysis_data = analyze_message(updated_message)
-                save_analysis_result(updated_message, analysis_data)
-            except Exception:
-                logger.exception(
-                    "AI analysis failed during edit_message for message %s",
-                    updated_message.id
-                )
+            queue_message_processing(updated_message)
 
-            add_message_submission_feedback(request, updated_message, updated=True)
-            return redirect('message_detail', message_id=updated_message.id)
+            return redirect('processing_message', message_id=updated_message.id)
+
     else:
         form = MessageForm(instance=message)
 
