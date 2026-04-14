@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta property="og:title" content="PhishWatch">
+    <meta property="og:description" content="AI-powered phishing detection and community reporting platform">
+    <meta property="og:image" content="/static/website_images/logo.png">
+    <meta property="og:type" content="website">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Phishing Message Analyzer{% endblock %}</title>
+    <title>{% block title %}{% endblock %} | PhishWatch</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
@@ -15,6 +20,10 @@
             padding-top: 0.65rem;
             padding-bottom: 0.65rem;
             background-color: #1e293b !important;
+        }
+
+        .navbar-brand img {
+            border-radius: 6px;
         }
 
         .navbar-brand {
@@ -266,8 +275,14 @@
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
     <div class="container-xl">
         <a class="navbar-brand fw-bold d-flex flex-column" href="{% url 'message_list' %}">
-            <span><i class="bi bi-shield-exclamation me-2"></i>Phishing Message Analyzer</span>
-            <span class="brand-subtitle d-none d-lg-block">Community reporting and AI-assisted analysis</span>
+            <div class="d-flex align-items-center">
+                <img src="/media/website_images/LogoWithBackground.png"
+                    alt="PhishWatch Logo"
+                    height="45"
+                    class="me-2">
+
+                <span>PhishWatch</span>
+            </div>
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -397,7 +412,13 @@
     <div class="container-xl">
         <div class="row g-3">
             <div class="col-md-4">
-                <h5 class="fw-bold mb-2 text-dark">Phishing Message Analyzer</h5>
+                <div class="d-flex align-items-center mb-2">
+                    <img src="/media/website_images/LogoWithBackground.png"
+                        alt="PhishWatch Logo"
+                        height="30"
+                        class="me-2">
+                    <h5 class="fw-bold mb-0 text-dark">PhishWatch</h5>
+                </div>
                 <p class="text-muted mb-2">
                     A community-driven platform for submitting, analyzing, and learning from suspicious messages.
                 </p>
@@ -449,7 +470,7 @@
 
         <div class="footer-note d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
             <p class="small text-muted mb-0">
-                &copy; 2026 Phishing Message Analyzer. All rights reserved.
+                &copy; 2026 PhishWatch. All rights reserved.
             </p>
             <p class="small text-muted mb-0">
                 Designed for phishing awareness and community reporting.
